@@ -3,52 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart - Home</title>
+    <title>Seller Registration - Ar RaiyanMart</title>
     <style>
-        /* আগের স্টাইলগুলো এখানে থাকবে */
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
-        header { background: #fff; padding: 10px; text-align: center; border-bottom: 2px solid #ff5722; position: sticky; top: 0; z-index: 100; }
-        .logo { color: #ff5722; font-size: 24px; font-weight: bold; text-decoration: none; }
-        
-        /* সেলার বাটনের স্টাইল */
-        .seller-btn {
-            display: inline-block;
-            background: #2196F3;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        
-        /* কন্টেনার এবং অন্যান্য */
-        .container { padding: 15px; }
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .product-card { background: #fff; padding: 10px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .product-card img { width: 100%; border-radius: 5px; }
-        .buy-btn { background: #ff5722; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; margin-top: 5px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .reg-container { max-width: 450px; width: 100%; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        h2 { color: #f85606; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
+        input:focus, textarea:focus { border-color: #f85606; }
+        .submit-btn { width: 100%; padding: 15px; background: #2196F3; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; margin-top: 10px; }
+        .submit-btn:hover { background: #1976D2; }
+        .back-link { display: inline-block; margin-top: 20px; color: #666; text-decoration: none; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="index.html" class="logo">Ar RaiyanMart</a><br>
-    <a href="seller.html" class="seller-btn">Seller Zone (সেলার হন)</a>
-</header>
-
-<div class="container">
-    <h2 style="text-align: center; color: #333;">আমাদের পণ্যসমূহ</h2>
-    <div class="product-grid" id="product-list">
-        </div>
+<div class="reg-container">
+    <h2>সেলার রেজিস্ট্রেশন</h2>
+    <p style="color: #666; margin-bottom: 20px;">আপনার তথ্য দিয়ে আবেদনটি জমা দিন</p>
+    <form id="sellerForm">
+        <input type="text" id="sellerName" placeholder="আপনার পূর্ণ নাম" required>
+        <input type="text" id="shopName" placeholder="আপনার দোকানের নাম" required>
+        <input type="number" id="sellerPhone" placeholder="আপনার হোয়াটসঅ্যাপ নম্বর" required>
+        <textarea id="sellerAddress" placeholder="আপনার পুরো ঠিকানা" rows="3" required></textarea>
+        <button type="button" class="submit-btn" onclick="registerSeller()">আবেদন জমা দিন (WhatsApp)</button>
+    </form>
+    <a href="index.html" class="back-link">← হোম পেজে ফিরে যান</a>
 </div>
 
 <script>
-    // আপনার প্রোডাক্ট ডাটা এবং আগের সব জাভাস্ক্রিপ্ট কোড এখানে থাকবে
-    // মনে করে WhatsApp নাম্বারের জায়গায় আপনার নাম্বারটি আবার চেক করে নিন।
-    const whatsappNumber = "8801704100288"; // এখানে আপনার নাম্বার দিন
-    
-    // প্রোডাক্ট লিস্ট এবং অন্যান্য ফাংশনগুলো আগের মতোই থাকবে...
+    function registerSeller() {
+        const name = document.getElementById('sellerName').value;
+        const shop = document.getElementById('shopName').value;
+        const phone = document.getElementById('sellerPhone').value;
+        const address = document.getElementById('sellerAddress').value;
+        
+        if(!name || !shop || !phone || !address) {
+            alert("দয়া করে সব ঘর পূরণ করুন!");
+            return;
+        }
+
+        // আপনার সঠিক নম্বরটি এখানে যোগ করা হয়েছে
+        const myNumber = "8801704100288"; 
+        
+        const message = `নতুন সেলার রেজিস্ট্রেশন আবেদন:%0A----------------------------%0Aনাম: ${name}%0Aদোকান: ${shop}%0Aফোন: ${phone}%0Aঠিকানা: ${address}`;
+        
+        const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
+        window.open(whatsappURL, '_blank');
+    }
 </script>
 
 </body>
