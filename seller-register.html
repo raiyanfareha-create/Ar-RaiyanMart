@@ -32,7 +32,7 @@
         </div>
         <div class="form-group">
             <label>মোবাইল নম্বর</label>
-            <input type="tel" id="phone" placeholder="8801704100288" required>
+            <input type="tel" id="phone" placeholder="০১৭XXXXXXXX" required>
         </div>
         <button type="submit" class="btn-register">WhatsApp-এ আবেদন পাঠান</button>
     </form>
@@ -45,22 +45,20 @@
     document.getElementById('sellerForm').onsubmit = function(e) {
         e.preventDefault();
         
-        // এখানে তোমার হোয়াটসঅ্যাপ নম্বর দাও (যেমন: 88017XXXXXXXX)
-        var myNumber = "8801XXXXXXXXX"; 
+        // আপনার হোয়াটসঅ্যাপ নম্বর এখানে সেট করা হয়েছে
+        var myNumber = "8801704100288"; 
         
         var name = document.getElementById('name').value;
         var shop = document.getElementById('shop').value;
         var phone = document.getElementById('phone').value;
         
-        var message = "নতুন সেলার রেজিস্ট্রেশন আবেদন:%0A" + 
-                      "নাম: " + name + "%0A" + 
-                      "দোকান: " + shop + "%0A" + 
-                      "মোবাইল: " + phone;
+        var message = "আসসালামু আলাইকুম,%0Aআমি Ar RaiyanMart-এ সেলার হতে চাই।%0A%0A" + 
+                      "*নাম:* " + name + "%0A" + 
+                      "*দোকানের নাম:* " + shop + "%0A" + 
+                      "*মোবাইল:* " + phone;
         
-        // হোয়াটসঅ্যাপ লিঙ্ক তৈরি
         var whatsappUrl = "https://api.whatsapp.com/send?phone=" + myNumber + "&text=" + message;
         
-        // নতুন উইন্ডোতে হোয়াটসঅ্যাপ ওপেন করা
         window.open(whatsappUrl, '_blank');
     };
 </script>
