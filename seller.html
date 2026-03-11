@@ -3,54 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Registration - Ar RaiyanMart</title>
+    <title>Seller Center | Ar RaiyanMart</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .reg-container { max-width: 450px; width: 100%; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
-        h2 { color: #f85606; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
-        input:focus, textarea:focus { border-color: #f85606; }
-        .submit-btn { width: 100%; padding: 15px; background: #2196F3; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; margin-top: 10px; }
-        .submit-btn:hover { background: #1976D2; }
-        .back-link { display: inline-block; margin-top: 20px; color: #666; text-decoration: none; font-size: 14px; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .form-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #f85606; text-align: center; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #f85606; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        #status { text-align: center; color: green; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="reg-container">
-    <h2>সেলার রেজিস্ট্রেশন</h2>
-    <p style="color: #666; margin-bottom: 20px;">আপনার তথ্য দিয়ে আবেদনটি জমা দিন</p>
-    <form id="sellerForm">
-        <input type="text" id="sellerName" placeholder="আপনার পূর্ণ নাম" required>
-        <input type="text" id="shopName" placeholder="আপনার দোকানের নাম" required>
-        <input type="number" id="sellerPhone" placeholder="আপনার হোয়াটসঅ্যাপ নম্বর" required>
-        <textarea id="sellerAddress" placeholder="আপনার পুরো ঠিকানা" rows="3" required></textarea>
-        <button type="button" class="submit-btn" onclick="registerSeller()">আবেদন জমা দিন (WhatsApp)</button>
-    </form>
-    <a href="index.html" class="back-link">← হোম পেজে ফিরে যান</a>
+<div class="form-card">
+    <h2>সেলার প্যানেল</h2>
+    <p style="text-align: center; font-size: 13px;">আপনার পণ্যের তথ্য দিন</p>
+    <input type="text" id="pName" placeholder="পণ্যের নাম">
+    <input type="number" id="pPrice" placeholder="দাম (৳)">
+    <input type="text" id="pImg" placeholder="ছবির লিঙ্ক (URL)">
+    <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ"></textarea>
+    <button onclick="sendToReview()">রিভিউয়ের জন্য পাঠান</button>
+    <div id="status"></div>
 </div>
 
-<script>
-    function registerSeller() {
-        const name = document.getElementById('sellerName').value;
-        const shop = document.getElementById('shopName').value;
-        const phone = document.getElementById('sellerPhone').value;
-        const address = document.getElementById('sellerAddress').value;
-        
-        if(!name || !shop || !phone || !address) {
-            alert("দয়া করে সব ঘর পূরণ করুন!");
-            return;
-        }
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-        // আপনার সঠিক নম্বরটি এখানে যোগ করা হয়েছে
-        const myNumber = "8801704100288"; 
-        
-        const message = `নতুন সেলার রেজিস্ট্রেশন আবেদন:%0A----------------------------%0Aনাম: ${name}%0Aদোকান: ${shop}%0Aফোন: ${phone}%0Aঠিকানা: ${address}`;
-        
-        const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
-        window.open(whatsappURL, '_blank');
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU",
+        authDomain: "ar-raiyanmart.firebaseapp.com",
+        projectId: "ar-raiyanmart",
+        databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app",
+        storageBucket: "ar-raiyanmart.firebasestorage.app",
+        messagingSenderId: "336578883565",
+        appId: "1:336578883565:web:54d73b82c96a26f38601e4"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function sendToReview() {
+        const name = document.getElementById('pName').value;
+        const price = document.getElementById('pPrice').value;
+        const img = document.getElementById('pImg').value;
+        const desc = document.getElementById('pDesc').value;
+
+        if(!name || !price || !img) { alert("নাম, দাম এবং ছবির লিঙ্ক দিন!"); return; }
+
+        const pendingRef = database.ref('pending_products').push();
+        pendingRef.set({
+            name, price, img, desc,
+            status: "pending",
+            time: Date.now()
+        }).then(() => {
+            document.getElementById('status').innerText = "সফলভাবে পাঠানো হয়েছে! অ্যাডমিন অ্যাপ্রুভ করলে সাইটে দেখা যাবে।";
+            document.getElementById('pName').value = "";
+            document.getElementById('pPrice').value = "";
+            document.getElementById('pImg').value = "";
+            document.getElementById('pDesc').value = "";
+        });
     }
 </script>
-
 </body>
 </html>
