@@ -5,62 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Registration - Ar RaiyanMart</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
         .register-container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
         .register-container h2 { text-align: center; color: #D4AF37; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: bold; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         .btn-register { width: 100%; padding: 12px; background-color: #25D366; border: none; border-radius: 5px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-register:hover { background-color: #128C7E; }
-        .footer-text { text-align: center; margin-top: 15px; font-size: 14px; color: #666; }
     </style>
 </head>
 <body>
 
 <div class="register-container">
     <h2>Seller Registration</h2>
-    <p style="text-align: center; font-size: 13px; color: #666;">তথ্যগুলো পূরণ করে হোয়াটসঅ্যাপে পাঠান</p>
-    <form id="sellerForm">
-        <div class="form-group">
-            <label>আপনার নাম</label>
-            <input type="text" id="name" placeholder="পুরো নাম লিখুন" required>
-        </div>
-        <div class="form-group">
-            <label>দোকানের নাম</label>
-            <input type="text" id="shop" placeholder="আপনার শপ বা ব্র্যান্ডের নাম" required>
-        </div>
-        <div class="form-group">
-            <label>মোবাইল নম্বর</label>
-            <input type="tel" id="phone" placeholder="০১৭XXXXXXXX" required>
-        </div>
-        <button type="submit" class="btn-register">WhatsApp-এ আবেদন পাঠান</button>
-    </form>
-    <div class="footer-text">
-        Ar RaiyanMart Seller Zone
+    <p style="text-align: center; font-size: 13px; color: #666;">তথ্যগুলো পূরণ করুন</p>
+    
+    <div class="form-group">
+        <label>আপনার নাম</label>
+        <input type="text" id="name" placeholder="পুরো নাম লিখুন">
     </div>
+    <div class="form-group">
+        <label>দোকানের নাম</label>
+        <input type="text" id="shop" placeholder="দোকানের নাম">
+    </div>
+    <div class="form-group">
+        <label>মোবাইল নম্বর</label>
+        <input type="tel" id="phone" placeholder="০১৭XXXXXXXX">
+    </div>
+    
+    <button onclick="sendToWhatsApp()" class="btn-register">WhatsApp-এ আবেদন পাঠান</button>
 </div>
 
 <script>
-    document.getElementById('sellerForm').onsubmit = function(e) {
-        e.preventDefault();
-        
-        // আপনার হোয়াটসঅ্যাপ নম্বর এখানে সেট করা হয়েছে
+    function sendToWhatsApp() {
         var myNumber = "8801704100288"; 
-        
         var name = document.getElementById('name').value;
         var shop = document.getElementById('shop').value;
         var phone = document.getElementById('phone').value;
+
+        if(name == "" || shop == "" || phone == "") {
+            alert("দয়া করে সব তথ্য পূরণ করুন!");
+            return;
+        }
         
         var message = "আসসালামু আলাইকুম,%0Aআমি Ar RaiyanMart-এ সেলার হতে চাই।%0A%0A" + 
                       "*নাম:* " + name + "%0A" + 
                       "*দোকানের নাম:* " + shop + "%0A" + 
                       "*মোবাইল:* " + phone;
         
-        var whatsappUrl = "https://api.whatsapp.com/send?phone=" + myNumber + "&text=" + message;
+        var whatsappUrl = "https://wa.me/" + myNumber + "?text=" + message;
         
-        window.open(whatsappUrl, '_blank');
-    };
+        // সরাসরি লোকেশন চেঞ্জ করে দেওয়া যাতে কাজ করে
+        window.location.href = whatsappUrl;
+    }
 </script>
 
 </body>
