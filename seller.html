@@ -9,37 +9,36 @@
         .form-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
         h2 { color: #f85606; text-align: center; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #f85606; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        button { width: 100%; padding: 15px; background: #f85606; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
         button:disabled { background: #ccc; cursor: not-allowed; }
         label { font-size: 14px; font-weight: bold; color: #555; display: block; margin-top: 10px; }
-        #status { text-align: center; color: green; font-weight: bold; margin-top: 10px; }
+        #status { text-align: center; color: blue; font-weight: bold; margin-top: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="form-card">
     <h2>সেলার প্যানেল</h2>
-    <p style="text-align: center; font-size: 13px;">আপনার পণ্যের তথ্য দিন</p>
+    <p style="text-align: center; font-size: 13px; color: #666;">পণ্যের সঠিক তথ্য দিন</p>
     
-    <input type="text" id="shopName" placeholder="দোকানের নাম (Shop Name)">
-    
+    <input type="text" id="shopName" placeholder="আপনার দোকানের নাম">
     <input type="text" id="pName" placeholder="পণ্যের নাম">
     <input type="number" id="pPrice" placeholder="দাম (৳)">
     
     <label for="pImage">পণ্যের ছবি সিলেক্ট করুন</label>
     <input type="file" id="pImage" accept="image/*">
     
-    <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ"></textarea>
+    <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ (যেমন: সাইজ, কালার ইত্যাদি)"></textarea>
     
-    <button id="submitBtn" onclick="uploadAndSend()">রিভিউয়ের জন্য পাঠান</button>
+    <button id="submitBtn" onclick="handleUploadAndSend()">রিভিউয়ের জন্য পাঠান</button>
     <div id="status"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 
 <script>
+    // আপনার ফায়ারবেজ কনফিগারেশন
     const firebaseConfig = {
         apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU",
         authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -49,59 +48,75 @@
         messagingSenderId: "336578883565",
         appId: "1:336578883565:web:54d73b82c96a26f38601e4"
     };
-    
+
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const storage = firebase.storage();
 
-    async function uploadAndSend() {
-        const sName = document.getElementById('shopName').value; // দোকানের নাম রিড করা
-        const name = document.getElementById('pName').value;
-        const price = document.getElementById('pPrice').value;
-        const desc = document.getElementById('pDesc').value;
-        const imageFile = document.getElementById('pImage').files[0];
-        const btn = document.getElementById('submitBtn');
+    async function handleUploadAndSend() {
+        const sName = document.getElementById('shopName').value;
+        const pName = document.getElementById('pName').value;
+        const pPrice = document.getElementById('pPrice').value;
+        const pDesc = document.getElementById('pDesc').value;
+        const fileInput = document.getElementById('pImage');
         const statusDiv = document.getElementById('status');
+        const btn = document.getElementById('submitBtn');
 
-        if(!sName || !name || !price || !imageFile) { 
-            alert("দোকানের নাম, পণ্যের নাম, দাম এবং ছবি অবশ্যই দিতে হবে!"); 
-            return; 
+        // চেক করা সব ইনপুট ঠিক আছে কি না
+        if (!sName || !pName || !pPrice || !fileInput.files[0]) {
+            alert("দয়া করে দোকানের নাম, পণ্যের নাম, দাম এবং ছবি দিন!");
+            return;
         }
 
         btn.disabled = true;
-        statusDiv.innerText = "ছবি আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন।";
+        statusDiv.innerText = "ছবি আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন।";
+
+        // আপনার ImgBB API Key এখানে বসানো হয়েছে
+        const apiKey = 'c01e05cfc3241e9f57336dc80cc38d0f';
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
 
         try {
-            // ১. Firebase Storage-এ ছবি আপলোড করা
-            const storageRef = storage.ref('product_images/' + Date.now() + "_" + imageFile.name);
-            const uploadTask = await storageRef.put(imageFile);
-            
-            // ২. ছবির লিঙ্ক সংগ্রহ করা
-            const downloadURL = await uploadTask.ref.getDownloadURL();
-
-            // ৩. ডাটাবেজে দোকানের নামসহ তথ্য পাঠানো
-            const pendingRef = database.ref('pending_products').push();
-            await pendingRef.set({
-                shopName: sName, // দোকানের নাম ডাটাবেজে যাবে
-                name: name,
-                price: price,
-                img: downloadURL,
-                desc: desc,
-                status: "pending",
-                time: Date.now()
+            // ১. ImgBB-তে ছবি আপলোড করা
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                method: 'POST',
+                body: formData
             });
+            const result = await response.json();
 
-            statusDiv.innerText = "সফলভাবে পাঠানো হয়েছে!";
-            document.getElementById('shopName').value = ""; // ক্লিয়ার করা
-            document.getElementById('pName').value = "";
-            document.getElementById('pPrice').value = "";
-            document.getElementById('pImage').value = "";
-            document.getElementById('pDesc').value = "";
+            if (result.success) {
+                const imageUrl = result.data.url;
+
+                // ২. ফায়ারবেজ ডাটাবেজে ডাটা পাঠানো
+                const pendingRef = database.ref('pending_products').push();
+                await pendingRef.set({
+                    shopName: sName,
+                    name: pName,
+                    price: pPrice,
+                    img: imageUrl,
+                    desc: pDesc,
+                    status: "pending",
+                    time: Date.now()
+                });
+
+                statusDiv.style.color = "green";
+                statusDiv.innerText = "সফলভাবে পাঠানো হয়েছে!";
+                
+                // ফর্ম ক্লিয়ার করা
+                document.getElementById('shopName').value = "";
+                document.getElementById('pName').value = "";
+                document.getElementById('pPrice').value = "";
+                document.getElementById('pImage').value = "";
+                document.getElementById('pDesc').value = "";
+
+            } else {
+                throw new Error("ImgBB Upload Failed");
+            }
 
         } catch (error) {
             console.error(error);
-            statusDiv.innerText = "ভুল হয়েছে! আবার চেষ্টা করুন।";
-            alert("Error: " + error.message);
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "ভুল হয়েছে! আবার চেষ্টা করুন।";
+            alert("ত্রুটি: " + error.message);
         } finally {
             btn.disabled = false;
         }
