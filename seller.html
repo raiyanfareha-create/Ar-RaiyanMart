@@ -10,7 +10,7 @@
         h2 { color: #f85606; text-align: center; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: #f85606; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
+        button:disabled { background: #ccc; }
         label { font-size: 14px; font-weight: bold; color: #555; display: block; margin-top: 10px; }
         #status { text-align: center; color: blue; font-weight: bold; margin-top: 10px; font-size: 14px; }
     </style>
@@ -19,16 +19,14 @@
 
 <div class="form-card">
     <h2>সেলার প্যানেল</h2>
-    <p style="text-align: center; font-size: 13px; color: #666;">পণ্যের সঠিক তথ্য দিন</p>
-    
-    <input type="text" id="shopName" placeholder="আপনার দোকানের নাম">
+    <input type="text" id="shopName" placeholder="দোকানের নাম">
     <input type="text" id="pName" placeholder="পণ্যের নাম">
     <input type="number" id="pPrice" placeholder="দাম (৳)">
     
-    <label for="pImage">পণ্যের ছবি সিলেক্ট করুন</label>
+    <label>পণ্যের ছবি সিলেক্ট করুন:</label>
     <input type="file" id="pImage" accept="image/*">
     
-    <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ (যেমন: সাইজ, কালার ইত্যাদি)"></textarea>
+    <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ"></textarea>
     
     <button id="submitBtn" onclick="handleUploadAndSend()">রিভিউয়ের জন্য পাঠান</button>
     <div id="status"></div>
@@ -56,21 +54,19 @@
         const sName = document.getElementById('shopName').value;
         const pName = document.getElementById('pName').value;
         const pPrice = document.getElementById('pPrice').value;
-        const pDesc = document.getElementById('pDesc').value;
         const fileInput = document.getElementById('pImage');
         const statusDiv = document.getElementById('status');
         const btn = document.getElementById('submitBtn');
 
-        // চেক করা সব ইনপুট ঠিক আছে কি না
         if (!sName || !pName || !pPrice || !fileInput.files[0]) {
-            alert("দয়া করে দোকানের নাম, পণ্যের নাম, দাম এবং ছবি দিন!");
+            alert("দয়া করে সব তথ্য এবং ছবি দিন!");
             return;
         }
 
         btn.disabled = true;
         statusDiv.innerText = "ছবি আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন।";
 
-        // আপনার ImgBB API Key এখানে বসানো হয়েছে
+        // আপনার ImgBB API Key
         const apiKey = 'c01e05cfc3241e9f57336dc80cc38d0f';
         const formData = new FormData();
         formData.append('image', fileInput.files[0]);
@@ -85,15 +81,15 @@
 
             if (result.success) {
                 const imageUrl = result.data.url;
+                statusDiv.innerText = "ডাটাবেজে সেভ হচ্ছে...";
 
-                // ২. ফায়ারবেজ ডাটাবেজে ডাটা পাঠানো
-                const pendingRef = database.ref('pending_products').push();
-                await pendingRef.set({
+                // ২. ফায়ারবেজ ডাটাবেজে তথ্য পাঠানো
+                await database.ref('pending_products').push({
                     shopName: sName,
                     name: pName,
                     price: pPrice,
                     img: imageUrl,
-                    desc: pDesc,
+                    desc: document.getElementById('pDesc').value,
                     status: "pending",
                     time: Date.now()
                 });
@@ -102,21 +98,15 @@
                 statusDiv.innerText = "সফলভাবে পাঠানো হয়েছে!";
                 
                 // ফর্ম ক্লিয়ার করা
-                document.getElementById('shopName').value = "";
                 document.getElementById('pName').value = "";
                 document.getElementById('pPrice').value = "";
                 document.getElementById('pImage').value = "";
                 document.getElementById('pDesc').value = "";
-
-            } else {
-                throw new Error("ImgBB Upload Failed");
             }
-
         } catch (error) {
-            console.error(error);
             statusDiv.style.color = "red";
-            statusDiv.innerText = "ভুল হয়েছে! আবার চেষ্টা করুন।";
-            alert("ত্রুটি: " + error.message);
+            statusDiv.innerText = "ব্যর্থ হয়েছে! আবার চেষ্টা করুন।";
+            console.error(error);
         } finally {
             btn.disabled = false;
         }
