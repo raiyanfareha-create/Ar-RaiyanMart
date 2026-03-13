@@ -21,6 +21,8 @@
     <h2>সেলার প্যানেল</h2>
     <p style="text-align: center; font-size: 13px;">আপনার পণ্যের তথ্য দিন</p>
     
+    <input type="text" id="shopName" placeholder="দোকানের নাম (Shop Name)">
+    
     <input type="text" id="pName" placeholder="পণ্যের নাম">
     <input type="number" id="pPrice" placeholder="দাম (৳)">
     
@@ -53,6 +55,7 @@
     const storage = firebase.storage();
 
     async function uploadAndSend() {
+        const sName = document.getElementById('shopName').value; // দোকানের নাম রিড করা
         const name = document.getElementById('pName').value;
         const price = document.getElementById('pPrice').value;
         const desc = document.getElementById('pDesc').value;
@@ -60,36 +63,36 @@
         const btn = document.getElementById('submitBtn');
         const statusDiv = document.getElementById('status');
 
-        if(!name || !price || !imageFile) { 
-            alert("পণ্যের নাম, দাম এবং ছবি অবশ্যই দিতে হবে!"); 
+        if(!sName || !name || !price || !imageFile) { 
+            alert("দোকানের নাম, পণ্যের নাম, দাম এবং ছবি অবশ্যই দিতে হবে!"); 
             return; 
         }
 
-        // বাটন ডিজেবল করা যাতে বারবার ক্লিক না হয়
         btn.disabled = true;
-        statusDiv.innerText = "ছবি আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন।";
+        statusDiv.innerText = "ছবি আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন।";
 
         try {
             // ১. Firebase Storage-এ ছবি আপলোড করা
             const storageRef = storage.ref('product_images/' + Date.now() + "_" + imageFile.name);
             const uploadTask = await storageRef.put(imageFile);
             
-            // ২. ছবির ডাউনলোড লিঙ্ক (URL) সংগ্রহ করা
+            // ২. ছবির লিঙ্ক সংগ্রহ করা
             const downloadURL = await uploadTask.ref.getDownloadURL();
 
-            // ৩. ডাটাবেজে (Realtime Database) তথ্য পাঠানো
+            // ৩. ডাটাবেজে দোকানের নামসহ তথ্য পাঠানো
             const pendingRef = database.ref('pending_products').push();
             await pendingRef.set({
+                shopName: sName, // দোকানের নাম ডাটাবেজে যাবে
                 name: name,
                 price: price,
-                img: downloadURL, // এখানে অটোমেটিক লিঙ্কটা বসে যাবে
+                img: downloadURL,
                 desc: desc,
                 status: "pending",
                 time: Date.now()
             });
 
-            // ৪. ফর্ম ক্লিয়ার করা
             statusDiv.innerText = "সফলভাবে পাঠানো হয়েছে!";
+            document.getElementById('shopName').value = ""; // ক্লিয়ার করা
             document.getElementById('pName').value = "";
             document.getElementById('pPrice').value = "";
             document.getElementById('pImage').value = "";
@@ -97,7 +100,7 @@
 
         } catch (error) {
             console.error(error);
-            statusDiv.innerText = "ভুল হয়েছে! আবার চেষ্টা করুন।";
+            statusDiv.innerText = "ভুল হয়েছে! আবার চেষ্টা করুন।";
             alert("Error: " + error.message);
         } finally {
             btn.disabled = false;
