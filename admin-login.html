@@ -3,32 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Ar RaiyanMart</title>
+    <title>অ্যাডমিন প্যানেল | Ar RaiyanMart</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; }
-        .admin-panel { display: none; width: 90%; max-width: 800px; background: white; padding: 20px; border-radius: 10px; margin-top: 20px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #f85606; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .product-card { border-bottom: 1px solid #eee; padding: 15px; display: flex; align-items: center; gap: 15px; }
-        img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
-        .btn-approve { background: #28a745; width: auto; padding: 8px 15px; }
-        .btn-delete { background: #dc3545; width: auto; padding: 8px 15px; margin-left: 5px; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h2 { text-align: center; color: #333; border-bottom: 2px solid #f85606; padding-bottom: 10px; }
+        .section-title { background: #f85606; color: white; padding: 10px; border-radius: 5px; margin-top: 30px; }
+        .product-card { background: white; padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .product-card img { width: 70px; height: 70px; border-radius: 5px; object-fit: cover; }
+        .info { flex-grow: 1; }
+        .btns button { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
+        .btn-approve { background: #28a745; color: white; }
+        .btn-delete { background: #dc3545; color: white; }
     </style>
 </head>
 <body>
 
-<div id="login-section" class="login-card">
-    <h2>Admin Login</h2>
-    <input type="password" id="adminPass" placeholder="গোপন পাসওয়ার্ড দিন">
-    <button onclick="checkPass()">লগইন করুন</button>
-</div>
+<div class="container">
+    <h2>Ar RaiyanMart অ্যাডমিন কন্ট্রোল</h2>
 
-<div id="admin-section" class="admin-panel">
-    <h2>পেন্ডিং প্রোডাক্টস</h2>
-    <div id="pending-list">লোডিং হচ্ছে...</div>
-    <br>
-    <button onclick="location.reload()" style="background:#666;">লগ আউট</button>
+    <h3 class="section-title">পেন্ডিং পণ্য (অনুমোদনের অপেক্ষায়)</h3>
+    <div id="pendingList">লোড হচ্ছে...</div>
+
+    <h3 class="section-title">লাইভ পণ্য (ওয়েবসাইটে যা দেখা যাচ্ছে)</h3>
+    <div id="liveList">লোড হচ্ছে...</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -44,56 +42,64 @@
         messagingSenderId: "336578883565",
         appId: "1:336578883565:web:54d73b82c96a26f38601e4"
     };
+
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // পাসওয়ার্ড চেক (তুমি চাইলে '1234' এর বদলে নিজের পাসওয়ার্ড দিতে পারো)
-    function checkPass() {
-        const pass = document.getElementById('adminPass').value;
-        if(pass === "raiyan2026") { 
-            document.getElementById('login-section').style.display = "none";
-            document.getElementById('admin-section').style.display = "block";
-            loadPendingProducts();
-        } else {
-            alert("ভুল পাসওয়ার্ড!");
-        }
-    }
+    // ১. পেন্ডিং পণ্য লোড করা
+    database.ref('pending_products').on('value', (snapshot) => {
+        const list = document.getElementById('pendingList');
+        list.innerHTML = "";
+        const data = snapshot.val();
+        if (!data) { list.innerHTML = "<p>কোনো পেন্ডিং পণ্য নেই।</p>"; return; }
 
-    function loadPendingProducts() {
-        database.ref('pending_products').on('value', (snapshot) => {
-            const data = snapshot.val();
-            const listDiv = document.getElementById('pending-list');
-            listDiv.innerHTML = "";
-            if(!data) { listDiv.innerHTML = "কোনো পেন্ডিং প্রোডাক্ট নেই।"; return; }
-
-            Object.keys(data).forEach(key => {
-                const p = data[key];
-                listDiv.innerHTML += `
-                    <div class="product-card">
-                        <img src="${p.img}">
-                        <div style="flex:1;">
-                            <strong>${p.name}</strong><br>৳ ${p.price}
-                        </div>
-                        <button class="btn-approve" onclick="approve('${key}')">Approve</button>
-                        <button class="btn-delete" onclick="remove('${key}')">Reject</button>
+        Object.keys(data).forEach(id => {
+            const p = data[id];
+            list.innerHTML += `
+                <div class="product-card">
+                    <img src="${p.img}">
+                    <div class="info"><b>${p.name}</b><br>৳${p.price} - ${p.shopName}</div>
+                    <div class="btns">
+                        <button class="btn-approve" onclick="approveProduct('${id}')">Approve</button>
+                        <button class="btn-delete" onclick="deleteFromDB('pending_products', '${id}')">Delete</button>
                     </div>
-                `;
+                </div>`;
+        });
+    });
+
+    // ২. লাইভ পণ্য লোড করা
+    database.ref('live_products').on('value', (snapshot) => {
+        const list = document.getElementById('liveList');
+        list.innerHTML = "";
+        const data = snapshot.val();
+        if (!data) { list.innerHTML = "<p>কোনো লাইভ পণ্য নেই।</p>"; return; }
+
+        Object.keys(data).forEach(id => {
+            const p = data[id];
+            list.innerHTML += `
+                <div class="product-card">
+                    <img src="${p.img}">
+                    <div class="info"><b>${p.name}</b><br>৳${p.price}</div>
+                    <div class="btns">
+                        <button class="btn-delete" onclick="deleteFromDB('live_products', '${id}')">Delete from Website</button>
+                    </div>
+                </div>`;
+        });
+    });
+
+    // অ্যাপ্রুভ ফাংশন
+    function approveProduct(id) {
+        database.ref('pending_products/' + id).once('value').then(snap => {
+            database.ref('live_products').push(snap.val()).then(() => {
+                database.ref('pending_products/' + id).remove();
             });
         });
     }
 
-    function approve(key) {
-        database.ref('pending_products').child(key).once('value', (snap) => {
-            database.ref('live_products').push(snap.val(), () => {
-                database.ref('pending_products').child(key).remove();
-                alert("প্রোডাক্টটি মেইন সাইটে লাইভ করা হয়েছে!");
-            });
-        });
-    }
-
-    function remove(key) {
-        if(confirm("এটি ডিলিট করতে চান?")) {
-            database.ref('pending_products').child(key).remove();
+    // ডিলিট ফাংশন (উভয় জায়গার জন্য)
+    function deleteFromDB(path, id) {
+        if(confirm("আপনি কি নিশ্চিতভাবে এটি মুছে ফেলতে চান?")) {
+            database.ref(path + '/' + id).remove().then(() => alert("মুছে ফেলা হয়েছে!"));
         }
     }
 </script>
