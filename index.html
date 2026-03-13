@@ -3,68 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart | আপনার বিশ্বস্ত অনলাইন শপ</title>
+    <title>Ar RaiyanMart | কাস্টমার শপ</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
-        
-        /* হেডার ও ব্যানার */
-        header { background: linear-gradient(45deg, #f85606, #ff8c52); color: white; text-align: center; padding: 30px 15px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        header h1 { margin: 0; font-size: 28px; letter-spacing: 1px; }
-        header p { margin: 8px 0; font-size: 14px; opacity: 0.9; }
-        
-        /* কন্টাক্ট বাটন */
-        .top-btns { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
-        .btn-fb { background: #1877F2; color: white; text-decoration: none; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+        header { background: linear-gradient(45deg, #f85606, #ff8c52); color: white; text-align: center; padding: 25px 15px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 800px; margin: 20px auto; padding: 0 10px; }
+        .product-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; }
+        .price { color: #f85606; font-weight: bold; font-size: 18px; margin: 8px 0; }
+        .btn-buy { background: #25D366; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; margin-top: auto; }
 
-        /* প্রোডাক্ট গ্রিড */
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 10px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; border: 1px solid #eee; }
-        .product-card img { width: 100%; height: 180px; object-fit: cover; }
-        .p-info { padding: 12px; flex-grow: 1; text-align: center; }
-        .p-info h4 { margin: 0 0 8px; font-size: 15px; color: #333; height: 36px; overflow: hidden; line-height: 1.2; }
-        .price { color: #f85606; font-weight: bold; font-size: 18px; margin-bottom: 12px; }
-        .btn-buy { background: #25D366; color: white; border: none; padding: 12px; width: 100%; border-radius: 0 0 15px 15px; cursor: pointer; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .btn-buy:hover { background: #128C7E; }
-
-        /* পপআপ মডাল */
+        /* অর্ডার পপআপ */
         #orderModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 9999; padding: 15px; box-sizing: border-box; }
-        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; position: relative; }
-        #modalImg { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; margin-bottom: 15px; border: 2px solid #f85606; }
-        .modal-content h3 { margin: 0 0 5px; font-size: 20px; }
-        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 15px; }
-        .btn-confirm { background: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        .close-link { display: block; margin-top: 15px; color: #888; text-decoration: none; font-size: 14px; cursor: pointer; }
+        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 380px; text-align: center; }
+        #modalImg { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border: 2px solid #f85606; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        .btn-confirm { background: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Ar RaiyanMart</h1>
-        <p>সেরা পণ্যে সেরা দাম, আপনার সন্তুষ্টি আমাদের কাম!</p>
-        <div class="top-btns">
-            <a href="https://facebook.com/yourpage" class="btn-fb" target="_blank">ফেসবুক পেজ</a>
-        </div>
+        <h1 style="margin:0;">Ar RaiyanMart</h1>
+        <p style="margin:5px 0 0; font-size:14px;">আপনার পছন্দের পণ্য কিনুন সহজে</p>
     </header>
 
-    <div class="container">
-        <div class="grid" id="productGrid">
-            <p style="grid-column: 1/3; text-align: center;">পণ্যগুলো লোড হচ্ছে...</p>
-        </div>
-    </div>
+    <div class="grid" id="productGrid">লোড হচ্ছে...</div>
 
     <div id="orderModal">
         <div class="modal-content">
-            <img id="modalImg" src="" alt="প্রোডাক্ট">
-            <h3 id="selectedItemTitle"></h3>
-            <p id="selectedItemPrice" style="color: #f85606; font-weight: bold; margin-bottom: 15px;"></p>
-            
-            <input type="text" id="custName" placeholder="আপনার পুরো নাম লিখুন">
+            <img id="modalImg" src="">
+            <h3 id="selectedItemTitle" style="margin: 0 0 15px 0; color: #333;"></h3>
+            <input type="text" id="custName" placeholder="আপনার নাম">
             <input type="number" id="custNumber" placeholder="মোবাইল নম্বর">
-            <textarea id="custAddress" rows="3" placeholder="পুরো ঠিকানা (থানা ও জেলাসহ)"></textarea>
-            
+            <textarea id="custAddress" rows="3" placeholder="পুরো ঠিকানা (থানা, জেলা)"></textarea>
             <button class="btn-confirm" onclick="sendToWhatsApp()">অর্ডার কনফার্ম করুন</button>
-            <span class="close-link" onclick="closeModal()">এখন নয়, পরে কিনব</span>
+            <button onclick="closeModal()" style="background:none; border:none; color:#999; margin-top:15px; cursor:pointer;">বন্ধ করুন</button>
         </div>
     </div>
 
@@ -87,26 +61,20 @@
 
         let selectedProduct = null;
 
-        // ডাটাবেজ থেকে লাইভ প্রোডাক্ট রিড করা
         database.ref('live_products').on('value', (snapshot) => {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
             const data = snapshot.val();
-            if (!data) { grid.innerHTML = "<p style='grid-column:1/3; text-align:center;'>দুঃখিত, বর্তমানে কোনো পণ্য নেই।</p>"; return; }
+            if (!data) { grid.innerHTML = "<p style='grid-column: 1/3; text-align:center;'>কোনো পণ্য নেই।</p>"; return; }
 
             Object.keys(data).forEach(id => {
                 const p = data[id];
                 grid.innerHTML += `
                     <div class="product-card">
-                        <img src="${p.img}" alt="${p.name}">
-                        <div class="p-info">
-                            <h4>${p.name}</h4>
-                            <div class="price">৳${p.price}</div>
-                        </div>
-                        <button class="btn-buy" onclick="openOrderModal('${p.name}', '${p.price}', '${p.img}')">
-                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-bottom:-2px;"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.06 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
-                            অর্ডার করুন
-                        </button>
+                        <img src="${p.img}">
+                        <h4>${p.name}</h4>
+                        <div class="price">৳${p.price}</div>
+                        <button class="btn-buy" onclick="openOrderModal('${p.name}', '${p.price}', '${p.img}')">অর্ডার করুন</button>
                     </div>`;
             });
         });
@@ -114,8 +82,7 @@
         function openOrderModal(name, price, img) {
             selectedProduct = { name, price, img };
             document.getElementById('modalImg').src = img;
-            document.getElementById('selectedItemTitle').innerText = name;
-            document.getElementById('selectedItemPrice').innerText = "দাম: ৳" + price;
+            document.getElementById('selectedItemTitle').innerText = name + " - ৳" + price;
             document.getElementById('orderModal').style.display = 'flex';
         }
 
@@ -129,11 +96,12 @@
             const address = document.getElementById('custAddress').value;
 
             if (!name || !phone || !address) {
-                alert("দয়া করে নাম, নম্বর ও পূর্ণ ঠিকানা দিন।");
+                alert("সব তথ্য দিন!");
                 return;
             }
 
-            const myWhatsApp = "8801721539655"; // আপনার নম্বর নিশ্চিত করুন
+            // আপনার সঠিক নম্বর এখানে সেট করা হয়েছে
+            const myWhatsApp = "8801704100288"; 
             
             const message = `🛍 *নতুন অর্ডার - Ar RaiyanMart*%0A%0A` +
                             `📦 *পণ্য:* ${selectedProduct.name}%0A` +
