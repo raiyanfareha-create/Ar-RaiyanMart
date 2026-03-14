@@ -13,7 +13,11 @@
         
         /* ছবি স্টাইল */
         .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; cursor: zoom-in; }
-        .product-card h4 { margin: 10px 0 5px; font-size: 16px; color: #333; }
+        
+        /* দোকানের নাম স্টাইল */
+        .shop-tag { font-size: 10px; color: #f85606; background: #fff0e9; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 8px; font-weight: bold; }
+        
+        .product-card h4 { margin: 5px 0; font-size: 16px; color: #333; }
         
         /* ডেসক্রিপশন সরাসরি কার্ডে দেখানোর জন্য */
         .card-description { font-size: 13px; color: #555; margin: 5px 0 10px; line-height: 1.4; text-align: left; }
@@ -22,8 +26,10 @@
         
         /* প্রশ্ন (কমেন্ট) সেকশন */
         .comment-section { text-align: left; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-        .comment-list { max-height: 80px; overflow-y: auto; font-size: 11px; margin-bottom: 8px; }
-        .single-comment { background: #f9f9f9; padding: 4px 8px; border-radius: 5px; margin-bottom: 4px; border-left: 2px solid #f85606; }
+        .comment-list { max-height: 100px; overflow-y: auto; font-size: 11px; margin-bottom: 8px; }
+        .single-comment { background: #f9f9f9; padding: 6px 8px; border-radius: 5px; margin-bottom: 6px; border-left: 2px solid #f85606; }
+        .seller-reply { margin-top: 4px; padding-top: 4px; border-top: 1px dashed #ddd; color: #25D366; font-weight: bold; }
+        
         .comment-input-area { display: flex; gap: 4px; }
         .comment-input-area input { flex: 1; padding: 5px; font-size: 11px; border: 1px solid #ddd; border-radius: 4px; }
         .btn-comment { background: #f85606; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
@@ -63,7 +69,7 @@
             <input type="number" id="custNumber" placeholder="মোবাইল নম্বর">
             <textarea id="custAddress" rows="3" placeholder="পুরো ঠিকানা (থানা, জেলা)"></textarea>
             <button style="background: #25D366; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer;" onclick="sendToWhatsApp()">অর্ডার নিশ্চিত করুন</button>
-            <p onclick="closeOrderModal()" style="margin-top:15px; color:red; cursor:pointer;">বন্ধ করুন</p>
+            <p onclick="closeOrderModal()" style="margin-top:15px; color:red; cursor:pointer; font-weight:bold;">বন্ধ করুন</p>
         </div>
     </div>
 
@@ -92,13 +98,14 @@
 
             Object.keys(data).forEach(id => {
                 const p = data[id];
-                // ডেসক্রিপশন সরাসরি ডেটাবেজ থেকে পড়া হচ্ছে
                 const currentDesc = p.desc || p.description || "বর্ণনা নেই।";
+                const currentShop = p.shopName || "Ar RaiyanMart"; // শপ নেম
                 
                 let commentsHtml = "";
                 if (p.comments) {
                     Object.values(p.comments).reverse().forEach(c => {
-                        commentsHtml += `<div class="single-comment"><b>${c.user}:</b> ${c.text}</div>`;
+                        let replyText = c.reply ? `<div class="seller-reply">📩 উত্তর: ${c.reply}</div>` : "";
+                        commentsHtml += `<div class="single-comment"><b>${c.user}:</b> ${c.text}${replyText}</div>`;
                     });
                 } else {
                     commentsHtml = "<p style='color:#999; font-size:10px;'>প্রশ্ন থাকলে নিচে লিখুন...</p>";
@@ -107,6 +114,7 @@
                 grid.innerHTML += `
                     <div class="product-card">
                         <img src="${p.img}" onclick="openImageModal('${p.img}')" title="বড় করে দেখুন">
+                        <div><span class="shop-tag">🏪 ${currentShop}</span></div>
                         <h4>${p.name}</h4>
                         <div class="card-description">${currentDesc}</div>
                         <div class="price">৳${p.price}</div>
@@ -120,7 +128,7 @@
                             </div>
                         </div>
 
-                        <button class="btn-buy" onclick="openOrderModal('${p.name}', '${p.price}', '${currentDesc.replace(/'/g, "\\'")}', '${p.img}')">অর্ডার করুন</button>
+                        <button class="btn-buy" onclick="openOrderModal('${p.name}', '${p.price}', '${currentDesc.replace(/'/g, "\\'")}', '${p.img}', '${currentShop}')">অর্ডার করুন</button>
                     </div>`;
             });
         });
@@ -145,8 +153,8 @@
             document.getElementById('imageModal').style.display = 'none';
         }
 
-        function openOrderModal(name, price, desc, img) {
-            selectedProduct = { name, price, desc, img };
+        function openOrderModal(name, price, desc, img, shop) {
+            selectedProduct = { name, price, desc, img, shop };
             document.getElementById('modalTitle').innerText = name + " - ৳" + price;
             document.getElementById('modalMainDesc').innerText = desc;
             document.getElementById('orderModal').style.display = 'flex';
@@ -161,7 +169,14 @@
             if (!name || !phone || !address) { alert("সব তথ্য দিন!"); return; }
 
             const myWhatsApp = "8801704100288"; 
-            const message = `🛍 *নতুন অর্ডার*%0A*পণ্য:* ${selectedProduct.name}%0A*দাম:* ৳${selectedProduct.price}%0A*বিবরণ:* ${selectedProduct.desc}%0A*কাস্টমার:* ${name}%0A*ফোন:* ${phone}%0A*ঠিকানা:* ${address}`;
+            const message = `🛍 *নতুন অর্ডার - Ar RaiyanMart*%0A` +
+                            `🏪 *দোকান:* ${selectedProduct.shop}%0A` +
+                            `📦 *পণ্য:* ${selectedProduct.name}%0A` +
+                            `💰 *দাম:* ৳${selectedProduct.price}%0A` +
+                            `--------------------------%0A` +
+                            `👤 *কাস্টমার:* ${name}%0A` +
+                            `📞 *ফোন:* ${phone}%0A` +
+                            `📍 *ঠিকানা:* ${address}`;
             window.open(`https://wa.me/${myWhatsApp}?text=${message}`, '_blank');
             closeOrderModal();
         }
