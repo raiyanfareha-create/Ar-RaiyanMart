@@ -10,15 +10,11 @@
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h2 { color: #f85606; margin-top: 0; font-size: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.3s; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; }
         .btn-primary { background: #f85606; }
         .btn-save { background: #333; margin-top: 5px; }
-        .btn-confirm { background: #25D366; width: auto; padding: 8px 15px; margin-top: 10px; border-radius: 5px; }
-        
         .order-item, .comment-item { background: #f9f9f9; border-left: 5px solid #f85606; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-        .status-tag { font-weight: bold; color: #f85606; background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid #f85606; font-size: 12px; }
-        .customer-info, .comment-text { font-size: 13px; color: #555; margin-top: 5px; line-height: 1.5; }
-        .prod-name { color: #333; font-weight: bold; }
+        #uploadStatus { font-size: 12px; color: blue; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -34,19 +30,23 @@
         <h2>নতুন পণ্য যোগ করুন</h2>
         <input type="text" id="pName" placeholder="পণ্যের নাম">
         <input type="number" id="pPrice" placeholder="দাম (৳)">
-        <input type="text" id="pImg" placeholder="ছবির ডাইরেক্ট লিঙ্ক">
         <textarea id="pDesc" placeholder="পণ্যের বিবরণ"></textarea>
-        <button class="btn btn-primary" onclick="uploadProduct()">রিভিউর জন্য পাঠান</button>
+        
+        <p style="font-size:12px; margin-bottom:5px;">পণ্যের ছবি সিলেক্ট করুন:</p>
+        <input type="file" id="pImageFile" accept="image/*">
+        <div id="uploadStatus"></div>
+        
+        <button class="btn btn-primary" onclick="handleProductUpload()">অ্যাডমিন রিভিউর জন্য পাঠান</button>
     </div>
 
     <div class="card">
         <h2>কাস্টমারদের প্রশ্নসমূহ</h2>
-        <div id="commentList">লোডিং...</div>
+        <div id="commentList">লোড হচ্ছে...</div>
     </div>
 
     <div class="card">
         <h2>আপনার শপের অর্ডারসমূহ</h2>
-        <div id="orderList">লোডিং...</div>
+        <div id="orderList">লোড হচ্ছে...</div>
     </div>
 </div>
 
@@ -80,42 +80,61 @@
         }
     };
 
-    function uploadProduct() {
+    // ইমেজ ফাইলকে টেক্সট (Base64) এ রূপান্তর করে আপলোড করা
+    function handleProductUpload() {
         const shop = localStorage.getItem('ar_mart_myShop');
         const name = document.getElementById('pName').value;
         const price = document.getElementById('pPrice').value;
-        const img = document.getElementById('pImg').value;
         const desc = document.getElementById('pDesc').value;
-        if(!shop || !name) { alert("সব তথ্য দিন!"); return; }
-        database.ref('pending_products').push({ name, price, img, desc, shopName: shop });
-        alert("অ্যাডমিনকে পাঠানো হয়েছে!");
+        const fileInput = document.getElementById('pImageFile');
+        const status = document.getElementById('uploadStatus');
+
+        if(!shop || !name || !price || !fileInput.files[0]) {
+            alert("দয়া করে সব তথ্য এবং ছবি দিন!");
+            return;
+        }
+
+        status.innerText = "ছবি প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...";
+        
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const base64Image = e.target.result; // এটিই ছবির টেক্সট ভার্সন
+            
+            database.ref('pending_products').push({
+                name: name,
+                price: price,
+                desc: desc,
+                img: base64Image, // সরাসরি ছবি ডাটাবেজে যাবে
+                shopName: shop,
+                status: "pending"
+            }).then(() => {
+                alert("সাফল্যের সাথে পাঠানো হয়েছে!");
+                status.innerText = "";
+                location.reload();
+            });
+        };
+        reader.readAsDataURL(file);
     }
 
-    // কাস্টমারদের প্রশ্ন লোড করার ফাংশন
     function loadComments(shop) {
         const commDiv = document.getElementById('commentList');
         database.ref('live_products').on('value', (snapshot) => {
             commDiv.innerHTML = "";
-            let foundComm = false;
+            let found = false;
             const data = snapshot.val();
             if(!data) return;
-
             Object.keys(data).forEach(id => {
                 const p = data[id];
-                if(p.shopName && p.shopName.trim().toLowerCase() === shop.trim().toLowerCase() && p.comments) {
-                    foundComm = true;
+                if(p.shopName && p.shopName.toLowerCase() === shop.toLowerCase() && p.comments) {
+                    found = true;
                     Object.values(p.comments).forEach(c => {
-                        commDiv.innerHTML += `
-                            <div class="comment-item">
-                                <span class="prod-name">পণ্য: ${p.name}</span><br>
-                                <div class="comment-text">
-                                    <b>👤 ${c.user}:</b> ${c.text}
-                                </div>
-                            </div>`;
+                        commDiv.innerHTML += `<div class="comment-item"><b>${p.name}:</b> ${c.user} - ${c.text}</div>`;
                     });
                 }
             });
-            if(!foundComm) commDiv.innerHTML = "কোনো প্রশ্ন পাওয়া যায়নি।";
+            if(!found) commDiv.innerHTML = "প্রশ্ন নেই।";
         });
     }
 
@@ -128,22 +147,19 @@
             if(data) {
                 Object.keys(data).reverse().forEach(id => {
                     const o = data[id];
-                    if(o.shopName && o.shopName.trim().toLowerCase() === shop.trim().toLowerCase()) {
+                    if(o.shopName && o.shopName.toLowerCase() === shop.toLowerCase()) {
                         found = true;
                         listDiv.innerHTML += `
                             <div class="order-item">
-                                <b>📦 ${o.productName}</b> <span class="status-tag">${o.status || 'Pending'}</span><br>
-                                <div class="customer-info">ক্রেতা: ${o.customerName}<br>ফোন: ${o.customerPhone}<br>ঠিকানা: ${o.address}</div>
-                                ${o.status !== 'Confirmed' ? `<button class="btn-confirm" onclick="confirmOrder('${id}')">Confirm</button>` : ''}
+                                <b>📦 ${o.productName}</b> - ${o.status || 'Pending'}<br>
+                                <small>${o.customerName} (${o.customerPhone})</small>
                             </div>`;
                     }
                 });
             }
-            if(!found) listDiv.innerHTML = "কোনো অর্ডার নেই।";
+            if(!found) listDiv.innerHTML = "অর্ডার নেই।";
         });
     }
-
-    function confirmOrder(id) { database.ref('orders/' + id).update({ status: "Confirmed" }); }
 </script>
 </body>
 </html>
