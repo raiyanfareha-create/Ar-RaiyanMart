@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ar RaiyanMart | কাস্টমার শপ</title>
     <style>
+        /* আপনার আগের সব স্টাইল এখানে হুবহু রাখা হয়েছে */
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; margin: 0; padding: 0; overflow-x: hidden; }
         
@@ -209,15 +210,18 @@
             if (!name || !phone || !address) { alert("সব তথ্য দিন!"); return; }
             const myWhatsApp = "8801704100288"; 
             
-            // হোয়াটসঅ্যাপ মেসেজে ছবির লিংক যুক্ত করা হয়েছে
-            const msg = `🛍 *নতুন অর্ডার*%0A` +
-                        `🏪 *শপ:* ${selectedProduct.shop}%0A` +
+            // হোয়াটসঅ্যাপ মেসেজে সেলার/শপ এবং ছবির লিংক সুন্দরভাবে সাজানো হয়েছে
+            const msg = `🔔 *নতুন অর্ডার এসেছে!*%0A` +
+                        `━━━━━━━━━━━━━━━━━━━━%0A` +
+                        `🏪 *সেলার/শপ:* ${selectedProduct.shop}%0A` +
                         `📦 *পণ্য:* ${selectedProduct.name}%0A` +
                         `💰 *দাম:* ৳${selectedProduct.price}%0A` +
-                        `🖼 *পণ্যের ছবি:* ${selectedProduct.img}%0A%0A` +
+                        `🖼 *পণ্যের ছবি:* ${selectedProduct.img}%0A` +
+                        `━━━━━━━━━━━━━━━━━━━━%0A` +
                         `👤 *কাস্টমার:* ${name}%0A` +
                         `📞 *ফোন:* ${phone}%0A` +
                         `📍 *ঠিকানা:* ${address}`;
+
             window.open(`https://wa.me/${myWhatsApp}?text=${msg}`, '_blank');
             closeOrderModal();
         }
