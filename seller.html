@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Center | Ar RaiyanMart</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .form-card, .qa-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 20px; }
         h2, h3 { color: #f85606; text-align: center; margin-top: 0; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
@@ -15,11 +15,13 @@
         #status { text-align: center; color: blue; font-weight: bold; margin-top: 10px; font-size: 14px; }
         
         /* প্রশ্ন সেকশন স্টাইল */
-        .q-box { background: #fff8f5; border: 1px solid #ffd8c4; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
-        .q-text { font-size: 14px; color: #333; margin-bottom: 8px; }
-        .q-item-name { font-size: 12px; color: #f85606; font-weight: bold; }
-        .reply-input { font-size: 13px; padding: 8px; }
-        .reply-btn { background: #25D366; padding: 8px; font-size: 13px; }
+        .q-box { background: #fff8f5; border: 1px solid #ffd8c4; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; gap: 12px; align-items: flex-start; }
+        .p-thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; }
+        .q-content { flex: 1; }
+        .q-item-name { font-size: 13px; color: #f85606; font-weight: bold; margin-bottom: 4px; }
+        .q-text { font-size: 14px; color: #333; margin-bottom: 10px; line-height: 1.4; }
+        .reply-input { font-size: 13px; padding: 8px; margin: 0; }
+        .reply-btn { background: #25D366; padding: 8px; font-size: 13px; width: auto; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -33,17 +35,17 @@
     <label>পণ্যের ছবি সিলেক্ট করুন:</label>
     <input type="file" id="pImage" accept="image/*">
     
-    <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ"></textarea>
+    <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ (যেমন: কালার, সাইজ ইত্যাদি)"></textarea>
     
     <button id="submitBtn" onclick="handleUploadAndSend()">রিভিউয়ের জন্য পাঠান</button>
     <div id="status"></div>
 </div>
 
 <div class="qa-card">
-    <h3>কাস্টমারদের প্রশ্ন</h3>
-    <p style="font-size: 12px; text-align: center; color: #666;">আপনার দোকানের নাম লিখে 'চেক করুন' বাটনে চাপ দিন</p>
-    <button onclick="loadSellerQuestions()" style="background: #333; margin-bottom: 15px;">প্রশ্নগুলো দেখুন</button>
-    <div id="questionList"></div>
+    <h3>কাস্টমারদের প্রশ্ন ও ছবি</h3>
+    <p style="font-size: 12px; text-align: center; color: #666; margin-bottom: 15px;">দোকানের নাম লিখে 'প্রশ্নগুলো দেখুন' বাটনে চাপ দিন</p>
+    <button onclick="loadSellerQuestions()" style="background: #333;">প্রশ্নগুলো দেখুন</button>
+    <div id="questionList" style="margin-top: 20px;"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -63,9 +65,9 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // --- আপলোড ফাংশন ---
+    // --- পণ্য আপলোড ফাংশন ---
     async function handleUploadAndSend() {
-        const sName = document.getElementById('shopName').value;
+        const sName = document.getElementById('shopName').value.trim();
         const pName = document.getElementById('pName').value;
         const pPrice = document.getElementById('pPrice').value;
         const pDescription = document.getElementById('pDesc').value;
@@ -74,7 +76,7 @@
         const btn = document.getElementById('submitBtn');
 
         if (!sName || !pName || !pPrice || !fileInput.files[0]) {
-            alert("সব তথ্য দিন!"); return;
+            alert("সব তথ্য এবং ছবি দিন!"); return;
         }
 
         btn.disabled = true;
@@ -103,17 +105,23 @@
                 });
                 statusDiv.style.color = "green";
                 statusDiv.innerText = "সফলভাবে রিভিউতে পাঠানো হয়েছে!";
+                
+                // ক্লিয়ার ফর্ম
+                document.getElementById('pName').value = "";
+                document.getElementById('pPrice').value = "";
+                document.getElementById('pImage').value = "";
+                document.getElementById('pDesc').value = "";
             }
         } catch (error) {
-            statusDiv.innerText = "ব্যর্থ হয়েছে!";
+            statusDiv.innerText = "ব্যর্থ হয়েছে! আবার চেষ্টা করুন।";
         } finally {
             btn.disabled = false;
         }
     }
 
-    // --- প্রশ্ন লোড করার ফাংশন ---
+    // --- প্রশ্ন লোড করার ফাংশন (ছবিসহ) ---
     function loadSellerQuestions() {
-        const sName = document.getElementById('shopName').value;
+        const sName = document.getElementById('shopName').value.trim();
         if (!sName) { alert("আগে আপনার দোকানের নাম লিখুন!"); return; }
 
         const qList = document.getElementById('questionList');
@@ -127,32 +135,36 @@
             let foundAny = false;
             Object.keys(products).forEach(pid => {
                 const p = products[pid];
-                // সেলারের নাম চেক করা হচ্ছে
+                
+                // সেলারের নাম দিয়ে পণ্য ফিল্টার করা হচ্ছে
                 if (p.shopName === sName && p.comments) {
                     foundAny = true;
                     Object.keys(p.comments).forEach(cid => {
                         const c = p.comments[cid];
                         qList.innerHTML += `
                             <div class="q-box">
-                                <div class="q-item-name">পণ্য: ${p.name}</div>
-                                <div class="q-text"><b>${c.user}:</b> ${c.text}</div>
-                                <input type="text" id="rep-${cid}" class="reply-input" placeholder="উত্তরের জায়গায় লিখুন..." value="${c.reply || ''}">
-                                <button class="reply-btn" onclick="sendReply('${pid}', '${cid}')">উত্তর সেভ করুন</button>
+                                <img src="${p.img}" class="p-thumb">
+                                <div class="q-content">
+                                    <div class="q-item-name">${p.name} (৳${p.price})</div>
+                                    <div class="q-text"><b>${c.user}:</b> ${c.text}</div>
+                                    <input type="text" id="rep-${cid}" class="reply-input" placeholder="উত্তর লিখুন..." value="${c.reply || ''}">
+                                    <button class="reply-btn" onclick="sendReply('${pid}', '${cid}')">উত্তর পাঠান</button>
+                                </div>
                             </div>`;
                     });
                 }
             });
-            if (!foundAny) qList.innerHTML = "<p style='font-size:13px; color:red;'>কোনো প্রশ্ন পাওয়া যায়নি।</p>";
+            if (!foundAny) qList.innerHTML = "<p style='font-size:13px; color:red; text-align:center;'>আপনার কোনো পণ্যে প্রশ্ন পাওয়া যায়নি।</p>";
         });
     }
 
     // --- উত্তর পাঠানোর ফাংশন ---
     function sendReply(pid, cid) {
         const replyText = document.getElementById(`rep-${cid}`).value;
-        if (!replyText) { alert("উত্তর লিখুন!"); return; }
+        if (!replyText) { alert("দয়া করে উত্তরটি লিখুন!"); return; }
 
         database.ref(`live_products/${pid}/comments/${cid}/reply`).set(replyText)
-        .then(() => alert("উত্তর সফলভাবে সেভ হয়েছে! কাস্টমার এখন এটি দেখতে পাবে।"));
+        .then(() => alert("উত্তর সফলভাবে পাঠানো হয়েছে!"));
     }
 </script>
 
