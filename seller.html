@@ -13,9 +13,17 @@
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; }
         .btn-primary { background: #f85606; }
         .btn-save { background: #333; margin-top: 5px; }
-        .order-item, .comment-item { background: #f9f9f9; border-left: 5px solid #f85606; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-        #uploadStatus { font-size: 12px; color: blue; margin-bottom: 10px; }
-    </style>
+        
+        .order-item, .comment-item { background: #f9f9f9; border-left: 5px solid #f85606; padding: 15px; border-radius: 8px; margin-bottom: 10px; position: relative; }
+        .status-badge { font-size: 11px; padding: 3px 8px; border-radius: 10px; font-weight: bold; float: right; }
+        .pending { background: #fff0e9; color: #f85606; }
+        .confirmed { background: #e9fff0; color: #25D366; }
+        
+        .btn-confirm { background: #25D366; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; margin-top: 10px; }
+        .btn-confirm:hover { background: #1eb954; }
+        
+        #uploadStatus { font-size: 12px; color: blue; margin-top: 5px; }
+    </small></style>
 </head>
 <body>
 
@@ -31,12 +39,10 @@
         <input type="text" id="pName" placeholder="পণ্যের নাম">
         <input type="number" id="pPrice" placeholder="দাম (৳)">
         <textarea id="pDesc" placeholder="পণ্যের বিবরণ"></textarea>
-        
         <p style="font-size:12px; margin-bottom:5px;">পণ্যের ছবি সিলেক্ট করুন:</p>
         <input type="file" id="pImageFile" accept="image/*">
         <div id="uploadStatus"></div>
-        
-        <button class="btn btn-primary" onclick="handleProductUpload()">অ্যাডমিন রিভিউর জন্য পাঠান</button>
+        <button class="btn btn-primary" onclick="handleProductUpload()">রিভিউর জন্য পাঠান</button>
     </div>
 
     <div class="card">
@@ -68,7 +74,7 @@
 
     function saveShop() {
         const name = document.getElementById('myShopName').value.trim();
-        if(name) { localStorage.setItem('ar_mart_myShop', name); alert("সেভ হয়েছে!"); location.reload(); }
+        if(name) { localStorage.setItem('ar_mart_myShop', name); alert("সেলার প্রোফাইল সেভ হয়েছে!"); location.reload(); }
     }
 
     window.onload = function() {
@@ -80,7 +86,6 @@
         }
     };
 
-    // ইমেজ ফাইলকে টেক্সট (Base64) এ রূপান্তর করে আপলোড করা
     function handleProductUpload() {
         const shop = localStorage.getItem('ar_mart_myShop');
         const name = document.getElementById('pName').value;
@@ -89,33 +94,16 @@
         const fileInput = document.getElementById('pImageFile');
         const status = document.getElementById('uploadStatus');
 
-        if(!shop || !name || !price || !fileInput.files[0]) {
-            alert("দয়া করে সব তথ্য এবং ছবি দিন!");
-            return;
-        }
+        if(!shop || !name || !price || !fileInput.files[0]) { alert("সব তথ্য দিন!"); return; }
 
-        status.innerText = "ছবি প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...";
-        
-        const file = fileInput.files[0];
+        status.innerText = "ছবি প্রসেস হচ্ছে...";
         const reader = new FileReader();
-
         reader.onload = function(e) {
-            const base64Image = e.target.result; // এটিই ছবির টেক্সট ভার্সন
-            
             database.ref('pending_products').push({
-                name: name,
-                price: price,
-                desc: desc,
-                img: base64Image, // সরাসরি ছবি ডাটাবেজে যাবে
-                shopName: shop,
-                status: "pending"
-            }).then(() => {
-                alert("সাফল্যের সাথে পাঠানো হয়েছে!");
-                status.innerText = "";
-                location.reload();
-            });
+                name, price, desc, img: e.target.result, shopName: shop, status: "pending"
+            }).then(() => { alert("অ্যাডমিনকে পাঠানো হয়েছে!"); location.reload(); });
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(fileInput.files[0]);
     }
 
     function loadComments(shop) {
@@ -134,10 +122,11 @@
                     });
                 }
             });
-            if(!found) commDiv.innerHTML = "প্রশ্ন নেই।";
+            if(!found) commDiv.innerHTML = "কোনো প্রশ্ন নেই।";
         });
     }
 
+    // অর্ডার লোড এবং কনফার্ম বাটন
     function loadOrders(shop) {
         const listDiv = document.getElementById('orderList');
         database.ref('orders').on('value', (s) => {
@@ -149,16 +138,31 @@
                     const o = data[id];
                     if(o.shopName && o.shopName.toLowerCase() === shop.toLowerCase()) {
                         found = true;
+                        const isConfirmed = o.status === 'Confirmed';
                         listDiv.innerHTML += `
                             <div class="order-item">
-                                <b>📦 ${o.productName}</b> - ${o.status || 'Pending'}<br>
-                                <small>${o.customerName} (${o.customerPhone})</small>
+                                <span class="status-badge ${isConfirmed ? 'confirmed' : 'pending'}">${o.status || 'Pending'}</span>
+                                <b>📦 ${o.productName}</b><br>
+                                <small>👤 ${o.customerName} | 📞 ${o.customerPhone}</small><br>
+                                <small>📍 ${o.address}</small><br>
+                                ${!isConfirmed ? `<button class="btn-confirm" onclick="confirmThisOrder('${id}')">Confirm Order</button>` : '<p style="color:green; font-size:12px; margin-top:5px; font-weight:bold;">✅ কনফার্ম করা হয়েছে</p>'}
                             </div>`;
                     }
                 });
             }
             if(!found) listDiv.innerHTML = "অর্ডার নেই।";
         });
+    }
+
+    // কনফার্ম করার ফাংশন
+    function confirmThisOrder(orderId) {
+        if(confirm("আপনি কি এই অর্ডারটি কনফার্ম করতে চান?")) {
+            database.ref('orders/' + orderId).update({
+                status: "Confirmed"
+            }).then(() => {
+                alert("অর্ডার সফলভাবে কনফার্ম হয়েছে!");
+            });
+        }
     }
 </script>
 </body>
