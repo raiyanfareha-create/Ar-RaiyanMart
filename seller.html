@@ -5,68 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Dashboard | Ar RaiyanMart</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-primary { background: #f85606; color: white; width: 100%; }
-        .order-item { border-bottom: 1px solid #eee; padding: 10px 0; }
-        .status { font-weight: bold; color: #f85606; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { color: #f85606; margin-top: 0; font-size: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h3 { font-size: 16px; color: #333; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.3s; }
+        .btn-primary { background: #f85606; }
+        .btn-save { background: #333; margin-top: 5px; }
+        .btn-confirm { background: #25D366; width: auto; padding: 8px 15px; margin-top: 10px; }
+        
+        /* অর্ডার লিস্টের ডিজাইন */
+        .order-item { background: #f9f9f9; border-left: 5px solid #f85606; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        .status-tag { font-weight: bold; color: #f85606; background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid #f85606; font-size: 12px; }
+        .customer-info { font-size: 13px; color: #555; margin-top: 5px; line-height: 1.5; }
     </style>
 </head>
 <body>
+
+<div class="container">
     <div class="card">
-        <h3>Shop Profile</h3>
-        <input type="text" id="myShopName" placeholder="আপনার শপের নাম">
-        <button class="btn btn-primary" onclick="saveShop()">প্রোফাইল সেভ করুন</button>
+        <h2>Shop Profile</h2>
+        <p style="font-size: 12px; color: #666;">আপনার শপের নাম লিখে সেভ করুন যাতে আপনার অর্ডারগুলো দেখা যায়।</p>
+        <input type="text" id="myShopName" placeholder="আপনার শপের নাম (উদা: Pure Mart)">
+        <button class="btn btn-save" onclick="saveShop()">প্রোফাইল সেভ করুন</button>
     </div>
 
     <div class="card">
-        <h3>নতুন পণ্য যোগ করুন</h3>
+        <h2>নতুন পণ্য যোগ করুন</h2>
         <input type="text" id="pName" placeholder="পণ্যের নাম">
-        <input type="number" id="pPrice" placeholder="দাম">
-        <input type="text" id="pImg" placeholder="ছবির লিংক">
-        <button class="btn btn-primary" onclick="upload()">অ্যাডমিনকে পাঠান</button>
+        <input type="number" id="pPrice" placeholder="দাম (৳)">
+        <input type="text" id="pImg" placeholder="ছবির ডাইরেক্ট লিঙ্ক">
+        <textarea id="pDesc" placeholder="পণ্যের বিবরণ (Description)"></textarea>
+        <button class="btn btn-primary" onclick="uploadProduct()">অ্যাডমিন রিভিউর জন্য পাঠান</button>
     </div>
 
     <div class="card">
-        <h3>আপনার শপের অর্ডারসমূহ</h3>
-        <div id="orderList">লোডিং...</div>
+        <h2>আপনার শপের অর্ডারসমূহ</h2>
+        <div id="orderList">লোড হচ্ছে...</div>
     </div>
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script>
-        const firebaseConfig = { apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU", authDomain: "ar-raiyanmart.firebaseapp.com", projectId: "ar-raiyanmart", databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app", storageBucket: "ar-raiyanmart.firebasestorage.app", messagingSenderId: "336578883565", appId: "1:336578883565:web:54d73b82c96a26f38601e4" };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-        function saveShop() { localStorage.setItem('myShop', document.getElementById('myShopName').value); alert("সেভ হয়েছে!"); location.reload(); }
-        window.onload = () => { 
-            const saved = localStorage.getItem('myShop');
-            if(saved) { document.getElementById('myShopName').value = saved; loadOrders(saved); }
-        };
+<script>
+    const firebaseConfig = { 
+        apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU", 
+        authDomain: "ar-raiyanmart.firebaseapp.com", 
+        projectId: "ar-raiyanmart", 
+        databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app", 
+        storageBucket: "ar-raiyanmart.firebasestorage.app", 
+        messagingSenderId: "336578883565", 
+        appId: "1:336578883565:web:54d73b82c96a26f38601e4" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-        function upload() {
-            const shop = localStorage.getItem('myShop');
-            if(!shop) return alert("শপের নাম আগে সেভ করুন");
-            database.ref('pending_products').push({ name: document.getElementById('pName').value, price: document.getElementById('pPrice').value, img: document.getElementById('pImg').value, shopName: shop });
-            alert("অ্যাডমিন রিভিউর জন্য পাঠানো হয়েছে");
+    // শপ নেম সেভ করা
+    function saveShop() {
+        const name = document.getElementById('myShopName').value.trim();
+        if(name) {
+            localStorage.setItem('ar_mart_myShop', name);
+            alert("শপ প্রোফাইল সফলভাবে সেভ হয়েছে!");
+            location.reload(); // পেজ রিলোড হবে যাতে অর্ডার লোড হয়
+        } else {
+            alert("অনুগ্রহ করে শপের নাম দিন।");
         }
+    }
 
-        function loadOrders(shop) {
-            database.ref('orders').on('value', s => {
-                const list = document.getElementById('orderList'); list.innerHTML = "";
-                const data = s.val();
-                if(!data) return list.innerHTML = "কোনো অর্ডার নেই";
-                Object.keys(data).forEach(id => {
-                    if(data[id].shopName === shop) {
-                        list.innerHTML += `<div class="order-item"><b>${data[id].productName}</b> - ${data[id].customerName}<br>স্ট্যাটাস: <span class="status">${data[id].status}</span><br><button onclick="confirm('${id}')">Confirm</button></div>`;
+    // পেজ লোড হলে সেভ করা নাম বসানো এবং অর্ডার লোড করা
+    window.onload = function() {
+        const savedShop = localStorage.getItem('ar_mart_myShop');
+        if(savedShop) {
+            document.getElementById('myShopName').value = savedShop;
+            loadOrders(savedShop);
+        } else {
+            document.getElementById('orderList').innerHTML = "আগে শপ প্রোফাইল সেভ করুন।";
+        }
+    };
+
+    // পণ্য আপলোড
+    function uploadProduct() {
+        const shop = localStorage.getItem('ar_mart_myShop');
+        const name = document.getElementById('pName').value;
+        const price = document.getElementById('pPrice').value;
+        const img = document.getElementById('pImg').value;
+        const desc = document.getElementById('pDesc').value;
+
+        if(!shop) { alert("আগে শপ প্রোফাইল সেভ করুন!"); return; }
+        if(!name || !price || !img) { alert("সব ঘর পূরণ করুন!"); return; }
+
+        database.ref('pending_products').push({
+            name: name,
+            price: price,
+            img: img,
+            desc: desc,
+            shopName: shop,
+            status: "pending"
+        }).then(() => {
+            alert("পণ্যটি অ্যাডমিন প্যানেলে পাঠানো হয়েছে!");
+            document.getElementById('pName').value = "";
+            document.getElementById('pPrice').value = "";
+            document.getElementById('pImg').value = "";
+            document.getElementById('pDesc').value = "";
+        });
+    }
+
+    // অর্ডার লোড করা (আপনার শপের নাম অনুযায়ী)
+    function loadOrders(shop) {
+        const listDiv = document.getElementById('orderList');
+        
+        database.ref('orders').on('value', (snapshot) => {
+            listDiv.innerHTML = "";
+            const data = snapshot.val();
+            let found = false;
+
+            if(data) {
+                Object.keys(data).reverse().forEach(id => {
+                    const order = data[id];
+                    // শপের নাম মিলিয়ে দেখা হচ্ছে (বড়/ছোট হাতের অক্ষর ইগনোর করা হবে)
+                    if(order.shopName && order.shopName.trim().toLowerCase() === shop.trim().toLowerCase()) {
+                        found = true;
+                        listDiv.innerHTML += `
+                            <div class="order-item">
+                                <b>📦 ${order.productName}</b> <span class="status-tag">${order.status || 'Pending'}</span><br>
+                                <div class="customer-info">
+                                    👤 ক্রেতা: ${order.customerName}<br>
+                                    📞 ফোন: ${order.customerPhone}<br>
+                                    📍 ঠিকানা: ${order.address}
+                                </div>
+                                ${order.status !== 'Confirmed' ? 
+                                `<button class="btn btn-confirm" onclick="confirmOrder('${id}')">Confirm Order</button>` : 
+                                '<p style="color:green; font-weight:bold; font-size:12px; margin-top:10px;">✅ আপনি এই অর্ডারটি কনফার্ম করেছেন।</p>'}
+                            </div>`;
                     }
                 });
-            });
-        }
-        function confirm(id) { database.ref('orders/'+id).update({status: "Confirmed"}); }
-    </script>
+            }
+
+            if(!found) {
+                listDiv.innerHTML = "আপনার শপের নামে ('" + shop + "') কোনো অর্ডার পাওয়া যায়নি।";
+            }
+        });
+    }
+
+    // অর্ডার কনফার্ম করা
+    function confirmOrder(orderId) {
+        database.ref('orders/' + orderId).update({
+            status: "Confirmed"
+        }).then(() => {
+            alert("অর্ডার কনফার্ম করা হয়েছে!");
+        });
+    }
+</script>
+
 </body>
 </html>
