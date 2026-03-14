@@ -9,17 +9,16 @@
         .container { max-width: 600px; margin: 0 auto; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h2 { color: #f85606; margin-top: 0; font-size: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        h3 { font-size: 16px; color: #333; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.3s; }
         .btn-primary { background: #f85606; }
         .btn-save { background: #333; margin-top: 5px; }
-        .btn-confirm { background: #25D366; width: auto; padding: 8px 15px; margin-top: 10px; }
+        .btn-confirm { background: #25D366; width: auto; padding: 8px 15px; margin-top: 10px; border-radius: 5px; }
         
-        /* অর্ডার লিস্টের ডিজাইন */
-        .order-item { background: #f9f9f9; border-left: 5px solid #f85606; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        .order-item, .comment-item { background: #f9f9f9; border-left: 5px solid #f85606; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
         .status-tag { font-weight: bold; color: #f85606; background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid #f85606; font-size: 12px; }
-        .customer-info { font-size: 13px; color: #555; margin-top: 5px; line-height: 1.5; }
+        .customer-info, .comment-text { font-size: 13px; color: #555; margin-top: 5px; line-height: 1.5; }
+        .prod-name { color: #333; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -27,8 +26,7 @@
 <div class="container">
     <div class="card">
         <h2>Shop Profile</h2>
-        <p style="font-size: 12px; color: #666;">আপনার শপের নাম লিখে সেভ করুন যাতে আপনার অর্ডারগুলো দেখা যায়।</p>
-        <input type="text" id="myShopName" placeholder="আপনার শপের নাম (উদা: Pure Mart)">
+        <input type="text" id="myShopName" placeholder="আপনার শপের নাম">
         <button class="btn btn-save" onclick="saveShop()">প্রোফাইল সেভ করুন</button>
     </div>
 
@@ -37,13 +35,18 @@
         <input type="text" id="pName" placeholder="পণ্যের নাম">
         <input type="number" id="pPrice" placeholder="দাম (৳)">
         <input type="text" id="pImg" placeholder="ছবির ডাইরেক্ট লিঙ্ক">
-        <textarea id="pDesc" placeholder="পণ্যের বিবরণ (Description)"></textarea>
-        <button class="btn btn-primary" onclick="uploadProduct()">অ্যাডমিন রিভিউর জন্য পাঠান</button>
+        <textarea id="pDesc" placeholder="পণ্যের বিবরণ"></textarea>
+        <button class="btn btn-primary" onclick="uploadProduct()">রিভিউর জন্য পাঠান</button>
+    </div>
+
+    <div class="card">
+        <h2>কাস্টমারদের প্রশ্নসমূহ</h2>
+        <div id="commentList">লোডিং...</div>
     </div>
 
     <div class="card">
         <h2>আপনার শপের অর্ডারসমূহ</h2>
-        <div id="orderList">লোড হচ্ছে...</div>
+        <div id="orderList">লোডিং...</div>
     </div>
 </div>
 
@@ -63,102 +66,84 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // শপ নেম সেভ করা
     function saveShop() {
         const name = document.getElementById('myShopName').value.trim();
-        if(name) {
-            localStorage.setItem('ar_mart_myShop', name);
-            alert("শপ প্রোফাইল সফলভাবে সেভ হয়েছে!");
-            location.reload(); // পেজ রিলোড হবে যাতে অর্ডার লোড হয়
-        } else {
-            alert("অনুগ্রহ করে শপের নাম দিন।");
-        }
+        if(name) { localStorage.setItem('ar_mart_myShop', name); alert("সেভ হয়েছে!"); location.reload(); }
     }
 
-    // পেজ লোড হলে সেভ করা নাম বসানো এবং অর্ডার লোড করা
     window.onload = function() {
         const savedShop = localStorage.getItem('ar_mart_myShop');
         if(savedShop) {
             document.getElementById('myShopName').value = savedShop;
             loadOrders(savedShop);
-        } else {
-            document.getElementById('orderList').innerHTML = "আগে শপ প্রোফাইল সেভ করুন।";
+            loadComments(savedShop);
         }
     };
 
-    // পণ্য আপলোড
     function uploadProduct() {
         const shop = localStorage.getItem('ar_mart_myShop');
         const name = document.getElementById('pName').value;
         const price = document.getElementById('pPrice').value;
         const img = document.getElementById('pImg').value;
         const desc = document.getElementById('pDesc').value;
+        if(!shop || !name) { alert("সব তথ্য দিন!"); return; }
+        database.ref('pending_products').push({ name, price, img, desc, shopName: shop });
+        alert("অ্যাডমিনকে পাঠানো হয়েছে!");
+    }
 
-        if(!shop) { alert("আগে শপ প্রোফাইল সেভ করুন!"); return; }
-        if(!name || !price || !img) { alert("সব ঘর পূরণ করুন!"); return; }
+    // কাস্টমারদের প্রশ্ন লোড করার ফাংশন
+    function loadComments(shop) {
+        const commDiv = document.getElementById('commentList');
+        database.ref('live_products').on('value', (snapshot) => {
+            commDiv.innerHTML = "";
+            let foundComm = false;
+            const data = snapshot.val();
+            if(!data) return;
 
-        database.ref('pending_products').push({
-            name: name,
-            price: price,
-            img: img,
-            desc: desc,
-            shopName: shop,
-            status: "pending"
-        }).then(() => {
-            alert("পণ্যটি অ্যাডমিন প্যানেলে পাঠানো হয়েছে!");
-            document.getElementById('pName').value = "";
-            document.getElementById('pPrice').value = "";
-            document.getElementById('pImg').value = "";
-            document.getElementById('pDesc').value = "";
+            Object.keys(data).forEach(id => {
+                const p = data[id];
+                if(p.shopName && p.shopName.trim().toLowerCase() === shop.trim().toLowerCase() && p.comments) {
+                    foundComm = true;
+                    Object.values(p.comments).forEach(c => {
+                        commDiv.innerHTML += `
+                            <div class="comment-item">
+                                <span class="prod-name">পণ্য: ${p.name}</span><br>
+                                <div class="comment-text">
+                                    <b>👤 ${c.user}:</b> ${c.text}
+                                </div>
+                            </div>`;
+                    });
+                }
+            });
+            if(!foundComm) commDiv.innerHTML = "কোনো প্রশ্ন পাওয়া যায়নি।";
         });
     }
 
-    // অর্ডার লোড করা (আপনার শপের নাম অনুযায়ী)
     function loadOrders(shop) {
         const listDiv = document.getElementById('orderList');
-        
-        database.ref('orders').on('value', (snapshot) => {
+        database.ref('orders').on('value', (s) => {
             listDiv.innerHTML = "";
-            const data = snapshot.val();
             let found = false;
-
+            const data = s.val();
             if(data) {
                 Object.keys(data).reverse().forEach(id => {
-                    const order = data[id];
-                    // শপের নাম মিলিয়ে দেখা হচ্ছে (বড়/ছোট হাতের অক্ষর ইগনোর করা হবে)
-                    if(order.shopName && order.shopName.trim().toLowerCase() === shop.trim().toLowerCase()) {
+                    const o = data[id];
+                    if(o.shopName && o.shopName.trim().toLowerCase() === shop.trim().toLowerCase()) {
                         found = true;
                         listDiv.innerHTML += `
                             <div class="order-item">
-                                <b>📦 ${order.productName}</b> <span class="status-tag">${order.status || 'Pending'}</span><br>
-                                <div class="customer-info">
-                                    👤 ক্রেতা: ${order.customerName}<br>
-                                    📞 ফোন: ${order.customerPhone}<br>
-                                    📍 ঠিকানা: ${order.address}
-                                </div>
-                                ${order.status !== 'Confirmed' ? 
-                                `<button class="btn btn-confirm" onclick="confirmOrder('${id}')">Confirm Order</button>` : 
-                                '<p style="color:green; font-weight:bold; font-size:12px; margin-top:10px;">✅ আপনি এই অর্ডারটি কনফার্ম করেছেন।</p>'}
+                                <b>📦 ${o.productName}</b> <span class="status-tag">${o.status || 'Pending'}</span><br>
+                                <div class="customer-info">ক্রেতা: ${o.customerName}<br>ফোন: ${o.customerPhone}<br>ঠিকানা: ${o.address}</div>
+                                ${o.status !== 'Confirmed' ? `<button class="btn-confirm" onclick="confirmOrder('${id}')">Confirm</button>` : ''}
                             </div>`;
                     }
                 });
             }
-
-            if(!found) {
-                listDiv.innerHTML = "আপনার শপের নামে ('" + shop + "') কোনো অর্ডার পাওয়া যায়নি।";
-            }
+            if(!found) listDiv.innerHTML = "কোনো অর্ডার নেই।";
         });
     }
 
-    // অর্ডার কনফার্ম করা
-    function confirmOrder(orderId) {
-        database.ref('orders/' + orderId).update({
-            status: "Confirmed"
-        }).then(() => {
-            alert("অর্ডার কনফার্ম করা হয়েছে!");
-        });
-    }
+    function confirmOrder(id) { database.ref('orders/' + id).update({ status: "Confirmed" }); }
 </script>
-
 </body>
 </html>
