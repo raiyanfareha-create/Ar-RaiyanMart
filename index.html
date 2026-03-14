@@ -43,10 +43,9 @@
         .product-card h4 { margin: 5px 0; font-size: 13px; color: #333; height: 35px; overflow: hidden; }
         .price { color: #f85606; font-weight: bold; font-size: 16px; margin-bottom: 5px; }
         
-        /* ডেসক্রিপশন স্টাইল */
         .desc-text { font-size: 10px; color: #666; margin-bottom: 8px; line-height: 1.3; height: 26px; overflow: hidden; }
 
-        /* কমেন্ট/প্রশ্ন সেকশন */
+        /* প্রশ্ন ও কমেন্ট সেকশন */
         .comment-section { border-top: 1px solid #f0f0f0; padding-top: 8px; margin-top: auto; }
         .comment-list { max-height: 40px; overflow-y: auto; font-size: 9px; margin-bottom: 5px; }
         .single-comment { background: #f9f9f9; padding: 3px; border-radius: 4px; margin-bottom: 2px; border-left: 2px solid #f85606; }
@@ -85,7 +84,7 @@
             <input type="number" id="custNumber" placeholder="মোবাইল নম্বর">
             <textarea id="custAddress" rows="2" placeholder="পুরো ঠিকানা"></textarea>
             <button style="background: #25D366; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold;" onclick="sendToWhatsApp()">অর্ডার নিশ্চিত করুন</button>
-            <p onclick="closeOrderModal()" style="margin-top:12px; color:red; cursor:pointer;">বন্ধ করুন</p>
+            <p onclick="closeOrderModal()" style="margin-top:12px; color:red; cursor:pointer; font-weight:bold;">বন্ধ করুন</p>
         </div>
     </div>
 
@@ -93,7 +92,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU", authDomain: "ar-raiyanmart.firebaseapp.com", projectId: "ar-raiyanmart", databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app", storageBucket: "ar-raiyanmart.firebasestorage.app", messagingSenderId: "336578883565", appId: "1:336578883565:web:54d73b82c96a26f38601e4" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU", 
+            authDomain: "ar-raiyanmart.firebaseapp.com", 
+            projectId: "ar-raiyanmart", 
+            databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app", 
+            storageBucket: "ar-raiyanmart.firebasestorage.app", 
+            messagingSenderId: "336578883565", 
+            appId: "1:336578883565:web:54d73b82c96a26f38601e4" 
+        };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         let selectedProduct = null;
@@ -143,6 +150,7 @@
             if (!uName || !uText) { alert("সব পূরণ করুন"); return; }
             database.ref(`live_products/${productId}/comments`).push({ user: uName, text: uText, time: Date.now() });
             document.getElementById(`input-${productId}`).value = "";
+            document.getElementById(`name-${productId}`).value = "";
         }
 
         function openOrderModal(name, price, img, shop) {
@@ -158,10 +166,29 @@
             const address = document.getElementById('custAddress').value;
             if (!name || !phone || !address) { alert("সব তথ্য দিন!"); return; }
 
-            const orderData = { productName: selectedProduct.name, price: selectedProduct.price, shopName: selectedProduct.shop, customerName: name, customerPhone: phone, address: address, status: "Pending", time: Date.now() };
+            const orderData = { 
+                productName: selectedProduct.name, 
+                price: selectedProduct.price, 
+                shopName: selectedProduct.shop, 
+                productImg: selectedProduct.img,
+                customerName: name, 
+                customerPhone: phone, 
+                address: address, 
+                status: "Pending", 
+                time: Date.now() 
+            };
 
             database.ref('orders').push(orderData).then(() => {
-                const msg = `🔔 *নতুন অর্ডার!*%0A🏪 *সেলার:* ${selectedProduct.shop}%0A📦 *পণ্য:* ${selectedProduct.name}%0A💰 *দাম:* ৳${selectedProduct.price}%0A👤 *ক্রেতা:* ${name}%0A📞 *ফোন:* ${phone}%0A📍 *ঠিকানা:* ${address}`;
+                // আপনার দেওয়া নতুন কনফার্মেশন ফরম্যাট
+                const msg = `🔔 *নতুন অর্ডার!*%0A` +
+                            `🏪 *Shop:* ${selectedProduct.shop}%0A` +
+                            `📦 *Product name:* ${selectedProduct.name}%0A` +
+                            `🖼️ *Product image:* ${selectedProduct.img}%0A` +
+                            `💰 *দাম:* ৳${selectedProduct.price}%0A` +
+                            `👤 *ক্রেতা:* ${name}%0A` +
+                            `📞 *ফোন:* ${phone}%0A` +
+                            `📍 *ঠিকানা:* ${address}`;
+                            
                 window.open(`https://wa.me/8801704100288?text=${msg}`, '_blank');
                 closeOrderModal();
             });
