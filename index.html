@@ -13,37 +13,34 @@
         #productGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; max-width: 600px; margin: 0 auto; }
         .product-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; border: 1px solid #eee; }
         .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; cursor: pointer; }
-        .shop-tag { font-size: 9px; background: #fff0e9; color: #f85606; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; font-weight: bold; }
         .product-card h4 { margin: 5px 0; font-size: 13px; color: #333; height: 35px; overflow: hidden; }
-        .price { color: #f85606; font-weight: bold; font-size: 16px; }
-        .btn-buy { background: #25D366; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: auto; }
+        .product-desc { font-size: 11px; color: #666; margin-bottom: 8px; height: 30px; overflow: hidden; }
+        .price { color: #f85606; font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .btn-buy { background: #25D366; color: white; border: none; padding: 8px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 5px; }
+        .btn-comment { background: #f0f2f5; color: #1c1e21; border: none; padding: 8px; width: 100%; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
         
         /* Modal Styles */
-        #imageModal, #orderModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; position: relative; }
-        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        #orderModal, #commentModal, #imageModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 15px; width: 95%; max-width: 400px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
         .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: #333; font-weight: bold; }
         #fullImage { max-width: 95%; max-height: 80%; border-radius: 10px; }
-        label { font-size: 12px; color: #666; font-weight: bold; margin-left: 5px; }
+        
+        /* Comment Box */
+        .comment-box { background: #f8f9fa; border-radius: 8px; padding: 10px; margin-bottom: 8px; border: 1px solid #eef0f2; }
+        .comment-user { font-weight: bold; font-size: 12px; color: #f85606; }
+        .comment-text { font-size: 13px; color: #333; margin-top: 3px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1 style="margin: 0; font-size: 20px;">Ar RaiyanMart</h1>
-    </header>
+    <header><h1>Ar RaiyanMart</h1></header>
 
     <section class="hero-banner">
-        <div class="banner-container">
-            <a href="index.html">
-                <img src="hero-banner.jpg" alt="Ar RaiyanMart Banner">
-            </a>
-        </div>
+        <img src="hero-banner.jpg" alt="Banner">
     </section>
 
-    <div id="productGrid">
-        <p style="grid-column: span 2; text-align: center; padding: 50px;">লোড হচ্ছে...</p>
-    </div>
+    <div id="productGrid"><p style="text-align: center; padding: 50px;">লোড হচ্ছে...</p></div>
 
     <div id="imageModal" onclick="this.style.display='none'">
         <span class="close-btn" style="color: white;">&times;</span>
@@ -52,19 +49,28 @@
 
     <div id="orderModal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeOrderModal()">&times;</span>
+            <span class="close-btn" onclick="closeModal('orderModal')">&times;</span>
             <h3 id="modalTitle" style="color: #f85606; margin-top: 0;">অর্ডার নিশ্চিত করুন</h3>
             <input type="text" id="custName" placeholder="আপনার নাম">
             <input type="number" id="custNumber" placeholder="মোবাইল নাম্বার">
             <input type="text" id="custAddress" placeholder="পুরো ঠিকানা (থানা, জেলা)">
-            
-            <label>ডেলিভারি এরিয়া সিলেক্ট করুন:</label>
+            <label style="font-size: 12px; font-weight: bold;">ডেলিভারি এলাকা:</label>
             <select id="deliveryCharge">
                 <option value="70">ঢাকার ভেতরে (৭০ টাকা)</option>
                 <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
             </select>
-
             <button class="btn-buy" onclick="sendToWhatsApp()">অর্ডার সাবমিট করুন</button>
+        </div>
+    </div>
+
+    <div id="commentModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('commentModal')">&times;</span>
+            <h3 id="commentTitle" style="font-size: 16px; color: #333;">প্রশ্ন করুন</h3>
+            <div id="commentList" style="margin-bottom: 15px; max-height: 250px; overflow-y: auto; border-bottom: 1px solid #eee;"></div>
+            <input type="text" id="userName" placeholder="আপনার নাম">
+            <textarea id="userComment" placeholder="আপনার প্রশ্নটি এখানে লিখুন..." rows="2"></textarea>
+            <button class="btn-buy" style="background: #f85606;" onclick="postComment()">পাঠিয়ে দিন</button>
         </div>
     </div>
 
@@ -83,6 +89,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        let currentProductId = null;
         let selectedProduct = null;
 
         database.ref('live_products').on('value', (snapshot) => {
@@ -96,10 +103,11 @@
                 grid.innerHTML += `
                     <div class="product-card">
                         <img src="${p.img}" onclick="openZoom('${p.img}')">
-                        <span class="shop-tag">${p.shopName || 'Ar RaiyanMart'}</span>
                         <h4>${p.name}</h4>
+                        <div class="product-desc">${p.desc || 'কোন বর্ণনা নেই'}</div>
                         <div class="price">৳${p.price}</div>
-                        <button class="btn-buy" onclick="openOrderModal('${p.name}', '${p.price}', '${p.shopName || 'Ar RaiyanMart'}', '${p.img}')">অর্ডার করুন</button>
+                        <button class="btn-buy" onclick="openOrderModal('${id}', '${p.name}', '${p.price}', '${p.shopName || 'Ar RaiyanMart'}', '${p.img}')">অর্ডার করুন</button>
+                        <button class="btn-comment" onclick="openCommentModal('${id}', '${p.name}')">প্রশ্ন করুন</button>
                     </div>`;
             });
         });
@@ -109,14 +117,40 @@
             document.getElementById('imageModal').style.display = 'flex';
         }
 
-        function openOrderModal(name, price, shop, img) {
+        function openOrderModal(id, name, price, shop, img) {
             selectedProduct = { name, price, shop, img };
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('orderModal').style.display = 'flex';
         }
 
-        function closeOrderModal() {
-            document.getElementById('orderModal').style.display = 'none';
+        function openCommentModal(id, name) {
+            currentProductId = id;
+            document.getElementById('commentTitle').innerText = name + " - প্রশ্নসমূহ";
+            document.getElementById('commentModal').style.display = 'flex';
+            loadComments(id);
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function loadComments(productId) {
+            database.ref('comments/' + productId).on('value', (snapshot) => {
+                const list = document.getElementById('commentList');
+                list.innerHTML = "";
+                const data = snapshot.val();
+                if (data) {
+                    Object.values(data).forEach(c => {
+                        list.innerHTML += `<div class="comment-box"><div class="comment-user">${c.user}</div><div class="comment-text">${c.text}</div></div>`;
+                    });
+                } else { list.innerHTML = "<p style='font-size:12px;color:#999;text-align:center;'>এখনো কোনো প্রশ্ন নেই। প্রথম প্রশ্নটি আপনিই করুন!</p>"; }
+            });
+        }
+
+        function postComment() {
+            const name = document.getElementById('userName').value;
+            const text = document.getElementById('userComment').value;
+            if (!name || !text) { alert("দয়া করে নাম এবং প্রশ্ন লিখুন!"); return; }
+            database.ref('comments/' + currentProductId).push({ user: name, text: text, time: Date.now() });
+            document.getElementById('userComment').value = "";
         }
 
         function sendToWhatsApp() {
@@ -124,29 +158,11 @@
             const phone = document.getElementById('custNumber').value;
             const addr = document.getElementById('custAddress').value;
             const charge = document.getElementById('deliveryCharge').value;
-            const area = charge == "70" ? "ঢাকার ভেতরে" : "ঢাকার বাইরে";
-
-            if (!name || !phone || !addr) {
-                alert("দয়া করে সব তথ্য পূরণ করুন!");
-                return;
-            }
-
+            if (!name || !phone || !addr) { alert("সব তথ্য পূরণ করুন!"); return; }
             const total = parseInt(selectedProduct.price) + parseInt(charge);
-
-            const msg = `🔔 *নতুন অর্ডার!*\n\n🏪 *Shop:* ${selectedProduct.shop}\n📦 *Product name:* ${selectedProduct.name}\n🖼️ *Product image:* ${selectedProduct.img}\n💰 *দাম:* ৳${selectedProduct.price}\n🚚 *ডেলিভারি:* ৳${charge} (${area})\n💵 *সর্বমোট:* ৳${total}\n\n👤 *ক্রেতা:* ${name}\n📞 *ফোন:* ${phone}\n📍 *ঠিকানা:* ${addr}`;
-            
-            database.ref("orders").push({ 
-                ...selectedProduct, 
-                customer: name, 
-                phone: phone, 
-                address: addr, 
-                deliveryCharge: charge,
-                totalAmount: total,
-                time: Date.now() 
-            });
-            
+            const msg = `🔔 *নতুন অর্ডার!*\n\n🏪 *Shop:* ${selectedProduct.shop}\n📦 *Product:* ${selectedProduct.name}\n🖼️ *Image:* ${selectedProduct.img}\n💰 *দাম:* ৳${selectedProduct.price}\n🚚 *ডেলিভারি:* ৳${charge}\n💵 *মোট:* ৳${total}\n\n👤 *ক্রেতা:* ${name}\n📞 *ফোন:* ${phone}\n📍 *ঠিকানা:* ${addr}`;
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
-            closeOrderModal();
+            closeModal('orderModal');
         }
     </script>
 </body>
