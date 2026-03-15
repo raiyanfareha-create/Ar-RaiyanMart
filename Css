@@ -1,0 +1,29 @@
+/* Hero Banner Styles */
+.hero-banner {
+    width: 100%;
+    background-color: #fdfcf9; /* অফ-হোয়াইট ব্যাকগ্রাউন্ড */
+    padding: 0;
+    margin: 0;
+}
+
+.banner-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    line-height: 0; /* ইমেজের নিচের বাড়তি গ্যাপ দূর করার জন্য */
+}
+
+.banner-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* আপনার ওয়েবসাইটের আভিজাত্য বাড়াতে হালকা শ্যাডো দিতে পারেন */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* মোবাইল ডিভাইসের জন্য বাড়তি অপ্টিমাইজেশন */
+@media (max-width: 768px) {
+    .hero-banner {
+        padding: 10px 0; /* মোবাইলে সামান্য গ্যাপ দিতে চাইলে */
+    }
+}
