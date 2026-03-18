@@ -3,55 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ar RaiyanMart</title>
+    <title>RaiyanMart</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #fdfcf9; margin: 0; padding: 0; }
-        header { background: linear-gradient(135deg, #f85606, #ff8c52); color: white; text-align: center; padding: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #fdfcf9; margin: 0; padding: 0; overflow-x: hidden; }
+        header { background: linear-gradient(135deg, #f85606, #ff8c52); color: white; text-align: center; padding: 15px; position: sticky; top: 0; z-index: 1000; }
+        .hero-banner { width: 100%; overflow: hidden; background: #fff; }
         .hero-banner img { width: 100%; height: auto; display: block; }
-        #productGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-        .product-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; }
-        .product-card img { width: 100%; height: 140px; object-fit: contain; cursor: pointer; }
-        .price { color: #f85606; font-weight: bold; font-size: 16px; margin: 5px 0; }
-        .btn-buy { background: #25D366; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
-        /* সরাসরি প্রোডাক্টের নিচে প্রশ্নের স্টাইল */
-        .comment-section { margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
-        .comment-display { max-height: 80px; overflow-y: auto; margin-bottom: 5px; background: #fafafa; padding: 5px; border-radius: 5px; }
-        .comment-item { font-size: 11px; margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; }
+        /* প্রোডাক্ট গ্রিড ২ কলামে সাজানো */
+        #productGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; max-width: 600px; margin: 0 auto; }
+        .product-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; border: 1px solid #eee; }
+        .product-card img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; cursor: pointer; }
+        .shop-tag { font-size: 9px; background: #fff0e9; color: #f85606; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; font-weight: bold; width: fit-content; }
+        .product-card h4 { margin: 5px 0; font-size: 13px; color: #333; height: 35px; overflow: hidden; }
+        .product-desc { font-size: 11px; color: #666; margin-bottom: 8px; height: 30px; overflow: hidden; }
+        .price { color: #f85606; font-weight: bold; font-size: 16px; margin-bottom: 8px; }
+        
+        /* বাটন স্টাইল */
+        .btn-buy { background: #25D366; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: auto; }
+        
+        /* কমেন্ট সেকশন (সরাসরি প্রোডাক্টের নিচে) */
+        .comment-area { margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+        .comment-list { max-height: 80px; overflow-y: auto; background: #f9f9f9; border-radius: 5px; padding: 5px; font-size: 11px; margin-bottom: 5px; }
+        .comment-item { margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 2px; }
         .comment-item b { color: #f85606; }
-        .comment-input-group { display: flex; gap: 5px; margin-top: 5px; }
-        .comment-input-group input { flex: 1; font-size: 10px; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        .comment-input-box { display: flex; gap: 4px; }
+        .comment-input-box input { flex: 1; padding: 5px; font-size: 10px; border: 1px solid #ddd; border-radius: 4px; }
         .btn-post { background: #f85606; color: white; border: none; padding: 0 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
 
-        /* Modal Styles */
-        #orderModal, #imageModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; }
+        /* মডেল স্টাইল */
+        #orderModal, #imageModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; position: relative; }
-        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; }
+        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: #333; font-weight: bold; }
         #fullImage { max-width: 95%; max-height: 80%; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <header><h1>Ar RaiyanMart</h1></header>
-    <section class="hero-banner"><img src="hero-banner.jpg" alt="Banner"></section>
-    <div id="productGrid"><p style="text-align: center; padding: 50px;">লোড হচ্ছে...</p></div>
+    <header>
+        <h1 style="margin: 0; font-size: 20px;">RaiyanMart</h1>
+    </header>
 
-    <div id="imageModal" onclick="this.style.display='none'"><img id="fullImage"></div>
+    <section class="hero-banner">
+        <a href="index.html">
+            <img src="hero-banner.jpg" alt="RaiyanMart Banner">
+        </a>
+    </section>
+
+    <div id="productGrid">
+        <p style="grid-column: span 2; text-align: center; padding: 50px;">লোড হচ্ছে...</p>
+    </div>
+
+    <div id="imageModal" onclick="this.style.display='none'">
+        <span class="close-btn" style="color: white;">&times;</span>
+        <img id="fullImage" src="" alt="Full View">
+    </div>
 
     <div id="orderModal">
         <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('orderModal').style.display='none'">&times;</span>
-            <h3 id="modalTitle" style="color:#f85606;">অর্ডার করুন</h3>
+            <span class="close-btn" onclick="closeOrderModal()">&times;</span>
+            <h3 id="modalTitle" style="color: #f85606; margin-top: 0;">অর্ডার নিশ্চিত করুন</h3>
             <input type="text" id="custName" placeholder="আপনার নাম">
-            <input type="number" id="custNumber" placeholder="ফোন নাম্বার">
-            <input type="text" id="custAddress" placeholder="ঠিকানা">
+            <input type="number" id="custNumber" placeholder="মোবাইল নাম্বার">
+            <input type="text" id="custAddress" placeholder="পুরো ঠিকানা (থানা, জেলা)">
+            
+            <label style="font-size: 12px; font-weight: bold; color: #666;">ডেলিভারি এরিয়া:</label>
             <select id="deliveryCharge">
-                <option value="70">ঢাকার ভেতরে (৭০টাকা)</option>
-                <option value="130">ঢাকার বাইরে (১৩০টাকা)</option>
+                <option value="70">ঢাকার ভেতরে (৭০ টাকা)</option>
+                <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
             </select>
-            <button class="btn-buy" style="width:100%" onclick="sendToWhatsApp()">অর্ডার নিশ্চিত করুন</button>
+
+            <button class="btn-buy" onclick="sendToWhatsApp()">অর্ডার সাবমিট করুন</button>
         </div>
     </div>
 
@@ -72,6 +96,7 @@
         const database = firebase.database();
         let selectedProduct = null;
 
+        // প্রোডাক্ট লোড করা
         database.ref('live_products').on('value', (snapshot) => {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
@@ -84,16 +109,17 @@
                 card.className = 'product-card';
                 card.innerHTML = `
                     <img src="${p.img}" onclick="openZoom('${p.img}')">
-                    <h4 style="font-size:13px; margin:5px 0;">${p.name}</h4>
-                    <div style="font-size:11px; color:#666; height:30px; overflow:hidden;">${p.desc || ''}</div>
+                    <span class="shop-tag">${p.shopName || 'RaiyanMart'}</span>
+                    <h4>${p.name}</h4>
+                    <div class="product-desc">${p.desc || ''}</div>
                     <div class="price">৳${p.price}</div>
-                    <button class="btn-buy" onclick="openOrderModal('${p.name}', '${p.price}', '${p.shopName}', '${p.img}')">অর্ডার করুন</button>
+                    <button class="btn-buy" onclick="openOrderModal('${p.name}', '${p.price}', '${p.shopName || 'RaiyanMart'}', '${p.img}')">অর্ডার করুন</button>
                     
-                    <div class="comment-section">
-                        <div id="comments-${id}" class="comment-display">লোড হচ্ছে...</div>
-                        <div class="comment-input-group">
-                            <input type="text" id="name-${id}" placeholder="আপনার নাম">
-                            <input type="text" id="text-${id}" placeholder="প্রশ্ন লিখুন">
+                    <div class="comment-area">
+                        <div id="comments-${id}" class="comment-list">প্রশ্ন লোড হচ্ছে...</div>
+                        <div class="comment-input-box">
+                            <input type="text" id="user-${id}" placeholder="নাম">
+                            <input type="text" id="text-${id}" placeholder="প্রশ্ন?">
                             <button class="btn-post" onclick="postComment('${id}')">Send</button>
                         </div>
                     </div>
@@ -103,32 +129,44 @@
             });
         });
 
-        function loadComments(id) {
-            database.ref('comments/' + id).on('value', (snapshot) => {
-                const div = document.getElementById('comments-' + id);
+        // কমেন্ট লোড করা
+        function loadComments(productId) {
+            database.ref('comments/' + productId).on('value', (snapshot) => {
+                const div = document.getElementById('comments-' + productId);
                 div.innerHTML = "";
                 const data = snapshot.val();
                 if (data) {
                     Object.values(data).forEach(c => {
                         div.innerHTML += `<div class="comment-item"><b>${c.user}:</b> ${c.text}</div>`;
                     });
-                } else { div.innerHTML = "<span style='font-size:10px; color:#999;'>কোনো প্রশ্ন নেই</span>"; }
+                } else {
+                    div.innerHTML = "<span style='color:#999'>কোনো প্রশ্ন নেই</span>";
+                }
             });
         }
 
-        function postComment(id) {
-            const user = document.getElementById('name-' + id).value;
-            const text = document.getElementById('text-' + id).value;
+        // কমেন্ট পোস্ট করা
+        function postComment(productId) {
+            const user = document.getElementById('user-' + productId).value;
+            const text = document.getElementById('text-' + productId).value;
             if(!user || !text) return alert("নাম ও প্রশ্ন লিখুন");
-            database.ref('comments/' + id).push({ user, text, time: Date.now() });
-            document.getElementById('text-' + id).value = "";
+            database.ref('comments/' + productId).push({ user, text, time: Date.now() });
+            document.getElementById('text-' + productId).value = "";
         }
 
-        function openZoom(img) { document.getElementById('fullImage').src = img; document.getElementById('imageModal').style.display = 'flex'; }
+        function openZoom(img) {
+            document.getElementById('fullImage').src = img;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
         function openOrderModal(name, price, shop, img) {
             selectedProduct = { name, price, shop, img };
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
         }
 
         function sendToWhatsApp() {
@@ -136,9 +174,18 @@
             const phone = document.getElementById('custNumber').value;
             const addr = document.getElementById('custAddress').value;
             const charge = document.getElementById('deliveryCharge').value;
+            const area = charge == "70" ? "ঢাকার ভেতরে" : "ঢাকার বাইরে";
+
+            if (!name || !phone || !addr) {
+                alert("সব তথ্য দিন!");
+                return;
+            }
+
             const total = parseInt(selectedProduct.price) + parseInt(charge);
-            const msg = `🔔 *নতুন অর্ডার!*\n🏪 Shop: ${selectedProduct.shop}\n📦 Product: ${selectedProduct.name}\n💰 দাম: ৳${selectedProduct.price}\n🚚 ডেলিভারি: ৳${charge}\n💵 মোট: ৳${total}\n👤 ক্রেতা: ${name}\n📞 ফোন: ${phone}\n📍 ঠিকানা: ${addr}`;
+            const msg = `🔔 *নতুন অর্ডার!*\n\n🏪 *Shop:* ${selectedProduct.shop}\n📦 *Product:* ${selectedProduct.name}\n💰 *দাম:* ৳${selectedProduct.price}\n🚚 *ডেলিভারি:* ৳${charge} (${area})\n💵 *মোট:* ৳${total}\n\n👤 *ক্রেতা:* ${name}\n📞 *ফোন:* ${phone}\n📍 *ঠিকানা:* ${addr}`;
+            
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
+            closeOrderModal();
         }
     </script>
 </body>
