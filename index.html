@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaiyanMart | Professional Store</title>
+    <title>Ar RaiyanMart | Professional Store</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; color: #333; line-height: 1.4; }
@@ -40,7 +40,7 @@
 </head>
 <body>
 
-    <header><h1>RaiyanMart</h1></header>
+    <header><h1>Ar RaiyanMart</h1></header>
     <div id="productGrid"></div>
 
     <div id="zoomOverlay" class="modal" onclick="this.style.display='none'">
@@ -112,7 +112,7 @@
                 }
                 cards += `
                 <div class="product-card">
-                    <div class="shop-badge">${p.shopName || 'RaiyanMart'}</div>
+                    <div class="shop-badge">${p.shopName || 'Ar RaiyanMart'}</div>
                     <div class="img-box" id="slider-${id}" onclick="openZoom('${id}')">
                         ${imgs.map((img, i) => `<img src="${img}" class="product-img ${i === 0 ? 'active' : ''}">`).join('')}
                         ${imgs.length > 1 ? `<button class="nav-btn prev-btn" onclick="event.stopPropagation(); slide('${id}', -1)">❮</button><button class="nav-btn next-btn" onclick="event.stopPropagation(); slide('${id}', 1)">❯</button>` : ''}
@@ -122,7 +122,7 @@
                     <div class="qna-box">${qnaHtml || 'No questions yet.'}</div>
                     <button class="ask-btn" onclick="openAsk('${id}')">Ask Question</button>
                     <div class="price">৳${p.price}</div>
-                    <button class="buy-btn" onclick="openOrder('${id}', '${p.name}', '${p.price}', '${p.colors || ''}', '${p.shopName || 'RaiyanMart'}')">Order Now</button>
+                    <button class="buy-btn" onclick="openOrder('${id}', '${p.name}', '${p.price}', '${p.colors || ''}', '${p.shopName || 'Ar RaiyanMart'}')">Order Now</button>
                 </div>`;
             });
             grid.innerHTML = cards;
@@ -174,14 +174,25 @@
             const color = document.getElementById('cColor').value;
             const charge = document.getElementById('cDelivery').value;
 
-            if(!name || !phone || !jela || !thana) return alert("Please fill Name, Phone, District, and Thana!");
+            if(!name || !phone || !jela || !thana) return alert("Fill Name, Phone, District, and Thana!");
             const total = parseInt(selectedP.price) + parseInt(charge);
             
-            // WhatsApp API Fix
-            const msg = `*New Order!*\n\n🖼️ *Image:* ${selectedP.img}\n🏪 *Shop:* ${selectedP.shop}\n📦 *Product:* ${selectedP.name} (${color})\n💰 *Price:* ${selectedP.price} TK\n🚚 *Delivery:* ${charge} TK\n💵 *Total:* ${total} TK\n\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *District:* ${jela}\n🏠 *Thana:* ${thana}\n🏠 *Address:* ${addr}`;
+            // Final WhatsApp Message Format with "Ar RaiyanMart"
+            const msg = `*New Order - Ar RaiyanMart*\n\n` +
+                        `🖼️ *Image:* ${selectedP.img}\n` +
+                        `🏪 *Shop:* ${selectedP.shop}\n` +
+                        `📦 *Product:* ${selectedP.name} (${color})\n` +
+                        `💰 *Price:* ${selectedP.price} TK\n` +
+                        `🚚 *Delivery:* ${charge} TK\n` +
+                        `💵 *Total:* ${total} TK\n\n` +
+                        `👤 *Customer:* ${name}\n` +
+                        `📞 *Phone:* ${phone}\n` +
+                        `📍 *District:* ${jela}\n` +
+                        `🏠 *Thana:* ${thana}\n` +
+                        `🏠 *Address:* ${addr}`;
             
             const whatsappUrl = "https://api.whatsapp.com/send?phone=8801704100288&text=" + encodeURIComponent(msg);
-            window.location.assign(whatsappUrl); // More reliable than location.href
+            window.location.assign(whatsappUrl);
             closeModal('orderModal');
         }
     </script>
