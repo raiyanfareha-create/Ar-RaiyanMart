@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaiyanMart | সেরা অনলাইন শপিং</title>
+    <title>Ar RaiyanMart | Online Shopping</title>
     <style>
-        /* মোবাইল ফ্রেন্ডলি ডিজাইন */
+        /* Mobile-First Design */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
         
         header { background: linear-gradient(135deg, #f85606, #ff8c52); color: white; text-align: center; padding: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        header h1 { margin: 0; font-size: 20px; }
+        header h1 { margin: 0; font-size: 20px; font-weight: bold; }
 
-        /* প্রোডাক্ট গ্রিড */
+        /* Product Grid */
         #productGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; max-width: 1000px; margin: 0 auto; }
         
         .product-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; border: 1px solid #eee; }
         
-        /* ইমেজ স্লাইডার */
+        /* Image Slider */
         .img-box { position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 8px; background: #f9f9f9; }
         .product-img { width: 100%; height: 100%; object-fit: contain; display: none; cursor: pointer; }
         .product-img.active { display: block; }
@@ -31,50 +31,49 @@
         .buy-btn { background: #25D366; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s; margin-top: auto; }
         .buy-btn:active { transform: scale(0.95); }
 
-        /* পপআপ বা মডেল */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        /* Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; position: relative; animation: popUp 0.3s ease; }
         
         @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
         .modal-content h3 { margin: 0 0 15px; color: #f85606; font-size: 18px; }
+        .modal-content label { display: block; margin: 10px 0 4px; font-size: 12px; color: #666; font-weight: bold; }
         .modal-content input, .modal-content select { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; outline: none; }
         .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #999; }
-
-        #zoomModal img { max-width: 95%; max-height: 80vh; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <header><h1>RaiyanMart</h1></header>
+    <header><h1>Ar RaiyanMart</h1></header>
     
     <div id="productGrid">
-        <p style="text-align: center; grid-column: span 2; padding: 50px; color: #888;">পণ্য লোড হচ্ছে, দয়া করে অপেক্ষা করুন...</p>
+        <p style="text-align: center; grid-column: span 2; padding: 50px; color: #888;">Load hochche...</p>
     </div>
 
     <div id="zoomModal" class="modal" onclick="this.style.display='none'">
-        <img id="zoomedImg" src="">
+        <img id="zoomedImg" src="" style="max-width: 95%; max-height: 80vh; border-radius: 10px;">
     </div>
 
     <div id="orderModal" class="modal">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="close-x" onclick="closeOrder()">&times;</span>
-            <h3 id="orderProductName">অর্ডার নিশ্চিত করুন</h3>
+            <h3 id="orderProductName">Order Nishchit Korun</h3>
             
-            <input type="text" id="cName" placeholder="আপনার নাম লিখুন">
-            <input type="tel" id="cPhone" placeholder="আপনার মোবাইল নাম্বার">
-            <input type="text" id="cAddress" placeholder="আপনার পুরো ঠিকানা (থানা, জেলা)">
+            <input type="text" id="cName" placeholder="Apnar Naam">
+            <input type="tel" id="cPhone" placeholder="Mobile Number">
+            <input type="text" id="cAddress" placeholder="Full Address (Thana, Zila)">
             
-            <label style="font-size: 12px; color: #666; font-weight: bold;">কালার সিলেক্ট করুন:</label>
+            <label>Color Select Korun:</label>
             <select id="cColor"></select>
 
-            <label style="font-size: 12px; color: #666; font-weight: bold;">ডেলিভারি এরিয়া:</label>
+            <label>Delivery Area:</label>
             <select id="cDelivery">
-                <option value="70">ঢাকার ভেতরে (৭০ টাকা)</option>
-                <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
+                <option value="70">Dhakar Vetore (70 Taka)</option>
+                <option value="130">Dhakar Bahire (130 Taka)</option>
             </select>
             
-            <button class="buy-btn" style="font-size: 16px;" onclick="confirmOrder()">অর্ডার কনফার্ম করুন</button>
+            <button class="buy-btn" style="font-size: 16px;" onclick="confirmOrder()">Order Confirm Korun</button>
         </div>
     </div>
 
@@ -95,12 +94,12 @@
         const database = firebase.database();
         let selectedProduct = null;
 
-        // ডাটাবেজ থেকে পণ্য নিয়ে আসা
+        // Fetch Data
         database.ref('live_products').on('value', (snapshot) => {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
             const data = snapshot.val();
-            if (!data) { grid.innerHTML = "<p style='grid-column: span 2; text-align: center;'>বর্তমানে কোনো পণ্য নেই।</p>"; return; }
+            if (!data) return;
 
             Object.keys(data).forEach(id => {
                 const p = data[id];
@@ -115,7 +114,7 @@
                     </div>
                     <h4>${p.name}</h4>
                     <div class="price">৳${p.price}</div>
-                    <button class="buy-btn" onclick="openOrder('${p.name}', '${p.price}', '${p.shopName || 'RaiyanMart'}', '${images[0]}', '${p.colors || ''}')">অর্ডার করুন</button>
+                    <button class="buy-btn" onclick="openOrder('${p.name}', '${p.price}', '${p.shopName || 'Ar RaiyanMart'}', '${images[0]}', '${p.colors || ''}')">Order Korun</button>
                 `;
                 grid.appendChild(card);
             });
@@ -124,10 +123,10 @@
         function slide(id, dir) {
             const container = document.getElementById(`slider-${id}`);
             const imgs = container.getElementsByClassName('product-img');
-            let currentIdx = Array.from(imgs).findIndex(img => img.classList.contains('active'));
-            imgs[currentIdx].classList.remove('active');
-            currentIdx = (currentIdx + dir + imgs.length) % imgs.length;
-            imgs[currentIdx].classList.add('active');
+            let idx = Array.from(imgs).findIndex(img => img.classList.contains('active'));
+            imgs[idx].classList.remove('active');
+            idx = (idx + dir + imgs.length) % imgs.length;
+            imgs[idx].classList.add('active');
         }
 
         function openZoom(url) { document.getElementById('zoomedImg').src = url; document.getElementById('zoomModal').style.display = 'flex'; }
@@ -135,10 +134,10 @@
         function openOrder(name, price, shop, img, colorsStr) {
             selectedProduct = { name, price, shop, img };
             document.getElementById('orderProductName').innerText = name;
-            const colorSelect = document.getElementById('cColor');
-            colorSelect.innerHTML = "";
+            const select = document.getElementById('cColor');
+            select.innerHTML = "";
             const colors = colorsStr ? colorsStr.split(',') : ['Default'];
-            colors.forEach(c => { colorSelect.innerHTML += `<option value="${c.trim()}">${c.trim()}</option>`; });
+            colors.forEach(c => select.innerHTML += `<option value="${c.trim()}">${c.trim()}</option>`);
             document.getElementById('orderModal').style.display = 'flex';
         }
 
@@ -147,19 +146,24 @@
         function confirmOrder() {
             const name = document.getElementById('cName').value;
             const phone = document.getElementById('cPhone').value;
-            const address = document.getElementById('cAddress').value;
+            const addr = document.getElementById('cAddress').value;
             const color = document.getElementById('cColor').value;
             const delivery = document.getElementById('cDelivery').value;
 
-            if (!name || !phone || !address) return alert("দয়া করে সব তথ্য পূরণ করুন!");
+            if (!name || !phone || !addr) return alert("Shob tottho din!");
 
             const total = parseInt(selectedProduct.price) + parseInt(delivery);
+            const text = `*New Order!*\n\n🏪 *Shop:* ${selectedProduct.shop}\n📦 *Product:* ${selectedProduct.name} (${color})\n🖼️ *Image:* ${selectedProduct.img}\n💰 *Price:* ৳${selectedProduct.price}\n🚚 *Delivery:* ৳${delivery}\n💵 *Total:* ৳${total}\n\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${addr}`;
 
-            // হোয়াটসঅ্যাপ মেসেজ ফরম্যাট
-            const text = `*নতুন অর্ডার!*\n\n🏪 *Shop:* ${selectedProduct.shop}\n📦 *Product:* ${selectedProduct.name} (${color})\n🖼️ *Image:* ${selectedProduct.img}\n💰 *দাম:* ৳${selectedProduct.price}\n🚚 *ডেলিভারি:* ৳${delivery}\n💵 *মোট:* ৳${total}\n\n👤 *ক্রেতা:* ${name}\n📞 *ফোন:* ${phone}\n📍 *ঠিকানা:* ${address}`;
+            // Mobile App/WebView friendly URL
+            const wpUrl = `whatsapp://send?phone=8801704100288&text=${encodeURIComponent(text)}`;
+            window.location.href = wpUrl;
+            
+            // Backup for Desktop/Chrome
+            setTimeout(() => {
+                window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(text)}`, '_blank');
+            }, 1000);
 
-            const wpUrl = `https://wa.me/8801704100288?text=${encodeURIComponent(text)}`;
-            window.open(wpUrl, '_blank');
             closeOrder();
         }
     </script>
