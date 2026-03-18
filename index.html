@@ -3,46 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaiyanMart | Complete Shop</title>
+    <title>RaiyanMart | Professional Full Shop</title>
     <style>
+        /* --- 1. Global & Layout Styles --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; color: #333; line-height: 1.4; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; line-height: 1.5; }
         
-        header { background: linear-gradient(135deg, #f85606, #ff8c52); color: white; text-align: center; padding: 12px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        header h1 { font-size: 18px; }
+        header { 
+            background: linear-gradient(135deg, #f85606, #ff8c52); 
+            color: white; 
+            text-align: center; 
+            padding: 15px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        }
+        header h1 { font-size: 22px; letter-spacing: 1px; }
 
-        #productGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; max-width: 1000px; margin: 0 auto; }
-        
-        .product-card { background: white; padding: 10px; border-radius: 12px; display: flex; flex-direction: column; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .shop-badge { font-size: 10px; color: #f85606; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        /* --- 2. Product Grid --- */
+        #productGrid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; 
+            padding: 12px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
 
-        .img-box { position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 8px; background: #fff; cursor: pointer; }
+        /* --- 3. Product Card Styles --- */
+        .product-card { 
+            background: white; 
+            padding: 12px; 
+            border-radius: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid #e0e0e0; 
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .shop-badge { 
+            font-size: 11px; 
+            color: #f85606; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            margin-bottom: 6px; 
+            letter-spacing: 0.5px;
+        }
+
+        /* Image Slider Area */
+        .img-box { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 1/1; 
+            overflow: hidden; 
+            border-radius: 10px; 
+            background: #fff; 
+            cursor: zoom-in;
+            border: 1px solid #f5f5f5;
+        }
         .product-img { width: 100%; height: 100%; object-fit: contain; display: none; }
-        .product-img.active { display: block; }
-        
-        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; z-index: 5; font-size: 16px; cursor: pointer; }
+        .product-img.active { display: block; animation: fadeIn 0.3s; }
+
+        .nav-btn { 
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: rgba(0,0,0,0.5); 
+            color: white; 
+            border: none; 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            z-index: 5; 
+            font-size: 18px; 
+            cursor: pointer; 
+        }
         .prev-btn { left: 5px; } .next-btn { right: 5px; }
 
-        .product-card h4 { margin: 8px 0 2px; font-size: 14px; font-weight: bold; height: 34px; overflow: hidden; }
-        .desc { font-size: 11px; color: #777; height: 28px; overflow: hidden; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        
-        .qna-box { background: #f9f9f9; padding: 6px; border-radius: 6px; margin-bottom: 8px; font-size: 11px; max-height: 80px; overflow-y: auto; border: 1px solid #f0f0f0; }
-        .q-item { margin-bottom: 4px; border-bottom: 1px dashed #ddd; padding-bottom: 2px; }
-        .ask-btn { background: #f0f0f0; color: #555; border: 1px solid #ddd; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; margin-bottom: 10px; width: 100%; }
+        /* Text Details */
+        .product-card h4 { margin: 10px 0 5px; font-size: 15px; font-weight: 700; color: #222; height: 40px; overflow: hidden; }
+        .desc { font-size: 12px; color: #666; height: 35px; overflow: hidden; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
-        .price { color: #f85606; font-weight: bold; font-size: 17px; margin-bottom: 8px; }
-        .buy-btn { background: #2ecc71; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: auto; }
+        /* Q&A Section */
+        .qna-box { background: #fdfdfd; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; max-height: 100px; overflow-y: auto; border: 1px solid #eee; }
+        .q-item { margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; }
+        .ask-btn { background: #f8f9fa; color: #555; border: 1px solid #ddd; padding: 8px; border-radius: 8px; font-size: 12px; cursor: pointer; margin-bottom: 12px; width: 100%; font-weight: 600; }
 
-        /* Full Screen Zoom Modal with X */
-        .zoom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10001; justify-content: center; align-items: center; }
-        .zoom-img { max-width: 95%; max-height: 90vh; border-radius: 5px; object-fit: contain; }
-        .close-zoom { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; font-weight: bold; z-index: 10002; }
+        .price { color: #f85606; font-weight: 800; font-size: 18px; margin-bottom: 12px; }
+        .buy-btn { background: #2ecc71; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: 800; font-size: 15px; cursor: pointer; margin-top: auto; box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2); }
 
-        /* Order Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
-        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; outline: none; }
-        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 25px; color: #999; cursor: pointer; }
+        /* --- 4. Modals (Order & Zoom) --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 420px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-content h3 { text-align: center; color: #f85606; margin-bottom: 20px; }
+        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 14px; outline: none; transition: border 0.3s; }
+        .modal-content input:focus { border-color: #f85606; }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 28px; color: #999; cursor: pointer; }
+
+        /* Full Zoom Styles */
+        .zoom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 10001; justify-content: center; align-items: center; }
+        .zoom-img { max-width: 98%; max-height: 90vh; object-fit: contain; }
+        .close-zoom { position: absolute; top: 30px; right: 30px; color: white; font-size: 50px; cursor: pointer; font-weight: bold; z-index: 10002; line-height: 1; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -50,7 +114,7 @@
     <header><h1>RaiyanMart</h1></header>
     
     <div id="productGrid">
-        <p style="text-align: center; grid-column: span 2; padding: 50px;">Loading Products...</p>
+        <p style="text-align: center; grid-column: span 2; padding: 100px; color: #888; font-weight: bold;">Syncing with Database...</p>
     </div>
 
     <div id="zoomOverlay" class="zoom-modal" onclick="closeZoom()">
@@ -61,9 +125,9 @@
     <div id="askModal" class="modal">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="modal-close" onclick="closeModal('askModal')">&times;</span>
-            <h3 style="color: #f85606; margin-bottom: 15px;">Ask a Question</h3>
-            <input type="text" id="qUser" placeholder="Your Name">
-            <input type="text" id="qText" placeholder="Your Question">
+            <h3>Post a Question</h3>
+            <input type="text" id="qUser" placeholder="Your Full Name">
+            <input type="text" id="qText" placeholder="Write your question here...">
             <button class="buy-btn" onclick="submitQuestion()">Submit Question</button>
         </div>
     </div>
@@ -72,29 +136,28 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="modal-close" onclick="closeModal('orderModal')">&times;</span>
             
-            <div style="text-align: center; margin-bottom: 15px;">
-                <p id="mShop" style="font-size: 11px; color: #f85606; font-weight: bold; text-transform: uppercase;"></p>
-                <img id="mImg" src="" style="width: 80px; height: 80px; object-fit: contain; margin: 8px 0; border: 1px solid #eee; border-radius: 8px;">
-                <h4 id="mTitle" style="font-size: 14px; color: #333;"></h4>
+            <div style="text-align: center; background: #fffcf5; padding: 15px; border-radius: 15px; border: 1px dashed #f85606; margin-bottom: 20px;">
+                <p id="mShop" style="font-size: 11px; color: #f85606; font-weight: 800; letter-spacing: 1px;"></p>
+                <img id="mImg" src="" style="width: 100px; height: 100px; object-fit: contain; margin: 10px 0; border-radius: 8px;">
+                <h4 id="mTitle" style="font-size: 15px; color: #333;"></h4>
             </div>
 
-            <h3 style="text-align: center; color: #f85606; margin-bottom: 15px; font-size: 16px;">Order Confirm Korun</h3>
-            
-            <input type="text" id="cName" placeholder="Apnar Naam">
+            <h3 style="margin-top: 0; font-size: 18px;">Confirm Your Order</h3>
+            <input type="text" id="cName" placeholder="Customer Name">
             <input type="tel" id="cPhone" placeholder="Mobile Number">
-            <input type="text" id="cJela" placeholder="Jela (District)">
-            <input type="text" id="cThana" placeholder="Thana / Upazila">
-            <input type="text" id="cFullAddr" placeholder="Full Thikana">
+            <input type="text" id="cJela" placeholder="District (Jela)">
+            <input type="text" id="cThana" placeholder="Thana / Area">
+            <input type="text" id="cFullAddr" placeholder="Complete Home Address">
             
-            <label style="font-size: 11px; font-weight: bold; color: #666; margin-left: 5px;">Color:</label>
+            <label style="font-size: 12px; font-weight: bold; color: #666; margin: 5px 0 5px 5px; display: block;">Select Color:</label>
             <select id="cColor"></select>
             
-            <label style="font-size: 11px; font-weight: bold; color: #666; margin-left: 5px;">Delivery Charge:</label>
+            <label style="font-size: 12px; font-weight: bold; color: #666; margin: 5px 0 5px 5px; display: block;">Delivery Zone:</label>
             <select id="cDelivery">
-                <option value="70">Dhakar Vetore (70 TK)</option>
-                <option value="130">Dhakar Bahire (130 TK)</option>
+                <option value="70">Inside Dhaka (70 TK)</option>
+                <option value="130">Outside Dhaka (130 TK)</option>
             </select>
-            <button class="buy-btn" onclick="confirmOrder()">Confirm Order Now</button>
+            <button class="buy-btn" onclick="confirmOrder()">Confirm Order on WhatsApp</button>
         </div>
     </div>
 
@@ -102,6 +165,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
+        // --- Firebase Configuration ---
         const firebaseConfig = { 
             apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU", 
             authDomain: "ar-raiyanmart.firebaseapp.com", 
@@ -113,15 +177,16 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        let selectedProd = null;
-        let activeId = null;
+        let currentSelected = null;
+        let activeQuestionId = null;
 
+        // --- Fetch & Render Products ---
         database.ref('live_products').on('value', (snapshot) => {
             const grid = document.getElementById('productGrid');
             const data = snapshot.val();
-            if (!data) return;
+            if (!data) { grid.innerHTML = "<p>No products available.</p>"; return; }
 
-            let cards = "";
+            let html = "";
             Object.keys(data).forEach(id => {
                 const p = data[id];
                 const imgs = Array.isArray(p.imgs) ? p.imgs : [p.img];
@@ -129,28 +194,32 @@
                 let qnaHtml = "";
                 if(p.comments) {
                     Object.values(p.comments).forEach(c => {
-                        qnaHtml += `<div class="q-item"><b>${c.user}:</b> ${c.text}${c.reply ? `<br><span style="color:#f85606; margin-left:10px;">Ans: ${c.reply}</span>` : ''}</div>`;
+                        qnaHtml += `<div class="q-item"><b>${c.user}:</b> ${c.text}${c.reply ? `<br><span style="color:#f85606; margin-left:12px;">Ans: ${c.reply}</span>` : ''}</div>`;
                     });
                 }
 
-                cards += `
+                html += `
                 <div class="product-card">
                     <div class="shop-badge">${p.shopName || 'RaiyanMart'}</div>
                     <div class="img-box" id="slider-${id}" onclick="openZoom('${id}')">
                         ${imgs.map((img, i) => `<img src="${img}" class="product-img ${i === 0 ? 'active' : ''}">`).join('')}
-                        ${imgs.length > 1 ? `<button class="nav-btn prev-btn" onclick="event.stopPropagation(); slide('${id}', -1)">❮</button><button class="nav-btn next-btn" onclick="event.stopPropagation(); slide('${id}', 1)">❯</button>` : ''}
+                        ${imgs.length > 1 ? `
+                            <button class="nav-btn prev-btn" onclick="event.stopPropagation(); slide('${id}', -1)">❮</button>
+                            <button class="nav-btn next-btn" onclick="event.stopPropagation(); slide('${id}', 1)">❯</button>
+                        ` : ''}
                     </div>
                     <h4>${p.name}</h4>
-                    <div class="desc">${p.desc || ''}</div>
-                    <div class="qna-box">${qnaHtml || 'No questions.'}</div>
-                    <button class="ask-btn" onclick="openAsk('${id}')">Ask a Question</button>
+                    <div class="desc">${p.desc || 'Quality product from RaiyanMart.'}</div>
+                    <div class="qna-box">${qnaHtml || 'Be the first to ask a question.'}</div>
+                    <button class="ask-btn" onclick="openAsk('${id}')">Ask Question</button>
                     <div class="price">৳${p.price}</div>
-                    <button class="buy-btn" onclick="openOrder('${id}', '${p.name}', '${p.price}', '${p.colors || ''}', '${p.shopName || 'RaiyanMart'}')">Order Korun</button>
+                    <button class="buy-btn" onclick="openOrder('${id}', '${p.name}', '${p.price}', '${p.colors || ''}', '${p.shopName || 'RaiyanMart'}')">Order Now</button>
                 </div>`;
             });
-            grid.innerHTML = cards;
+            grid.innerHTML = html;
         });
 
+        // --- Functions ---
         function slide(id, dir) {
             const imgs = document.getElementById(`slider-${id}`).getElementsByClassName('product-img');
             let idx = Array.from(imgs).findIndex(img => img.classList.contains('active'));
@@ -166,28 +235,28 @@
         }
         function closeZoom() { document.getElementById('zoomOverlay').style.display = 'none'; }
 
-        function openAsk(id) { activeId = id; document.getElementById('askModal').style.display = 'flex'; }
+        function openAsk(id) { activeQuestionId = id; document.getElementById('askModal').style.display = 'flex'; }
         function closeModal(mId) { document.getElementById(mId).style.display = 'none'; }
 
         function submitQuestion() {
             const user = document.getElementById('qUser').value;
             const text = document.getElementById('qText').value;
-            if(!user || !text) return alert("Fill all fields!");
-            database.ref(`live_products/${activeId}/comments`).push({ user, text });
+            if(!user || !text) return alert("Please enter both name and question.");
+            database.ref(`live_products/${activeQuestionId}/comments`).push({ user, text, timestamp: Date.now() });
             closeModal('askModal');
-            alert("Sent!");
+            document.getElementById('qUser').value = ""; document.getElementById('qText').value = "";
         }
 
         function openOrder(id, name, price, colors, shop) {
             const currentImg = document.querySelector(`#slider-${id} .product-img.active`).src;
-            selectedProd = { name, price, shop, img: currentImg };
+            currentSelected = { name, price, shop, img: currentImg };
             
             document.getElementById('mShop').innerText = shop;
             document.getElementById('mImg').src = currentImg;
             document.getElementById('mTitle').innerText = name;
             
-            const col = document.getElementById('cColor');
-            col.innerHTML = (colors ? colors.split(',') : ['Default']).map(c => `<option value="${c.trim()}">${c.trim()}</option>`).join('');
+            const colSelect = document.getElementById('cColor');
+            colSelect.innerHTML = (colors ? colors.split(',') : ['Default']).map(c => `<option value="${c.trim()}">${c.trim()}</option>`).join('');
             document.getElementById('orderModal').style.display = 'flex';
         }
 
@@ -200,10 +269,24 @@
             const color = document.getElementById('cColor').value;
             const charge = document.getElementById('cDelivery').value;
 
-            if(!name || !phone || !jela) return alert("Fill all fields!");
+            if(!name || !phone || !jela) return alert("Customer Name, Phone and District are mandatory!");
 
-            const total = parseInt(selectedProd.price) + parseInt(charge);
-            const msg = `*New Order!*\n\n🏪 *Shop:* ${selectedProd.shop}\n📦 *Product:* ${selectedProd.name} (${color})\n💰 *Price:* ${selectedProd.price} TK\n🚚 *Delivery:* ${charge} TK\n💵 *Total:* ${total} TK\n\n👤 *Customer:* ${name}\n📞 *Phone:* ${phone}\n📍 *District:* ${jela}\n🏠 *Thana:* ${thana}\n🏘️ *Address:* ${addr}`;
+            const total = parseInt(currentSelected.price) + parseInt(charge);
+            
+            // --- WhatsApp Message Construction with Image Link ---
+            const msg = `*NEW ORDER - RaiyanMart*\n\n` +
+                        `🖼️ *Product Image:* ${currentSelected.img}\n` +
+                        `🏪 *Shop:* ${currentSelected.shop}\n` +
+                        `📦 *Product:* ${currentSelected.name}\n` +
+                        `🎨 *Color:* ${color}\n` +
+                        `💰 *Price:* ${currentSelected.price} TK\n` +
+                        `🚚 *Delivery:* ${charge} TK\n` +
+                        `💵 *Total:* ${total} TK\n\n` +
+                        `👤 *Customer:* ${name}\n` +
+                        `📞 *Phone:* ${phone}\n` +
+                        `📍 *District:* ${jela}\n` +
+                        `🏠 *Thana:* ${thana}\n` +
+                        `🏘️ *Address:* ${addr}`;
             
             window.open(`https://api.whatsapp.com/send?phone=8801704100288&text=${encodeURIComponent(msg)}`, '_blank');
             closeModal('orderModal');
