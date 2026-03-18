@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ar RaiyanMart | Fast Shop</title>
     <style>
-        /* CSS Fast Rendering */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f8; color: #333; }
         
@@ -15,7 +14,6 @@
         #productGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; max-width: 1000px; margin: 0 auto; }
         .product-card { background: white; padding: 8px; border-radius: 10px; display: flex; flex-direction: column; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         
-        /* Image Slider Area */
         .img-box { position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 6px; background: #fff; }
         .product-img { width: 100%; height: 100%; object-fit: contain; display: none; cursor: pointer; }
         .product-img.active { display: block; }
@@ -23,12 +21,15 @@
         .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.3); color: white; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 14px; z-index: 5; }
         .prev-btn { left: 4px; } .next-btn { right: 4px; }
 
-        .product-card h4 { margin: 8px 0 4px; font-size: 13px; height: 32px; overflow: hidden; line-height: 1.2; }
+        .product-card h4 { margin: 8px 0 2px; font-size: 13px; height: 32px; overflow: hidden; line-height: 1.2; font-weight: bold; }
+        
+        /* ডেসক্রিপশন স্টাইল */
+        .desc { font-size: 11px; color: #666; height: 28px; overflow: hidden; margin-bottom: 5px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        
         .price { color: #f85606; font-weight: bold; font-size: 16px; margin-bottom: 8px; }
         
         .buy-btn { background: #25D366; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: auto; }
 
-        /* Modal / Popup */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 15px; }
         .modal-content { background: white; padding: 20px; border-radius: 15px; width: 100%; max-width: 360px; position: relative; animation: fadeIn 0.2s; }
         
@@ -91,7 +92,6 @@
         const database = firebase.database();
         let selectedProduct = null;
 
-        // Fast Data Loading
         database.ref('live_products').on('value', (snapshot) => {
             const grid = document.getElementById('productGrid');
             const data = snapshot.val();
@@ -109,6 +109,7 @@
                         ${imgs.length > 1 ? `<button class="nav-btn prev-btn" onclick="slide('${id}', -1)">❮</button><button class="nav-btn next-btn" onclick="slide('${id}', 1)">❯</button>` : ''}
                     </div>
                     <h4>${p.name}</h4>
+                    <div class="desc">${p.desc || 'No description available'}</div>
                     <div class="price">৳${p.price}</div>
                     <button class="buy-btn" onclick="openOrder('${p.name}', '${p.price}', '${p.shopName || 'Ar RaiyanMart'}', '${imgs[0]}', '${p.colors || ''}')">Order Korun</button>
                 </div>`;
@@ -149,14 +150,7 @@
             const total = parseInt(selectedProduct.price) + parseInt(charge);
             const text = `*New Order!*\n\n🏪 *Shop:* ${selectedProduct.shop}\n📦 *Product:* ${selectedProduct.name} (${color})\n🖼️ *Image:* ${selectedProduct.img}\n💰 *Dam:* ৳${selectedProduct.price}\n🚚 *Delivery:* ৳${charge}\n💵 *Mot:* ৳${total}\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Jela:* ${jela}\n🏠 *Thana:* ${thana}\n🏘️ *Address:* ${addr}`;
 
-            // Fast WhatsApp Trigger
             window.location.href = `whatsapp://send?phone=8801704100288&text=${encodeURIComponent(text)}`;
-            
-            // Backup
-            setTimeout(() => {
-                window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(text)}`, '_blank');
-            }, 800);
-
             closeOrder();
         }
     </script>
