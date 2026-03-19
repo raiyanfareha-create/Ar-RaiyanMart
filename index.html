@@ -3,199 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart | প্রিমিয়াম অনলাইন শপ</title>
+    <title>Ar RaiyanMart | Luxury Online Shop</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* =========================================
+           1. CSS VARIABLES (ব্র্যান্ড কালার সেটআপ)
+           ========================================= */
         :root {
-            --gold: #D4AF37;
-            --white: #ffffff;
-            --bg: #FAF9F6;
-            --text: #333;
+            --gold: #D4AF37;         /* গোল্ডেন কালার */
+            --dark-gold: #B8860B;    /* গাঢ় গোল্ডেন */
+            --white: #ffffff;        /* সাদা */
+            --bg-color: #FAF9F6;     /* হালকা অফ-হোয়াইট */
+            --text-main: #222;       /* প্রধান টেক্সট */
+            --text-light: #555;      /* হালকা টেক্সট */
+            --success: #25D366;      /* হোয়াটসঅ্যাপ সবুজ */
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.6; }
+        /* =========================================
+           2. GLOBAL STYLES (সাধারণ স্টাইল)
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+        }
 
-        /* Header Navigation */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        /* =========================================
+           3. HEADER & NAVIGATION (নেভিগেশন বার)
+           ========================================= */
         header {
             background: var(--white);
-            padding: 15px 5%;
+            height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--gold);
-            position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding: 0 7%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
-        .logo { font-size: 24px; font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 10px; }
 
-        /* Banner Style */
-        .banner-section {
-            width: 90%; max-width: 1200px; margin: 25px auto;
-            border-radius: 20px; overflow: hidden; border: 2.5px solid var(--gold);
-            position: relative; background: #000;
+        .brand-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        /* এখানে আপনার আপলোড করা ব্যানারের নাম দিন */
-        .banner-section img { width: 100%; display: block; opacity: 0.6; min-height: 200px; object-fit: cover; }
-        
-        .banner-overlay {
-            position: absolute; top: 50%; left: 50%;
+
+        .lang-select {
+            padding: 5px 12px;
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* =========================================
+           4. HERO BANNER (ব্যানার সেকশন)
+           ========================================= */
+        .hero-section {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto;
+            height: 300px;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--gold);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .hero-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+            background: #000;
+            transition: transform 6s ease;
+        }
+
+        .hero-section:hover img {
+            transform: scale(1.1);
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            text-align: center; color: white; width: 90%;
+            text-align: center;
+            color: white;
+            width: 90%;
         }
-        .banner-overlay h1 { font-size: 28px; color: var(--gold); margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
 
-        /* Product Grid */
-        .product-container { padding: 20px 5% 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 35px; }
-        
-        .product-card {
-            background: var(--white); border-radius: 20px; padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05); border: 1px solid rgba(212, 175, 55, 0.1);
-            transition: 0.3s; position: relative;
+        .hero-content h1 {
+            font-size: 35px;
+            color: var(--gold);
+            margin-bottom: 12px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.6);
         }
-        .product-card:hover { transform: translateY(-5px); }
-        
-        /* এখানে সরাসরি আপনার আপলোড করা ছবির ফাইল নাম ব্যবহার করা হয়েছে */
-        .product-img { width: 100%; border-radius: 12px; cursor: pointer; margin-bottom: 20px; border: 1px solid #f0f0f0; }
-        
-        .product-title { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 10px; }
-        .product-price { color: var(--gold); font-size: 26px; font-weight: 700; margin-bottom: 20px; }
 
-        .description-box {
-            background: #fdfaf0; padding: 20px; border-radius: 12px;
-            border-left: 5px solid var(--gold); margin-bottom: 25px; font-size: 15px;
+        /* =========================================
+           5. PRODUCT GRID (প্রোডাক্ট লিস্ট)
+           ========================================= */
+        .container {
+            padding: 30px 7% 100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 45px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 25px;
+            padding: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.12);
+        }
+
+        .image-wrapper {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            background: #fdfdfd;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            display: block;
+            cursor: pointer;
+            transition: 0.6s;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card-price {
+            color: var(--gold);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        /* পণ্যের বিবরণ বক্স */
+        .desc-container {
+            background: #fffdf5;
+            padding: 22px;
+            border-radius: 18px;
+            border-left: 6px solid var(--gold);
+            margin-bottom: 30px;
+        }
+
+        .desc-container h4 {
+            color: var(--gold);
+            font-size: 17px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         /* Order Button */
-        .order-btn {
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
-            color: white; border: none; width: 100%; padding: 18px;
-            border-radius: 12px; font-size: 20px; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        .cta-button {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 21px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            transition: 0.3s;
         }
 
-        /* Modal / Popup */
-        .modal {
-            display: none; position: fixed; z-index: 2000;
+        .cta-button:active {
+            transform: scale(0.97);
+        }
+
+        /* =========================================
+           6. CHECKOUT MODAL (অর্ডার ফরম)
+           ========================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal-body {
-            background: white; width: 100%; max-width: 440px;
-            padding: 30px; border-radius: 25px; position: relative;
-            animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .close-icon { position: absolute; top: 15px; right: 20px; font-size: 35px; cursor: pointer; color: #bbb; }
-
-        input, textarea, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #eee; border-radius: 10px; font-size: 16px; outline: none; background: #fafafa; }
-        input:focus { border-color: var(--gold); background: #fff; }
-        
-        .whatsapp-final {
-            background: #25D366; color: white; border: none;
-            width: 100%; padding: 18px; border-radius: 12px;
-            font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 15px;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        @media (max-width: 600px) {
-            .logo { font-size: 20px; }
-            .banner-overlay h1 { font-size: 22px; }
+        .modal-content {
+            background: var(--white);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            border-radius: 35px;
+            position: relative;
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 25px;
+            font-size: 40px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .form-title {
+            text-align: center;
+            color: var(--gold);
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+
+        .input-box { margin-bottom: 20px; }
+        .input-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-light);
+        }
+
+        .input-box input, .input-box select, .input-box textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #eee;
+            border-radius: 14px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            background: #fafafa;
+        }
+
+        .input-box input:focus {
+            border-color: var(--gold);
+            background: white;
+        }
+
+        .wa-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 19px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+        }
+
+        /* =========================================
+           7. MOBILE RESPONSIVENESS (মোবাইল সেটিংস)
+           ========================================= */
+        @media (max-width: 768px) {
+            header { padding: 0 5%; height: 70px; }
+            .brand-name { font-size: 21px; }
+            .hero-section { height: 220px; }
+            .hero-content h1 { font-size: 22px; }
+            .container { grid-template-columns: 1fr; padding: 10px 5% 80px; }
+            .modal-content { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <a href="#" class="logo"><i class="fas fa-gem"></i> Ar RaiyanMart</a>
-    <div style="font-size: 14px; color: var(--gold); border: 1px solid var(--gold); padding: 2px 8px; border-radius: 5px;">বাংলা</div>
-</header>
-
-<div class="banner-section">
-    <img src="1000000589.jpg" alt="Banner" onerror="this.src='https://via.placeholder.com/1200x400?text=Check+File+Name'">
-    <div class="banner-overlay">
-        <h1>আর রাইয়ানমার্ট প্রিমিয়াম কালেকশন</h1>
-        <p>আপনার আস্থার প্রতীক ও সেরা মানের নিশ্চয়তা</p>
-    </div>
-</div>
-
-<div class="product-container">
-    <div class="product-card">
-        <img src="1000000587.jpg" class="product-img" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/600x450?text=Image+Not+Found'">
-        
-        <h2 class="product-title">প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ</h2>
-        <p class="product-price">মূল্য: ৩,৫০০ টাকা</p>
-        
-        <div class="description-box">
-            <strong><i class="fas fa-info-circle"></i> কেন এটি কিনবেন?</strong><br>
-            এটি শুধু একটি ঘড়ি নয়, বরং আপনার স্মার্ট সঙ্গী। এতে আছে অত্যাধুনিক হার্ট রেট ট্র্যাকার, ব্লাড অক্সিজেন মনিটর এবং ৫-৭ দিনের ব্যাটারি ব্যাকআপ।
+    <header>
+        <a href="#" class="brand-name">
+            <i class="fas fa-shopping-cart"></i> Ar RaiyanMart
+        </a>
+        <div class="lang-box">
+            <select class="lang-select">
+                <option>বাংলা</option>
+                <option>English</option>
+            </select>
         </div>
-        
-        <button class="order-btn" onclick="startOrder('প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ', 3500)">
-            <i class="fas fa-shopping-basket"></i> Order Now
-        </button>
+    </header>
+
+    <div class="hero-section">
+        <img src="1000000589.jpg" alt="Banner" onerror="this.src='https://via.placeholder.com/1200x400?text=Ar+RaiyanMart+Banner'">
+        <div class="hero-content">
+            <h1>আর রাইয়ানমার্ট প্রিমিয়াম কালেকশন</h1>
+            <p>আপনার আস্থার প্রতীক ও সেরা মানের নিশ্চয়তা</p>
+        </div>
     </div>
-</div>
 
-<div id="orderModal" class="modal">
-    <div class="modal-body">
-        <span class="close-icon" onclick="exitOrder()">&times;</span>
-        <h3 id="pNameTitle" style="color:var(--gold); text-align:center; margin-bottom:20px; font-size: 22px;"></h3>
+    <main class="container">
         
-        <input type="text" id="name" placeholder="আপনার পূর্ণ নাম">
-        <input type="tel" id="phone" placeholder="সচল মোবাইল নম্বর">
-        
-        <select id="delivery">
-            <option value="70">ঢাকার ভিতরে (৭০ টাকা)</option>
-            <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
-        </select>
-        
-        <textarea id="address" rows="3" placeholder="সম্পূর্ণ ঠিকানা (বাসা নং, রোড, থানা, জেলা)"></textarea>
+        <div class="card">
+            <div class="image-wrapper">
+                <img src="1000000587.jpg" alt="Product" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/600x450?text=Image+Missing'">
+            </div>
+            
+            <h2 class="card-title">প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ</h2>
+            <p class="card-price">মূল্য: ৩,৫০০ টাকা</p>
 
-        <button class="whatsapp-final" onclick="submitOrder()">
-            <i class="fab fa-whatsapp"></i> কনফার্ম করুন (WhatsApp)
-        </button>
+            <div class="desc-container">
+                <h4><i class="fas fa-certificate"></i> কেন এটি সেরা?</h4>
+                <p>এটি শুধু একটি ঘড়ি নয়, বরং আপনার স্মার্ট সঙ্গী। এতে আছে অত্যাধুনিক হার্ট রেট ট্র্যাকার, ব্লাড অক্সিজেন মনিটর এবং ৫-৭ দিনের ব্যাটারি ব্যাকআপ। এটি সম্পূর্ণ ওয়াটারপ্রুফ এবং সকল স্মার্টফোনের সাথে দ্রুত কানেক্ট হয়।</p>
+            </div>
+
+            <button class="cta-button" onclick="launchOrder('প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ', 3500)">
+                <i class="fas fa-bolt"></i> Order Now
+            </button>
+        </div>
+
+    </main>
+
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeOrder()">&times;</span>
+            
+            <h3 id="pName" class="form-title"></h3>
+            
+            <div class="input-box">
+                <label>আপনার পূর্ণ নাম</label>
+                <input type="text" id="custName" placeholder="উদাঃ আব্দুল্লাহ আল মামুন">
+            </div>
+
+            <div class="input-box">
+                <label>মোবাইল নম্বর</label>
+                <input type="tel" id="custPhone" placeholder="01XXXXXXXXX">
+            </div>
+
+            <div class="input-box">
+                <label>ডেলিভারি এরিয়া</label>
+                <select id="custDelivery">
+                    <option value="70">ঢাকার ভিতরে (৭০ টাকা)</option>
+                    <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
+                </select>
+            </div>
+
+            <div class="input-box">
+                <label>পূর্ণ ঠিকানা (রোড, থানা, জেলা)</label>
+                <textarea id="custAddress" rows="3" placeholder="আপনার বিস্তারিত ঠিকানা লিখুন"></textarea>
+            </div>
+
+            <button class="wa-btn" onclick="sendOrder()">
+                <i class="fab fa-whatsapp"></i> কনফার্ম করুন (হোয়াটসঅ্যাপ)
+            </button>
+        </div>
     </div>
-</div>
 
-<script>
-    let productData = { name: "", price: 0 };
+    <script>
+        // Data Store
+        let activeItem = { title: "", price: 0 };
 
-    function startOrder(name, price) {
-        productData = { name, price };
-        document.getElementById('pNameTitle').innerText = name;
-        document.getElementById('orderModal').style.display = 'flex';
-    }
+        // ওপেন অর্ডার ফাংশন
+        function launchOrder(name, price) {
+            activeItem.title = name;
+            activeItem.price = price;
+            document.getElementById('pName').innerText = name;
+            document.getElementById('checkoutModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // স্ক্রল বন্ধ
+        }
 
-    function exitOrder() { document.getElementById('orderModal').style.display = 'none'; }
+        // ক্লোজ অর্ডার ফাংশন
+        function closeOrder() {
+            document.getElementById('checkoutModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // স্ক্রল চালু
+        }
 
-    function submitOrder() {
-        const n = document.getElementById('name').value.trim();
-        const p = document.getElementById('phone').value.trim();
-        const a = document.getElementById('address').value.trim();
-        const d = document.getElementById('delivery').value;
-        
-        if(!n || !p || !a) { alert("দয়া করে সব তথ্য সঠিকভাবে দিন।"); return; }
+        // হোয়াটসঅ্যাপ সেন্ড ইঞ্জিন
+        function sendOrder() {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('custAddress').value.trim();
+            const delivery = parseInt(document.getElementById('custDelivery').value);
+            const total = activeItem.price + delivery;
 
-        // আপনার শেয়ার করা নোটের ফরম্যাট অনুযায়ী ইমোজি মেসেজ
-        const msg = `🔔 *নতুন অর্ডার!*\n\n` +
-                  `🏪 *Shop:* Ar RaiyanMart\n` +
-                  `📦 *Product:* ${productData.name}\n` +
-                  `💰 *দাম:* ${productData.price} TK\n` +
-                  `🚚 *ডেলিভারি:* ${d} TK\n` +
-                  `💵 *মোট:* ${productData.price + parseInt(d)} TK\n\n` +
-                  `👤 *ক্রেতা:* ${n}\n` +
-                  `📞 *ফোন:* ${p}\n` +
-                  `📍 *ঠিকানা:* ${a}`;
-        
-        window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-</script>
+            if(!name || !phone || !address) {
+                alert("দয়া করে সব তথ্য পূরণ করুন!");
+                return;
+            }
+
+            // আপনার আপলোড করা স্ক্রিনশটের ইমোজি মেসেজ ফরম্যাট
+            const waMessage = `🔔 *নতুন অর্ডার!*\n\n` +
+                            `🏪 *Shop:* Ar RaiyanMart\n` +
+                            `📦 *Product:* ${activeItem.title}\n` +
+                            `💰 *দাম:* ${activeItem.price} TK\n` +
+                            `🚚 *ডেলিভারি:* ${delivery} TK\n` +
+                            `💵 *মোট:* ${total} TK\n\n` +
+                            `👤 *ক্রেতা:* ${name}\n` +
+                            `📞 *ফোন:* ${phone}\n` +
+                            `📍 *ঠিকানা:* ${address}`;
+
+            const waURL = `https://wa.me/8801704100288?text=${encodeURIComponent(waMessage)}`;
+            window.open(waURL, '_blank');
+        }
+
+        // পপআপের বাইরে ক্লিক করলে বন্ধ হবে
+        window.onclick = function(e) {
+            if (e.target == document.getElementById('checkoutModal')) {
+                closeOrder();
+            }
+        }
+    </script>
 
 </body>
 </html>
