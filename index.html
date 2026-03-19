@@ -2,337 +2,83 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart | এক্সক্লুসিভ কালেকশন</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ar RaiyanMart</title>
     <style>
-        /* =========================================
-           PREMIUM BRANDING COLORS
-           ========================================= */
-        :root {
-            --brand-gold: #D4AF37;
-            --brand-dark: #1A1A1A;
-            --off-white: #FAF9F6;
-            --white: #ffffff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.08);
-            --transition: all 0.4s ease;
-        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #fdfcf9; margin: 0; padding: 0; }
+        header { background: linear-gradient(135deg, #f85606, #ff8c52); color: white; text-align: center; padding: 15px; }
+        .hero-banner img { width: 100%; height: auto; display: block; }
+        #productGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .product-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; }
+        .product-card img { width: 100%; height: 140px; object-fit: contain; cursor: pointer; }
+        .price { color: #f85606; font-weight: bold; font-size: 16px; margin: 5px 0; }
+        .btn-buy { background: #25D366; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        /* সরাসরি প্রোডাক্টের নিচে প্রশ্নের স্টাইল */
+        .comment-section { margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+        .comment-display { max-height: 80px; overflow-y: auto; margin-bottom: 5px; background: #fafafa; padding: 5px; border-radius: 5px; }
+        .comment-item { font-size: 11px; margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; }
+        .comment-item b { color: #f85606; }
+        .comment-input-group { display: flex; gap: 5px; margin-top: 5px; }
+        .comment-input-group input { flex: 1; font-size: 10px; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        .btn-post { background: #f85606; color: white; border: none; padding: 0 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Hind Siliguri', sans-serif;
-        }
-
-        body {
-            background-color: var(--off-white);
-            color: var(--brand-dark);
-            line-height: 1.6;
-        }
-
-        /* 1. HEADER SECTION */
-        header {
-            background: var(--white);
-            padding: 15px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 3px solid var(--brand-gold);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .logo-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .logo-box i {
-            font-size: 32px;
-            color: var(--brand-gold);
-        }
-
-        .brand-name {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--brand-gold);
-            text-transform: uppercase;
-        }
-
-        .nav-icons {
-            display: flex;
-            gap: 20px;
-            font-size: 20px;
-            color: var(--brand-gold);
-        }
-
-        /* 2. HERO BANNER - ড্যাশবোর্ড স্টাইল অনুযায়ী */
-        .hero-section {
-            width: 90%;
-            max-width: 1200px;
-            margin: 30px auto;
-            border-radius: 25px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: var(--shadow);
-            background: #000;
-            height: 400px;
-        }
-
-        .hero-section img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.7;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            width: 90%;
-        }
-
-        .hero-overlay h1 {
-            font-size: clamp(24px, 5vw, 42px);
-            color: var(--brand-gold);
-            margin-bottom: 10px;
-        }
-
-        /* 3. PRODUCT GRID - সেলার প্যানেল অনুযায়ী */
-        .main-content {
-            padding: 40px 7% 100px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-title h2 {
-            font-size: 32px;
-            display: inline-block;
-            border-bottom: 4px solid var(--brand-gold);
-            padding-bottom: 10px;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
-        }
-
-        /* LUXURY PRODUCT CARD */
-        .product-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 25px;
-            transition: var(--transition);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            box-shadow: var(--shadow);
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--brand-gold);
-        }
-
-        .badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--brand-gold);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .product-img {
-            width: 100%;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .product-img img {
-            width: 100%;
-            display: block;
-        }
-
-        .product-info h3 {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        .price-box {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--brand-gold);
-            margin-bottom: 20px;
-        }
-
-        /* DESCRIPTION LIST - ড্যাশবোর্ড থেকে প্রাপ্ত তথ্য */
-        .desc-list {
-            background: #fffdf5;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-
-        .desc-list li {
-            list-style: none;
-            font-size: 15px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .desc-list li i {
-            color: var(--brand-gold);
-            font-size: 14px;
-        }
-
-        /* CTA BUTTON */
-        .btn-buy {
-            background: var(--brand-gold);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.3s;
-        }
-
-        .btn-buy:hover {
-            background: #B8860B;
-        }
-
-        /* 4. FOOTER */
-        footer {
-            background: #111;
-            color: #888;
-            padding: 50px 7%;
-            text-align: center;
-        }
-
-        .footer-logo {
-            font-size: 28px;
-            color: var(--brand-gold);
-            margin-bottom: 20px;
-            display: block;
-            text-decoration: none;
-            font-weight: 800;
-        }
-
-        @media (max-width: 768px) {
-            header { padding: 15px 5%; }
-            .hero-section { height: 250px; }
-            .product-grid { grid-template-columns: 1fr; }
-        }
+        /* Modal Styles */
+        #orderModal, #imageModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; position: relative; }
+        .modal-content input, .modal-content select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; }
+        #fullImage { max-width: 95%; max-height: 80%; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="#" class="logo-box">
-            <i class="fas fa-crown"></i>
-            <span class="brand-name">Ar RaiyanMart</span>
-        </a>
-        <div class="nav-icons">
-            <i class="fas fa-search"></i>
-            <i class="fas fa-shopping-bag"></i>
+    <header><h1>Ar RaiyanMart</h1></header>
+    <section class="hero-banner"><img src="hero-banner.jpg" alt="Banner"></section>
+    <div id="productGrid"><p style="text-align: center; padding: 50px;">লোড হচ্ছে...</p></div>
+
+    <div id="imageModal" onclick="this.style.display='none'"><img id="fullImage"></div>
+
+    <div id="orderModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('orderModal').style.display='none'">&times;</span>
+            <h3 id="modalTitle" style="color:#f85606;">অর্ডার করুন</h3>
+            <input type="text" id="custName" placeholder="আপনার নাম">
+            <input type="number" id="custNumber" placeholder="ফোন নাম্বার">
+            <input type="text" id="custAddress" placeholder="ঠিকানা">
+            <select id="deliveryCharge">
+                <option value="70">ঢাকার ভেতরে (৭০টাকা)</option>
+                <option value="130">ঢাকার বাইরে (১৩০টাকা)</option>
+            </select>
+            <button class="btn-buy" style="width:100%" onclick="sendToWhatsApp()">অর্ডার নিশ্চিত করুন</button>
         </div>
-    </header>
+    </div>
 
-    <section class="hero-section">
-        <img src="1000000591.jpg" alt="Banner" onerror="this.src='https://via.placeholder.com/1200x400'">
-        <div class="hero-overlay">
-            <h1>আভিজাত্য ও বিশ্বাসের মিলনস্থল</h1>
-            <p>AR RAIYANMART LUXURY COLLECTION</p>
-        </div>
-    </section>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-    <main class="main-content">
-        <div class="section-title">
-            <h2>এক্সক্লুসিভ কালেকশন</h2>
-        </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBucfOIGMerMCC6zyxUjzZOauTG-EQlvRU",
+            authDomain: "ar-raiyanmart.firebaseapp.com",
+            projectId: "ar-raiyanmart",
+            databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app",
+            storageBucket: "ar-raiyanmart.appspot.com",
+            messagingSenderId: "336578883565",
+            appId: "1:336578883565:web:54d73b82c96a26f38601e4"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        let selectedProduct = null;
 
-        <div class="product-grid">
-            
-            <article class="product-card">
-                <div class="badge">HOT DEAL</div>
-                <div class="product-img">
-                    <img src="1000000589.jpg" alt="স্মার্ট ওয়াচ" onerror="this.src='https://via.placeholder.com/400x300'">
-                </div>
-                <div class="product-info">
-                    <h3>আর রাইয়ানমার্ট রাজকীয় পণ্য</h3>
-                    <div class="price-box">৳ ১,৯৫০</div>
-                    <div class="desc-list">
-                        <li><i class="fas fa-star"></i> ১০০% প্রিমিয়াম কোয়ালিটি গ্যারান্টি</li>
-                        <li><i class="fas fa-shield-alt"></i> অরিজিনাল কালার ও টেকসই ডিজাইন</li>
-                        <li><i class="fas fa-truck"></i> দ্রুত ডেলিভারি সুবিধা</li>
-                    </div>
-                    <button class="btn-buy" onclick="window.open('https://wa.me/8801704100288')">
-                        <i class="fas fa-shopping-cart"></i> এখনই কিনুন
-                    </button>
-                </div>
-            </article>
+        database.ref('live_products').on('value', (snapshot) => {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = "";
+            const data = snapshot.val();
+            if (!data) return;
 
-            <article class="product-card">
-                <div class="badge">New Arrival</div>
-                <div class="product-img">
-                    <img src="1000000589.jpg" alt="পণ্য ২" onerror="this.src='https://via.placeholder.com/400x300'">
-                </div>
-                <div class="product-info">
-                    <h3>প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ</h3>
-                    <div class="price-box">৳ ৩,৫০০</div>
-                    <div class="desc-list">
-                        <li><i class="fas fa-heartbeat"></i> হার্ট রেট ও ব্লাড অক্সিজেন মনিটর</li>
-                        <li><i class="fas fa-battery-full"></i> ৫-৭ দিনের ব্যাটারি ব্যাকআপ</li>
-                        <li><i class="fas fa-tint-slash"></i> সম্পূর্ণ ওয়াটারপ্রুফ বডি</li>
-                    </div>
-                    <button class="btn-buy" onclick="window.open('https://wa.me/8801704100288')">
-                        <i class="fas fa-shopping-cart"></i> এখনই কিনুন
-                    </button>
-                </div>
-            </article>
-
-        </div>
-    </main>
-
-    <footer>
-        <a href="#" class="footer-logo">Ar RaiyanMart</a>
-        <p>&copy; 2026 Ar RaiyanMart. All Rights Reserved.</p>
-        <div style="margin-top: 20px; font-size: 20px;">
-            <i class="fab fa-facebook" style="margin: 0 10px;"></i>
-            <i class="fab fa-instagram" style="margin: 0 10px;"></i>
-            <i class="fab fa-whatsapp" style="margin: 0 10px;"></i>
-        </div>
-    </footer>
-
-</body>
-</html>
+            Object.keys(data).forEach(id => {
+                const p = data[id];
+                const card = document.createElement('div');
+                card.cl
