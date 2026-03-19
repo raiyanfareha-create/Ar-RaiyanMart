@@ -3,115 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RaiyanMart - Premium Shop</title>
+    <title>RaiyanMart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
         body { background-color: #FAF9F6; font-family: 'Hind Siliguri', sans-serif; }
         .hidden { display: none; }
-        .gold-text { color: #D4AF37; }
         .gold-bg { background-color: #D4AF37; }
-        .modal-overlay { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); }
+        .modal-overlay { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); }
     </style>
 </head>
 <body>
 
     <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-50">
-        <h1 class="text-2xl font-bold gold-text italic">RaiyanMart</h1>
+        <div class="text-2xl gold-text"><i class="fa-solid fa-shop"></i></div>
+        
         <div class="flex items-center gap-4">
-            <select class="border rounded px-1 text-xs bg-gray-50 outline-none">
-                <option>বাংলা</option>
-                <option>English</option>
+            <select id="langSwitch" onchange="changeLanguage()" class="border rounded px-2 py-1 text-sm bg-gray-50 outline-none">
+                <option value="bn">বাংলা</option>
+                <option value="en">English</option>
             </select>
             <div class="relative cursor-pointer">
-                <i class="fa-solid fa-cart-shopping text-2xl text-gray-700"></i>
+                <i class="fa-solid fa-basket-shopping text-2xl text-gray-700"></i>
                 <span id="cartCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] rounded-full px-1.5 font-bold">0</span>
             </div>
         </div>
     </header>
 
     <section class="w-full">
-        <img src="1000000603.jpg" alt="RaiyanMart Banner" class="w-full h-auto border-b-4 border-[#D4AF37]">
+        <img src="1000000603.jpg" alt="Banner" onerror="this.src='https://via.placeholder.com/1000x300?text=Banner+Image+Not+Found'" class="w-full h-auto border-b-4 border-[#D4AF37]">
     </section>
 
     <main class="container mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
         
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all">
-            
-            <img src="https://via.placeholder.com/600" alt="Product" 
-                 class="w-full h-64 object-cover rounded-xl cursor-zoom-in" 
-                 onclick="openZoom(this.src)">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+            <img src="https://via.placeholder.com/600" alt="Product" class="w-full h-64 object-cover rounded-xl cursor-zoom-in" onclick="openZoom(this.src)">
             
             <div class="mt-4">
-                <h3 class="text-lg font-bold text-gray-800">পণ্যের নাম এখানে</h3>
-                <p class="text-gray-500 text-xs font-semibold">সেলার: <span class="gold-text">শপের নাম</span></p>
-                <p class="text-xl font-black mt-1 text-gray-900">৳ <span id="itemPrice">1200</span></p>
+                <h3 id="txt-prod-name" class="text-lg font-bold text-gray-800">প্রিমিয়াম পাঞ্জাবি</h3>
+                <p class="text-gray-500 text-xs font-semibold"><span id="txt-seller">সেলার</span>: <span class="text-[#D4AF37]">Raiyan Fashion</span></p>
+                <p class="text-xl font-black mt-1 text-gray-900">৳ <span id="itemPrice">1850</span></p>
             </div>
 
             <div class="mt-4 border-t pt-3">
-                <h4 class="font-bold text-gray-700 text-[11px] uppercase tracking-wide">Description / বর্ণনা:</h4>
-                <p class="text-gray-600 text-sm mt-1 leading-relaxed">
-                    এখানে আপনার পণ্যের বিস্তারিত বিবরণ থাকবে (যেমন: ফেব্রিক, সাইজ, কোয়ালিটি)। এটি কাস্টমার সরাসরি দেখতে পাবে।
+                <h4 id="txt-desc-title" class="font-bold text-gray-700 text-[11px] uppercase tracking-wide">Description / বর্ণনা:</h4>
+                <p id="txt-desc-body" class="text-gray-600 text-sm mt-1 leading-relaxed">
+                    এটি ১০০% পিওর কটন ফেব্রিক দিয়ে তৈরি। আরামদায়ক এবং কালার গ্যারান্টি।
                 </p>
                 
                 <div class="mt-3">
-                    <button onclick="toggleQ()" class="text-blue-600 text-[11px] font-bold flex items-center gap-1 hover:underline">
+                    <button onclick="toggleQ()" id="txt-ask-btn" class="text-blue-600 text-[11px] font-bold flex items-center gap-1 hover:underline">
                         <i class="fa-solid fa-comment-dots"></i> এই পণ্য সম্পর্কে প্রশ্ন করুন
                     </button>
                     <div id="qBox" class="hidden mt-2">
-                        <textarea class="w-full border p-2 text-xs rounded bg-gray-50 outline-none focus:ring-1 focus:ring-yellow-500" rows="2" placeholder="আপনার প্রশ্নটি লিখুন..."></textarea>
-                        <button class="bg-gray-800 text-white text-[10px] px-3 py-1 mt-1 rounded">পাঠান</button>
+                        <textarea id="txt-q-placeholder" class="w-full border p-2 text-xs rounded bg-gray-50 outline-none" rows="2" placeholder="আপনার প্রশ্নটি লিখুন..."></textarea>
                     </div>
                 </div>
             </div>
 
             <div class="flex gap-2 mt-5">
-                <button onclick="addCart()" class="flex-1 border-2 border-gray-800 text-gray-800 py-3 rounded-xl font-bold text-xs hover:bg-gray-800 hover:text-white transition">Add to Cart</button>
-                <button onclick="openOrder('পণ্যের নাম', '1200', 'শপের নাম')" 
-                        class="flex-1 gold-bg text-white py-3 rounded-xl font-bold text-xs shadow-md">
-                    Buy Now
-                </button>
+                <button onclick="addCart()" id="btn-cart" class="flex-1 border-2 border-gray-800 text-gray-800 py-3 rounded-xl font-bold text-xs">Add to Cart</button>
+                <button onclick="openOrder('প্রিমিয়াম পাঞ্জাবি', '1850', 'Raiyan Fashion')" id="btn-buy" class="flex-1 gold-bg text-white py-3 rounded-xl font-bold text-xs shadow-md">Buy Now</button>
             </div>
         </div>
 
     </main>
 
     <div id="orderModal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center p-4 z-[100]">
-        <div class="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-2xl">
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 relative">
             <button onclick="closeModal()" class="absolute top-4 right-5 text-3xl text-gray-300 hover:text-red-500">&times;</button>
             
-            <h2 class="text-center font-bold text-lg mb-6 text-orange-600 italic">🔔 *নতুন অর্ডার!*</h2>
+            <h2 id="txt-order-title" class="text-center font-bold text-lg mb-6 text-orange-600 italic">🔔 *নতুন অর্ডার!*</h2>
             
-            <div class="space-y-3 text-sm bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500 mb-4">
-                <p>🏪 *Shop:* <span id="mShop" class="font-bold"></span></p>
-                <p>📦 *Product:* <span id="mProd" class="font-bold"></span></p>
-                <p>💰 *দাম:* <span id="mPrice"></span> Tk</p>
+            <div class="space-y-3 text-sm bg-orange-50 p-4 rounded-xl border-l-4 border-orange-500 mb-4 text-gray-800">
+                <p>🏪 *Shop:* <span id="mShop"></span></p>
+                <p>📦 *Product:* <span id="mProd"></span></p>
+                <p>💰 <span id="txt-m-price">দাম</span>: <span id="mPrice"></span> Tk</p>
                 
                 <div class="flex items-center gap-2 font-bold py-1">
-                    🚚 *ডেলিভারি:* <select id="dCharge" onchange="totalPrice()" class="border rounded-md px-1 outline-none text-blue-700 bg-white">
+                    🚚 <span id="txt-m-del">ডেলিভারি</span>: 
+                    <select id="dCharge" onchange="totalPrice()" class="border rounded px-1 outline-none text-blue-700">
                         <option value="70">Inside Dhaka (70 Tk)</option>
                         <option value="130">Outside Dhaka (130 Tk)</option>
                     </select>
                 </div>
                 
-                <p class="text-lg">💵 *মোট:* <span id="mTotal" class="font-black text-green-700"></span> Tk</p>
+                <p class="text-lg font-bold">💵 <span id="txt-m-total">মোট</span>: <span id="mTotal" class="text-green-700"></span> Tk</p>
             </div>
             
             <div class="space-y-4">
-                <input type="text" id="cName" class="w-full border-b p-2 outline-none focus:border-yellow-600" placeholder="👤 নাম">
-                <input type="tel" id="cPhone" class="w-full border-b p-2 outline-none focus:border-yellow-600" placeholder="📞 মোবাইল">
-                <textarea id="cAddr" class="w-full border-b p-2 outline-none h-16" placeholder="📍 সম্পূর্ণ ঠিকানা"></textarea>
+                <input type="text" id="cName" class="w-full border-b p-2 outline-none" placeholder="Name / নাম">
+                <input type="tel" id="cPhone" class="w-full border-b p-2 outline-none" placeholder="Phone / মোবাইল">
+                <textarea id="cAddr" class="w-full border-b p-2 outline-none h-16" placeholder="Address / ঠিকানা"></textarea>
             </div>
 
-            <button onclick="sendOrder()" class="w-full bg-green-600 text-white py-4 rounded-xl mt-6 font-bold shadow-lg hover:bg-green-700 transition">
-                অর্ডার নিশ্চিত করুন
-            </button>
+            <button onclick="sendOrder()" id="btn-confirm" class="w-full bg-green-600 text-white py-4 rounded-xl mt-6 font-bold shadow-lg uppercase">Confirm Order</button>
         </div>
     </div>
 
     <div id="fullView" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-[200]">
-        <button onclick="closeImg()" class="absolute top-6 right-8 text-white text-5xl hover:text-red-500">&times;</button>
+        <button onclick="closeImg()" class="absolute top-6 right-8 text-white text-5xl">&times;</button>
         <img id="zImg" src="" class="max-w-[90%] max-h-[85%] border-2 border-white rounded shadow-2xl">
     </div>
 
@@ -119,7 +111,43 @@
         const adminWA = "8801704100288";
         let count = 0;
 
-        function addCart() { count++; document.getElementById('cartCount').innerText = count; alert("কার্টে যোগ করা হয়েছে!"); }
+        // ভাষা পরিবর্তনের ডাটা
+        const translations = {
+            bn: {
+                seller: "সেলার", prodName: "প্রিমিয়াম পাঞ্জাবি", descTitle: "Description / বর্ণনা:",
+                descBody: "এটি ১০০% পিওর কটন ফেব্রিক দিয়ে তৈরি। আরামদায়ক এবং কালার গ্যারান্টি।",
+                askBtn: "এই পণ্য সম্পর্কে প্রশ্ন করুন", qPlace: "আপনার প্রশ্নটি লিখুন...",
+                btnCart: "Add to Cart", btnBuy: "Buy Now", orderTitle: "🔔 *নতুন অর্ডার!*",
+                mPrice: "দাম", mDel: "ডেলিভারি", mTotal: "মোট", btnConfirm: "অর্ডার নিশ্চিত করুন"
+            },
+            en: {
+                seller: "Seller", prodName: "Premium Punjabi", descTitle: "Product Description:",
+                descBody: "Made with 100% pure cotton fabric. Comfortable and color guaranteed.",
+                askBtn: "Ask a question about this product", qPlace: "Type your question here...",
+                btnCart: "Add to Cart", btnBuy: "Buy Now", orderTitle: "🔔 *New Order!*",
+                mPrice: "Price", mDel: "Delivery", mTotal: "Total", btnConfirm: "Confirm Order"
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('langSwitch').value;
+            const t = translations[lang];
+            document.getElementById('txt-seller').innerText = t.seller;
+            document.getElementById('txt-prod-name').innerText = t.prodName;
+            document.getElementById('txt-desc-title').innerText = t.descTitle;
+            document.getElementById('txt-desc-body').innerText = t.descBody;
+            document.getElementById('txt-ask-btn').innerHTML = `<i class="fa-solid fa-comment-dots"></i> ${t.askBtn}`;
+            document.getElementById('txt-q-placeholder').placeholder = t.qPlace;
+            document.getElementById('btn-cart').innerText = t.btnCart;
+            document.getElementById('btn-buy').innerText = t.btnBuy;
+            document.getElementById('txt-order-title').innerText = t.orderTitle;
+            document.getElementById('txt-m-price').innerText = t.mPrice;
+            document.getElementById('txt-m-del').innerText = t.mDel;
+            document.getElementById('txt-m-total').innerText = t.mTotal;
+            document.getElementById('btn-confirm').innerText = t.btnConfirm;
+        }
+
+        function addCart() { count++; document.getElementById('cartCount').innerText = count; alert("Added to cart!"); }
         function toggleQ() { document.getElementById('qBox').classList.toggle('hidden'); }
         
         function openOrder(n, p, s) {
@@ -146,11 +174,10 @@
             const ph = document.getElementById('cPhone').value;
             const a = document.getElementById('cAddr').value;
 
-            if(!n || !ph || !a) { alert("সব তথ্য পূরণ করুন!"); return; }
+            if(!n || !ph || !a) { alert("সব তথ্য দিন!"); return; }
 
             const msg = `🔔 *নতুন অর্ডার!*\n\n🏪 *Shop:* ${s}\n📦 *Product:* ${p}\n💰 *Price:* ${pr}\n🚚 *Delivery:* ${d}\n💵 *Total:* ${t}\n\n👤 *Customer:* ${n}\n📞 *Phone:* ${ph}\n📍 *Address:* ${a}`;
             window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(msg)}`, '_blank');
-            closeModal();
         }
 
         function closeModal() { document.getElementById('orderModal').classList.add('hidden'); }
