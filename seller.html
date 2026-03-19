@@ -3,165 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard | RaiyanMart</title>
+    <title>Seller Dashboard - RaiyanMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h2 { color: #f85606; margin-top: 0; font-size: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.3s; }
-        .btn-primary { background: #f85606; }
-        .btn-save { background: #333; margin-top: 5px; }
-        .btn:active { transform: scale(0.98); }
-        
-        /* প্রিভিউ ইমেজ স্টাইল */
-        #imagePreview { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px; }
-        .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
-        
-        #uploadStatus { font-size: 13px; color: #f85606; font-weight: bold; margin-top: 5px; }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f4f7f6; }
+        .orange-btn { background-color: #ff5722; color: white; transition: 0.3s; }
+        .orange-btn:hover { background-color: #e64a19; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
 
-<div class="container">
-    <div class="card">
-        <h2>Shop Profile</h2>
-        <input type="text" id="myShopName" placeholder="আপনার শপের নাম (যেমন: RaiyanMart)">
-        <button class="btn btn-save" onclick="saveShop()">প্রোফাইল সেভ করুন</button>
-    </div>
-
-    <div class="card">
-        <h2>নতুন পণ্য যোগ করুন</h2>
-        <input type="text" id="pName" placeholder="পণ্যের নাম">
-        <input type="number" id="pPrice" placeholder="দাম (৳)">
-        <input type="text" id="pColors" placeholder="কালারগুলো লিখুন (যেমন: Red, Blue, Black)">
-        <textarea id="pDesc" placeholder="পণ্যের বিবরণ"></textarea>
+    <div class="max-w-2xl mx-auto space-y-6">
         
-        <p style="font-size:12px; margin-bottom:5px; font-weight: bold;">পণ্যের ছবি সিলেক্ট করুন (একাধিক সম্ভব):</p>
-        <input type="file" id="pImageFiles" accept="image/*" multiple onchange="previewImages()">
-        <div id="imagePreview"></div>
-        
-        <div id="uploadStatus"></div>
-        <button class="btn btn-primary" id="uploadBtn" onclick="handleProductUpload()">রিভিউর জন্য পাঠান</button>
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+            <h2 class="text-orange-600 font-bold mb-4">Shop Profile</h2>
+            <input type="text" id="shopName" placeholder="Pure Mart" class="w-full border p-2 rounded mb-3 outline-none focus:ring-1 focus:ring-orange-400">
+            <button onclick="saveProfile()" class="w-full bg-zinc-800 text-white py-2 rounded font-bold text-sm">প্রোফাইল সেভ করুন</button>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+            <h2 class="text-orange-600 font-bold mb-4">নতুন পণ্য যোগ করুন</h2>
+            <div class="space-y-3">
+                <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border p-2 rounded outline-none focus:ring-1 focus:ring-orange-400">
+                <input type="number" id="pPrice" placeholder="দাম (৳)" class="w-full border p-2 rounded outline-none focus:ring-1 focus:ring-orange-400">
+                <input type="text" id="pColor" placeholder="কালারগুলো লিখুন (যেমন: Red, Blue, Black)" class="w-full border p-2 rounded outline-none focus:ring-1 focus:ring-orange-400">
+                <textarea id="pDesc" placeholder="পণ্যের বিবরণ" class="w-full border p-2 rounded h-24 outline-none focus:ring-1 focus:ring-orange-400"></textarea>
+                
+                <p class="text-[12px] font-bold text-gray-600">পণ্যের ছবি সিলেক্ট করুন:</p>
+                <input type="file" id="pImage" class="w-full border p-2 rounded text-sm file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+                
+                <button onclick="submitProduct()" id="uploadBtn" class="w-full orange-btn py-3 rounded-xl font-bold mt-4 shadow-md uppercase tracking-wider">রিভিউয়ের জন্য পাঠান</button>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+            <h2 class="text-orange-600 font-bold mb-4">কাস্টমারদের প্রশ্নসমূহ</h2>
+            <div id="queries" class="text-gray-400 italic text-center py-4">লোড হচ্ছে...</div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+            <h2 class="text-orange-600 font-bold mb-4">আপনার শপের অর্ডারসমূহ</h2>
+            <div id="orders" class="text-gray-400 italic text-center py-4">লোড হচ্ছে...</div>
+        </div>
+
     </div>
 
-    <div class="card">
-        <h2>কাস্টমারদের প্রশ্নসমূহ</h2>
-        <div id="commentList" style="font-size: 14px; color: #666;">লোড হচ্ছে...</div>
-    </div>
+    <script>
+        // Firebase Configuration (স্ক্রিনশট অনুযায়ী)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBucf0IG8NerMCC6zyxUJzZOautG-EQLwRU",
+            authDomain: "ar-raiyanmart.firebaseapp.com",
+            databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ar-raiyanmart",
+            storageBucket: "ar-raiyanmart.firebasestorage.app",
+            messagingSenderId: "336578883565",
+            appId: "1:336578883565:web:54d73b52c96a26f38601e4"
+        };
 
-    <div class="card">
-        <h2>আপনার শপের অর্ডারসমূহ</h2>
-        <div id="orderList" style="font-size: 14px; color: #666;">লোড হচ্ছে...</div>
-    </div>
-</div>
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const storage = firebase.storage();
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
-<script>
-    const firebaseConfig = { 
-        apiKey: "AIzaSyBucf0IGMerMCC6zyxUJzZOauTG-EQLwRU", 
-        authDomain: "ar-raiyanmart.firebaseapp.com", 
-        projectId: "ar-raiyanmart", 
-        databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app", 
-        storageBucket: "ar-raiyanmart.firebasestorage.app", 
-        messagingSenderId: "336578883565", 
-        appId: "1:336578883565:web:54d73b82c96a26f38601e4" 
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    function saveShop() {
-        const name = document.getElementById('myShopName').value.trim();
-        if(name) { 
-            localStorage.setItem('ar_mart_myShop', name); 
-            alert("সেলার প্রোফাইল সেভ হয়েছে!"); 
-            location.reload(); 
+        // ১. প্রোফাইল সেভ ফাংশন
+        function saveProfile() {
+            const name = document.getElementById('shopName').value;
+            if(!name) return alert("দোকানের নাম লিখুন!");
+            localStorage.setItem('raiyan_shop_name', name);
+            alert("প্রোফাইল সেভ হয়েছে!");
         }
-    }
 
-    // ইমেজ প্রিভিউ দেখানোর ফাংশন
-    function previewImages() {
-        const preview = document.getElementById('imagePreview');
-        const files = document.getElementById('pImageFiles').files;
-        preview.innerHTML = "";
-        
-        if (files) {
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'thumb';
-                    preview.appendChild(img);
-                }
-                reader.readAsDataURL(file);
-            });
+        // ২. পণ্য আপলোড ফাংশন
+        async function submitProduct() {
+            const file = document.getElementById('pImage').files[0];
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const color = document.getElementById('pColor').value;
+            const desc = document.getElementById('pDesc').value;
+            const shop = localStorage.getItem('raiyan_shop_name') || "Unknown Shop";
+            const btn = document.getElementById('uploadBtn');
+
+            if(!file || !name || !price) return alert("নাম, দাম এবং ছবি দেওয়া বাধ্যতামূলক!");
+
+            btn.innerText = "আপলোড হচ্ছে...";
+            btn.disabled = true;
+
+            try {
+                // স্টোরেজে ছবি আপলোড
+                const ref = storage.ref('products/' + Date.now() + "_" + file.name);
+                await ref.put(file);
+                const url = await ref.getDownloadURL();
+
+                // ডাটাবেসে সেভ (ছবি অনুযায়ী pending_products এ যাবে)
+                await db.ref('pending_products').push({
+                    name, price: parseInt(price), color, desc, 
+                    imageUrl: url, seller: shop, status: "pending"
+                });
+
+                alert("সফলভাবে রিভিউতে পাঠানো হয়েছে!");
+                location.reload();
+            } catch(e) {
+                alert("ভুল হয়েছে: " + e.message);
+                btn.innerText = "আবার চেষ্টা করুন";
+                btn.disabled = false;
+            }
         }
-    }
 
-    async function handleProductUpload() {
-        const shop = localStorage.getItem('ar_mart_myShop');
-        const name = document.getElementById('pName').value;
-        const price = document.getElementById('pPrice').value;
-        const desc = document.getElementById('pDesc').value;
-        const colors = document.getElementById('pColors').value;
-        const fileInput = document.getElementById('pImageFiles');
-        const status = document.getElementById('uploadStatus');
-        const btn = document.getElementById('uploadBtn');
-
-        if(!shop) return alert("প্রথমে শপ প্রোফাইল সেভ করুন!");
-        if(!name || !price || fileInput.files.length === 0) return alert("সব তথ্য এবং অন্তত একটি ছবি দিন!");
-
-        btn.disabled = true;
-        status.innerText = "ছবিগুলো প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...";
+        // ৩. অর্ডার এবং প্রশ্ন লোড করা
+        db.ref('orders').on('value', snap => {
+            const div = document.getElementById('orders');
+            div.innerHTML = snap.exists() ? "অর্ডার পাওয়া গেছে" : "কোনো অর্ডার নেই";
+        });
         
-        let imageUrls = [];
-        const files = Array.from(fileInput.files);
-
-        // সবগুলো ছবিকে Base64 ফরম্যাটে রূপান্তর (লুপ)
-        const uploadPromises = files.map(file => {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.readAsDataURL(file);
-            });
+        db.ref('comments').on('value', snap => {
+            const div = document.getElementById('queries');
+            div.innerHTML = snap.exists() ? "নতুন প্রশ্ন আছে" : "কোনো প্রশ্ন নেই";
         });
 
-        try {
-            imageUrls = await Promise.all(uploadPromises);
-            
-            // ডাটাবেজে পাঠানো (imgs অ্যারে হিসেবে)
-            database.ref('pending_products').push({
-                name, 
-                price, 
-                desc, 
-                imgs: imageUrls, // একাধিক ছবি
-                img: imageUrls[0], // প্রথম ছবি (থাম্বনেইল হিসেবে)
-                colors: colors, 
-                shopName: shop, 
-                status: "pending",
-                time: Date.now()
-            }).then(() => { 
-                alert("আপনার প্রোডাক্টটি সফলভাবে রিভিউর জন্য পাঠানো হয়েছে!"); 
-                location.reload(); 
-            });
-        } catch (err) {
-            alert("আপলোড করতে সমস্যা হয়েছে!");
-            btn.disabled = false;
-        }
-    }
-
-    window.onload = function() {
-        const savedShop = localStorage.getItem('ar_mart_myShop');
-        if(savedShop) {
-            document.getElementById('myShopName').value = savedShop;
-            // লোড অর্ডার এবং কমেন্ট ফাংশন এখানে কল হবে (যদি আপনার ডাটাবেজ স্ট্রাকচার ঠিক থাকে)
-        }
-    };
-</script>
-
+    </script>
 </body>
 </html>
