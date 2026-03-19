@@ -10,7 +10,7 @@
             position: fixed;
             width: 100%;
             height: 100vh;
-            background: #fcfcfc; /* Off-white background */
+            background: #fcfcfc;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -37,19 +37,24 @@
             font-family: sans-serif;
             color: #d4af37;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
-        /* মূল কন্টেন্ট (শুরুতে লুকানো থাকবে) */
-        #main-content {
-            display: none;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
+        /* মূল কন্টেন্ট স্টাইল */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f8f9fa; 
+            margin: 0;
+            display: flex; 
+            justify-content: center; 
             align-items: center;
+            min-height: 100vh;
+        }
+
+        #main-content {
+            display: none; /* শুরুতে লুকানো */
+            width: 100%;
+            justify-content: center;
+            padding: 20px;
         }
 
         .form-card { 
@@ -58,11 +63,11 @@
             border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
             width: 100%; 
-            max-width: 450px; 
-            border-top: 5px solid #d4af37; /* Gold border */
+            max-width: 400px; 
+            border-top: 5px solid #d4af37; 
         }
 
-        h2 { color: #333; text-align: center; margin-bottom: 25px; font-size: 24px; }
+        h2 { color: #333; text-align: center; margin-bottom: 25px; }
         
         input, textarea { 
             width: 100%; 
@@ -72,13 +77,6 @@
             border-radius: 8px; 
             box-sizing: border-box; 
             background: #fafafa;
-            transition: 0.3s;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #d4af37;
-            background: #fff;
         }
 
         button { 
@@ -91,12 +89,10 @@
             font-weight: bold; 
             cursor: pointer; 
             font-size: 16px; 
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            transition: 0.3s;
+            margin-top: 10px;
         }
 
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4); }
-        button:disabled { background: #ccc; box-shadow: none; transform: none; }
+        button:disabled { background: #ccc; }
         
         label { font-size: 14px; font-weight: bold; color: #666; display: block; margin-top: 15px; }
         #status { text-align: center; font-weight: bold; margin-top: 15px; font-size: 14px; min-height: 20px; }
@@ -109,7 +105,7 @@
         <div class="loading-text">RAIYANMART</div>
     </div>
 
-    <div id="main-content" style="display: none;">
+    <div id="main-content">
         <div class="form-card">
             <h2>সেলার প্যানেল</h2>
             <input type="text" id="shopName" placeholder="দোকানের নাম">
@@ -117,7 +113,7 @@
             <input type="number" id="pPrice" placeholder="দাম (৳)">
             
             <label>পণ্যের ছবি সিলেক্ট করুন:</label>
-            <input type="file" id="pImage" accept="image/*" style="border: none; padding: 10px 0;">
+            <input type="file" id="pImage" accept="image/*" style="border: none;">
             
             <textarea id="pDesc" rows="3" placeholder="পণ্যের বিবরণ"></textarea>
             
@@ -130,7 +126,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // লোডার বন্ধ করার ফাংশন
+        // পেজ লোড হলে লোডার বন্ধ হবে
         window.onload = function() {
             document.getElementById('loader').style.display = 'none';
             document.getElementById('main-content').style.display = 'flex';
@@ -165,7 +161,7 @@
 
             btn.disabled = true;
             statusDiv.style.color = "#d4af37";
-            statusDiv.innerText = "ছবি আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন।";
+            statusDiv.innerText = "ছবি আপলোড হচ্ছে...";
 
             const apiKey = 'c01e05cfc3241e9f57336dc80cc38d0f';
             const formData = new FormData();
@@ -203,7 +199,6 @@
             } catch (error) {
                 statusDiv.style.color = "red";
                 statusDiv.innerText = "ব্যর্থ হয়েছে! আবার চেষ্টা করুন।";
-                console.error(error);
             } finally {
                 btn.disabled = false;
             }
