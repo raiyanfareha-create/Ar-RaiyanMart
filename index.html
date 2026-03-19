@@ -3,50 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart | Premium Luxury Shop</title>
+    <title>Ar RaiyanMart | আভিজাত্যের সেরা ঠিকানা</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
     <style>
-        /* =========================================
-           1. CSS VARIABLES (Brand Setup)
-           ========================================= */
+        /* 1. CSS VARIABLES - BRAND IDENTITY */
         :root {
             --gold: #D4AF37;
             --dark-gold: #B8860B;
+            --light-gold: #F4E4BC;
             --white: #ffffff;
-            --bg-color: #FAF9F6;
-            --text-main: #222;
-            --text-light: #555;
-            --success: #25D366;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --off-white: #FAF9F6;
+            --bg-gradient: linear-gradient(135deg, #FAF9F6 0%, #F4F1EA 100%);
+            --text-dark: #1A1A1A;
+            --text-gray: #555555;
+            --wa-green: #25D366;
+            --shadow-sm: 0 4px 10px rgba(0,0,0,0.03);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 50px rgba(212, 175, 55, 0.15);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        /* =========================================
-           2. GLOBAL STYLES
-           ========================================= */
+        /* 2. GLOBAL RESET */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Hind Siliguri', sans-serif;
-            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background: var(--bg-gradient);
+            color: var(--text-dark);
             line-height: 1.8;
+            overflow-x: hidden;
         }
 
-        /* =========================================
-           3. HEADER & NAVIGATION
-           ========================================= */
-        header {
-            background: var(--white);
-            height: 80px;
+        /* 3. SCROLLBAR DESIGN */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--off-white); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        /* 4. PREMIUM NAVIGATION */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            height: 90px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,347 +59,516 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(15px);
             border-bottom: 4px solid var(--gold);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            box-shadow: var(--shadow-sm);
         }
 
-        .brand-name {
-            font-size: 26px;
-            font-weight: 700;
+        .nav-logo {
+            font-size: 28px;
+            font-weight: 800;
             color: var(--gold);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .lang-select {
-            padding: 5px 12px;
-            border: 1.5px solid var(--gold);
-            border-radius: 8px;
+        .nav-logo i { font-size: 32px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); }
+
+        .nav-actions { display: flex; gap: 25px; align-items: center; }
+        .lang-btn {
+            background: var(--soft-gold);
+            border: 2px solid var(--gold);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 700;
             color: var(--gold);
-            font-weight: 600;
-            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        /* =========================================
-           4. HERO BANNER (Recovery Focus)
-           ========================================= */
+        /* 5. DYNAMIC HERO BANNER */
         .hero-section {
             width: 92%;
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 35px auto;
-            height: 320px;
-            border-radius: 30px;
+            height: 420px;
+            border-radius: 40px;
             position: relative;
             overflow: hidden;
-            border: 3px solid var(--gold);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 5px solid var(--white);
+            box-shadow: var(--shadow-lg);
             background: #000;
         }
 
-        /* GitHub-er hero-banner.jpg ekhane set kora holo */
+        /* আপনার 1000000591.jpg ফাইলটি এখানে ব্যানার হিসেবে ব্যবহার করা হয়েছে */
         .hero-section img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.6;
-            transition: transform 6s ease;
+            opacity: 0.7;
+            transition: transform 12s ease;
         }
 
-        .hero-section:hover img {
-            transform: scale(1.1);
-        }
+        .hero-section:hover img { transform: scale(1.1); }
 
-        .hero-content {
+        .hero-overlay {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.8));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
             color: white;
-            width: 90%;
+            padding: 20px;
         }
 
-        .hero-content h1 {
-            font-size: clamp(24px, 5vw, 40px);
+        .hero-overlay h1 {
+            font-size: clamp(26px, 6vw, 52px);
             color: var(--gold);
             margin-bottom: 15px;
-            text-shadow: 3px 3px 10px rgba(0,0,0,0.6);
+            text-shadow: 3px 3px 15px rgba(0,0,0,0.8);
+            animation: fadeInDown 1s;
         }
 
-        /* =========================================
-           5. PRODUCT GRID
-           ========================================= */
-        .container {
-            padding: 30px 8% 100px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 50px;
-            max-width: 1400px;
+        /* 6. MAIN PRODUCT SHOWCASE */
+        .main-container {
+            padding: 40px 8% 120px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
-        .card {
-            background: var(--white);
-            border-radius: 25px;
-            padding: 35px;
-            border: 1px solid rgba(212, 175, 55, 0.15);
-            box-shadow: var(--card-shadow);
-            transition: var(--transition);
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
             position: relative;
         }
 
-        .card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.12);
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--text-dark);
+            display: inline-block;
+            padding-bottom: 15px;
         }
 
-        .image-wrapper {
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 80px; height: 5px;
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 50px;
+        }
+
+        /* LUXURY PRODUCT CARD */
+        .card {
+            background: var(--white);
+            border-radius: 35px;
+            padding: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .card:hover {
+            transform: translateY(-20px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--gold);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%);
+            transition: 0.5s;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 30px; right: 30px;
+            background: var(--gold);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            z-index: 10;
+        }
+
+        .card-img-box {
             width: 100%;
-            border-radius: 20px;
+            border-radius: 25px;
             overflow: hidden;
             margin-bottom: 30px;
-            background: #fdfdfd;
-            border: 1px solid #f0f0f0;
+            border: 1px solid #f8f8f8;
+            background: #fff;
         }
 
-        /* Product image 1000000587.jpg ekhane set kora holo */
-        .image-wrapper img {
+        /* আপনার 1000000588.jpg ফাইলটি এখানে প্রোডাক্ট হিসেবে ব্যবহার করা হয়েছে */
+        .card-img-box img {
             width: 100%;
             display: block;
-            cursor: pointer;
-            transition: 0.6s;
+            transition: 0.8s ease;
         }
 
-        .card-title {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
+        .card:hover .card-img-box img { transform: scale(1.1); }
 
+        .card-info h3 { font-size: 28px; margin-bottom: 15px; color: #111; }
+        
         .card-price {
-            color: var(--gold);
-            font-size: 30px;
+            font-size: 36px;
             font-weight: 800;
-            margin-bottom: 25px;
+            color: var(--gold);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .desc-box {
-            background: #fffdf5;
-            padding: 22px;
-            border-radius: 18px;
-            border-left: 6px solid var(--gold);
+        .card-price span {
+            font-size: 18px;
+            color: #bbb;
+            text-decoration: line-through;
+            font-weight: 400;
+        }
+
+        .detail-box {
+            background: #fffdf2;
+            padding: 25px;
+            border-radius: 20px;
+            border-left: 8px solid var(--gold);
             margin-bottom: 35px;
         }
 
-        .desc-box h4 {
-            color: var(--gold);
-            margin-bottom: 10px;
+        .detail-box ul { list-style: none; }
+        .detail-box li {
+            font-size: 16px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* Order Button */
-        .cta-button {
+        .detail-box li i { color: var(--gold); font-size: 14px; }
+
+        /* CTA BUTTON */
+        .order-btn {
             background: linear-gradient(135deg, var(--gold), var(--dark-gold));
             color: white;
             border: none;
             width: 100%;
             padding: 22px;
-            border-radius: 18px;
-            font-size: 22px;
-            font-weight: 700;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 15px;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.35);
             transition: 0.3s;
         }
 
-        /* =========================================
-           6. CHECKOUT MODAL
-           ========================================= */
-        .modal-overlay {
+        .order-btn:hover { filter: brightness(1.15); transform: scale(1.02); }
+        .order-btn:active { transform: scale(0.98); }
+
+        /* 7. MODERN CHECKOUT MODAL */
+        .modal-mask {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88);
-            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(15px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
 
-        .modal-content {
+        .modal-container {
             background: var(--white);
             width: 100%;
-            max-width: 480px;
-            padding: 40px;
-            border-radius: 35px;
+            max-width: 520px;
+            padding: 50px;
+            border-radius: 45px;
             position: relative;
-            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        @keyframes popUp {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .close-modal {
+        .modal-close {
             position: absolute;
-            top: 20px; right: 25px;
-            font-size: 40px;
-            color: #ccc;
+            top: 25px; right: 35px;
+            font-size: 45px;
+            color: #ddd;
             cursor: pointer;
+            transition: 0.3s;
         }
 
-        .input-box { margin-bottom: 20px; }
-        .input-box label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-light); }
-        .input-box input, .input-box select, .input-box textarea {
-            width: 100%; padding: 16px; border: 2px solid #eee; border-radius: 14px; font-size: 16px;
+        .modal-close:hover { color: var(--gold); }
+
+        .modal-header { text-align: center; margin-bottom: 35px; }
+        .modal-header h2 { color: var(--gold); font-size: 26px; }
+
+        .form-control { margin-bottom: 25px; }
+        .form-control label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #444;
         }
 
-        .wa-btn {
-            background: var(--success);
+        .form-control input, .form-control select, .form-control textarea {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #f0f0f0;
+            border-radius: 18px;
+            font-size: 17px;
+            outline: none;
+            background: #fafafa;
+            transition: 0.3s;
+        }
+
+        .form-control input:focus { border-color: var(--gold); background: #fff; }
+
+        .wa-submit {
+            background: var(--wa-green);
             color: white;
             border: none;
             width: 100%;
-            padding: 20px;
-            border-radius: 16px;
-            font-size: 20px;
+            padding: 22px;
+            border-radius: 20px;
+            font-size: 22px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             cursor: pointer;
+            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.3);
+            margin-top: 15px;
         }
 
-        /* =========================================
-           7. RESPONSIVE
-           ========================================= */
+        /* 8. FOOTER DESIGN */
+        footer {
+            background: #111;
+            color: #888;
+            padding: 80px 8% 40px;
+            text-align: center;
+        }
+
+        .footer-logo { font-size: 32px; color: var(--gold); font-weight: 800; margin-bottom: 20px; display: block; }
+        .footer-socials { display: flex; justify-content: center; gap: 30px; margin-bottom: 40px; }
+        .footer-socials a { color: #555; font-size: 24px; transition: 0.3s; }
+        .footer-socials a:hover { color: var(--gold); }
+        .footer-copy { border-top: 1px solid #222; padding-top: 30px; font-size: 14px; }
+
+        /* 9. RESPONSIVE QUERIES */
         @media (max-width: 768px) {
-            header { padding: 0 5%; }
-            .hero-section { height: 240px; }
-            .container { grid-template-columns: 1fr; padding: 15px 5% 80px; }
+            nav { height: 80px; padding: 0 6%; }
+            .nav-logo { font-size: 22px; }
+            .hero-section { height: 300px; border-radius: 25px; margin: 20px auto; }
+            .hero-overlay h1 { font-size: 28px; }
+            .main-container { padding: 10px 6% 100px; }
+            .section-title h2 { font-size: 28px; }
+            .product-grid { grid-template-columns: 1fr; gap: 35px; }
+            .modal-container { padding: 40px 25px; border-radius: 35px; }
+            .card { padding: 30px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="#" class="brand-name">
-            <i class="fas fa-gem"></i> Ar RaiyanMart
+    <nav>
+        <a href="#" class="nav-logo">
+            <i class="fas fa-crown"></i> Ar RaiyanMart
         </a>
-        <div class="lang-badge">বাংলা</div>
-    </header>
-
-    <div class="hero-section">
-        <img src="hero-banner.jpg" alt="Banner" onerror="this.src='https://via.placeholder.com/1200x400?text=Banner+Not+Found'">
-        <div class="hero-content">
-            <h1>আর রাইয়ানমার্ট প্রিমিয়াম কালেকশন</h1>
-            <p>সেরা পণ্যের আস্থার প্রতীক ও আভিজাত্যের নিশ্চয়তা</p>
+        <div class="nav-actions">
+            <div class="lang-btn">বাংলা</div>
+            <i class="fas fa-shopping-bag" style="color: var(--gold); font-size: 24px; cursor: pointer;"></i>
         </div>
-    </div>
+    </nav>
 
-    <main class="container">
-        
-        <div class="card">
-            <div class="image-wrapper">
-                <img src="1000000587.jpg" alt="Smart Watch" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/600x450?text=Image+Not+Found'">
-            </div>
+    <section class="hero-section">
+        <img src="1000000591.jpg" alt="Ar RaiyanMart Premium Banner" onerror="this.src='https://via.placeholder.com/1200x500?text=Banner+Image+Error'">
+        <div class="hero-overlay">
+            <h1 class="animate__animated animate__fadeInDown">আভিজাত্য ও বিশ্বাসের মিলনস্থল</h1>
+            <p class="animate__animated animate__fadeInUp" style="letter-spacing: 3px; font-weight: 300; opacity: 0.9;">AR RAIYANMART LUXURY COLLECTION</p>
+        </div>
+    </section>
+
+    <main class="main-container">
+        <div class="section-title">
+            <h2>এক্সক্লুসিভ কালেকশন</h2>
+        </div>
+
+        <div class="product-grid">
             
-            <h2 class="card-title">প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ</h2>
-            <p class="card-price">৳ ৩,৫০০</p>
+            <article class="card">
+                <div class="card-badge">HOT DEAL</div>
+                <div class="card-img-box">
+                    <img src="1000000588.jpg" alt="Premium Product" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/600x450?text=Product+Image+Error'">
+                </div>
+                
+                <div class="card-info">
+                    <h3>আর রাইয়ানমার্ট রাজকীয় পণ্য</h3>
+                    <div class="card-price">৳ ১,৯৫০ <span>৳ ২,৮৫০</span></div>
 
-            <div class="desc-box">
-                <h4><i class="fas fa-check-circle"></i> Best Choice</h4>
-                <p>Amader ei smart watch-ti premium build quality somponno. Heart rate monitor, sleep tracking ebong 5-7 diner battery backup thakbe.</p>
-            </div>
+                    <div class="detail-box">
+                        <ul>
+                            <li><i class="fas fa-star"></i> ১০০% প্রিমিয়াম কোয়ালিটি গ্যারান্টি</li>
+                            <li><i class="fas fa-shield-alt"></i> অরিজিনাল কালার ও টেকসই ডিজাইন</li>
+                            <li><i class="fas fa-truck-moving"></i> দ্রুত ডেলিভারি সুবিধা</li>
+                        </ul>
+                    </div>
 
-            <button class="cta-button" onclick="openOrder('প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ', 3500)">
-                <i class="fas fa-cart-plus"></i> Order Now
-            </button>
+                    <button class="order-btn" onclick="initiateOrder('আর রাইয়ানমার্ট রাজকীয় পণ্য', 1950)">
+                        <i class="fas fa-shopping-cart"></i> এখনই কিনুন
+                    </button>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card-badge">NEW ITEM</div>
+                <div class="card-img-box">
+                    <img src="1000000588.jpg" alt="Premium Product" style="filter: hue-rotate(45deg);">
+                </div>
+                
+                <div class="card-info">
+                    <h3>আভিজাত্য স্পেশাল ভ্যারিয়েন্ট</h3>
+                    <div class="card-price">৳ ২,৪৫০ <span>৳ ৩,০০০</span></div>
+
+                    <div class="detail-box">
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> ইউনিক কালেকশন ২০২৩</li>
+                            <li><i class="fas fa-clock"></i> ২৪ ঘণ্টা কাস্টমার সাপোর্ট</li>
+                            <li><i class="fas fa-gift"></i> আকর্ষণীয় গিফট বক্স প্যাকেজিং</li>
+                        </ul>
+                    </div>
+
+                    <button class="order-btn" onclick="initiateOrder('আভিজাত্য স্পেশাল ভ্যারিয়েন্ট', 2450)">
+                        <i class="fas fa-shopping-cart"></i> এখনই কিনুন
+                    </button>
+                </div>
+            </article>
+
         </div>
-
     </main>
 
-    <div id="checkoutModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeOrder()">&times;</span>
-            <h3 id="pName" style="color: var(--gold); text-align: center; margin-bottom: 25px;"></h3>
+    <div id="checkoutPopup" class="modal-mask">
+        <div class="modal-container">
+            <span class="modal-close" onclick="closeCheckout()">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalProductTitle">পণ্য অর্ডার করুন</h2>
+                <div style="width: 50px; height: 3px; background: var(--gold); margin: 10px auto;"></div>
+            </div>
             
-            <div class="input-box">
-                <label>Apnar Nam</label>
-                <input type="text" id="custName" placeholder="Abdullah">
+            <div class="form-control">
+                <label>আপনার নাম</label>
+                <input type="text" id="custName" placeholder="উদাঃ রাইয়ান আহমেদ">
             </div>
 
-            <div class="input-box">
-                <label>Mobile Number</label>
+            <div class="form-control">
+                <label>মোবাইল নম্বর</label>
                 <input type="tel" id="custPhone" placeholder="017XXXXXXXX">
             </div>
 
-            <div class="input-box">
-                <label>Delivery Area</label>
-                <select id="custDelivery">
-                    <option value="70">Dhakar Bhitore (70 TK)</option>
-                    <option value="130">Dhakar Bahire (130 TK)</option>
+            <div class="form-control">
+                <label>ডেলিভারি এরিয়া</label>
+                <select id="custArea">
+                    <option value="70">ঢাকার ভিতরে (৭০ টাকা)</option>
+                    <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
                 </select>
             </div>
 
-            <div class="input-box">
-                <label>Full Thikana</label>
-                <textarea id="custAddress" rows="3" placeholder="Road, Thana, District"></textarea>
+            <div class="form-control">
+                <label>বিস্তারিত ঠিকানা</label>
+                <textarea id="custAddr" rows="3" placeholder="বাসা নং, রোড, থানা ও জেলা"></textarea>
             </div>
 
-            <button class="wa-btn" onclick="sendOrder()">
-                <i class="fab fa-whatsapp"></i> Confirm Order
+            <button class="wa-submit" onclick="submitToWhatsApp()">
+                <i class="fab fa-whatsapp"></i> অর্ডার কনফার্ম করুন
             </button>
         </div>
     </div>
 
-    <script>
-        let selectedItem = { title: "", price: 0 };
+    <footer>
+        <a href="#" class="footer-logo">Ar RaiyanMart</a>
+        <div class="footer-socials">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2026 Ar RaiyanMart. All Rights Reserved. <br>
+            Developed with ❤️ for Excellence.
+        </div>
+    </footer>
 
-        function openOrder(name, price) {
-            selectedItem = { title: name, price: price };
-            document.getElementById('pName').innerText = name;
-            document.getElementById('checkoutModal').style.display = 'flex';
+    <script>
+        let currentItem = { title: "", price: 0 };
+
+        function initiateOrder(title, price) {
+            currentItem = { title, price };
+            document.getElementById('modalProductTitle').innerText = title;
+            document.getElementById('checkoutPopup').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
-        function closeOrder() {
-            document.getElementById('checkoutModal').style.display = 'none';
+        function closeCheckout() {
+            document.getElementById('checkoutPopup').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
-        function sendOrder() {
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            const address = document.getElementById('custAddress').value;
-            const delivery = parseInt(document.getElementById('custDelivery').value);
-            const total = selectedItem.price + delivery;
+        function submitToWhatsApp() {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('custAddr').value.trim();
+            const delivery = parseInt(document.getElementById('custArea').value);
+            const total = currentItem.price + delivery;
 
             if(!name || !phone || !address) {
-                alert("Sob tothyo puron korun!");
+                alert("সব তথ্য পূরণ করা বাধ্যতামূলক!");
                 return;
             }
 
-            const msg = `🔔 *New Order!*\n\n` +
-                      `📦 *Product:* ${selectedItem.title}\n` +
-                      `💰 *Price:* ${selectedItem.price} TK\n` +
-                      `🚚 *Delivery:* ${delivery} TK\n` +
-                      `💵 *Total:* ${total} TK\n\n` +
-                      `👤 *Name:* ${name}\n` +
-                      `📞 *Phone:* ${phone}\n` +
-                      `📍 *Address:* ${address}`;
+            const waMessage = `🔔 *নতুন অর্ডার - Ar RaiyanMart* 🔔\n\n` +
+                            `📦 *পণ্য:* ${currentItem.title}\n` +
+                            `💰 *দাম:* ${currentItem.price} TK\n` +
+                            `🚚 *ডেলিভারি:* ${delivery} TK\n` +
+                            `💵 *মোট বিল:* ${total} TK\n` +
+                            `----------------------------------\n` +
+                            `👤 *ক্রেতা:* ${name}\n` +
+                            `📞 *মোবাইল:* ${phone}\n` +
+                            `📍 *ঠিকানা:* ${address}\n\n` +
+                            `_অর্ডারটি দ্রুত প্রসেস করার অনুরোধ রইলো।_`;
 
-            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
+            const waLink = `https://wa.me/8801704100288?text=${encodeURIComponent(waMessage)}`;
+            window.open(waLink, '_blank');
+        }
+
+        // আউটসাইড ক্লিক ক্লোজ ফাংশন
+        window.onclick = function(event) {
+            const modal = document.getElementById('checkoutPopup');
+            if (event.target == modal) { closeCheckout(); }
         }
     </script>
+
 </body>
 </html>
