@@ -3,108 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart | আভিজাত্যের সেরা ঠিকানা</title>
+    <title>Ar RaiyanMart | Premium Luxury Shop</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* 1. কালার ভেরিয়েবল এবং থিম সেটআপ */
+        /* =========================================
+           1. CSS VARIABLES (Brand Setup)
+           ========================================= */
         :root {
             --gold: #D4AF37;
             --dark-gold: #B8860B;
             --white: #ffffff;
-            --bg-offwhite: #FAF9F6;
-            --text-black: #1A1A1A;
-            --text-muted: #666666;
-            --whatsapp: #25D366;
-            --card-shadow: 0 15px 35px rgba(0,0,0,0.06);
-            --border-radius: 25px;
-            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --bg-color: #FAF9F6;
+            --text-main: #222;
+            --text-light: #555;
+            --success: #25D366;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 2. গ্লোবাল রিসেট */
+        /* =========================================
+           2. GLOBAL STYLES
+           ========================================= */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Hind Siliguri', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg-offwhite);
-            color: var(--text-black);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             line-height: 1.8;
-            overflow-x: hidden;
         }
 
-        /* 3. প্রিমিয়াম হেডার */
+        /* =========================================
+           3. HEADER & NAVIGATION
+           ========================================= */
         header {
             background: var(--white);
-            height: 85px;
-            padding: 0 8%;
+            height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 8%;
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 4.5px solid var(--gold);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
 
-        .logo-area {
-            font-size: 28px;
-            font-weight: 800;
+        .brand-name {
+            font-size: 26px;
+            font-weight: 700;
             color: var(--gold);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
-            letter-spacing: -0.5px;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .lang-badge {
-            background: var(--soft-gold);
+        .lang-select {
+            padding: 5px 12px;
             border: 1.5px solid var(--gold);
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 8px;
             color: var(--gold);
+            font-weight: 600;
             font-size: 14px;
         }
 
-        /* 4. লাক্সারি ব্যানার সেকশন */
-        .hero-container {
+        /* =========================================
+           4. HERO BANNER (Recovery Focus)
+           ========================================= */
+        .hero-section {
             width: 92%;
-            max-width: 1250px;
+            max-width: 1200px;
             margin: 35px auto;
-            height: 350px;
-            border-radius: var(--border-radius);
+            height: 320px;
+            border-radius: 30px;
             position: relative;
             overflow: hidden;
-            border: 3.5px solid var(--gold);
-            box-shadow: var(--card-shadow);
+            border: 3px solid var(--gold);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             background: #000;
         }
 
-        /* আপনার গিটহাবের স্ক্রিনশট অনুযায়ী ফাইলের নাম ঠিক করা হয়েছে */
-        .hero-container img {
+        /* GitHub-er hero-banner.jpg ekhane set kora holo */
+        .hero-section img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.65;
-            transition: transform 8s ease;
+            opacity: 0.6;
+            transition: transform 6s ease;
         }
 
-        .hero-container:hover img {
+        .hero-section:hover img {
             transform: scale(1.1);
         }
 
@@ -114,119 +112,91 @@
             transform: translate(-50%, -50%);
             text-align: center;
             color: white;
-            width: 85%;
-            z-index: 2;
+            width: 90%;
         }
 
         .hero-content h1 {
-            font-size: clamp(24px, 5vw, 42px);
+            font-size: clamp(24px, 5vw, 40px);
             color: var(--gold);
             margin-bottom: 15px;
-            text-shadow: 3px 3px 12px rgba(0,0,0,0.7);
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.6);
         }
 
-        /* 5. মেইন প্রোডাক্ট গ্রিড */
-        .shop-wrapper {
-            padding: 40px 8% 120px;
+        /* =========================================
+           5. PRODUCT GRID
+           ========================================= */
+        .container {
+            padding: 30px 8% 100px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 50px;
-            max-width: 1450px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* লাক্সারি প্রোডাক্ট কার্ড */
-        .product-card {
+        .card {
             background: var(--white);
-            border-radius: var(--border-radius);
+            border-radius: 25px;
             padding: 35px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: var(--card-shadow);
             transition: var(--transition);
             position: relative;
         }
 
-        .product-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 25px 60px rgba(212, 175, 55, 0.15);
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.12);
         }
 
-        .badge-new {
-            position: absolute;
-            top: 35px; right: 35px;
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            color: white;
-            padding: 6px 18px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 700;
-            z-index: 5;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .product-image-box {
+        .image-wrapper {
             width: 100%;
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 30px;
-            background: #fcfcfc;
-            border: 1px solid #f1f1f1;
+            background: #fdfdfd;
+            border: 1px solid #f0f0f0;
         }
 
-        /* আপনার প্রোডাক্ট ইমেজ ফাইলের নাম এখানে বসানো হয়েছে */
-        .product-image-box img {
+        /* Product image 1000000587.jpg ekhane set kora holo */
+        .image-wrapper img {
             width: 100%;
             display: block;
             cursor: pointer;
             transition: 0.6s;
         }
 
-        .product-image-box img:hover {
-            transform: scale(1.08);
-        }
-
-        .title-text {
+        .card-title {
             font-size: 26px;
             font-weight: 700;
             margin-bottom: 12px;
-            color: #000;
         }
 
-        .price-tag {
-            font-size: 32px;
-            font-weight: 800;
+        .card-price {
             color: var(--gold);
+            font-size: 30px;
+            font-weight: 800;
             margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
-        /* প্রোডাক্ট ইনফো সেকশন */
-        .benefit-box {
+        .desc-box {
             background: #fffdf5;
-            padding: 25px;
-            border-radius: 20px;
-            border-left: 6.5px solid var(--gold);
+            padding: 22px;
+            border-radius: 18px;
+            border-left: 6px solid var(--gold);
             margin-bottom: 35px;
         }
 
-        .benefit-box h4 {
+        .desc-box h4 {
+            color: var(--gold);
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            color: var(--gold);
-            margin-bottom: 12px;
-            font-size: 18px;
+            gap: 10px;
         }
 
-        .benefit-box p {
-            font-size: 15.5px;
-            color: var(--text-muted);
-        }
-
-        /* অর্ডার বাটন এনিমেশন */
-        .btn-order {
+        /* Order Button */
+        .cta-button {
             background: linear-gradient(135deg, var(--gold), var(--dark-gold));
             color: white;
             border: none;
@@ -240,239 +210,191 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            box-shadow: 0 12px 25px rgba(212, 175, 55, 0.35);
-            transition: 0.3s ease;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            transition: 0.3s;
         }
 
-        .btn-order:hover {
-            filter: brightness(1.1);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.45);
-        }
-
-        /* 6. অর্ডার ফরম পপআপ */
-        .modal-background {
+        /* =========================================
+           6. CHECKOUT MODAL
+           ========================================= */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.88);
             backdrop-filter: blur(12px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            padding: 25px;
+            padding: 20px;
         }
 
-        .modal-content-area {
+        .modal-content {
             background: var(--white);
             width: 100%;
             max-width: 480px;
-            padding: 45px;
-            border-radius: 40px;
+            padding: 40px;
+            border-radius: 35px;
             position: relative;
-            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .modal-close {
+        .close-modal {
             position: absolute;
-            top: 25px; right: 30px;
-            font-size: 45px;
-            color: #ddd;
+            top: 20px; right: 25px;
+            font-size: 40px;
+            color: #ccc;
             cursor: pointer;
-            line-height: 1;
         }
 
-        .form-group { margin-bottom: 22px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 15px;
+        .input-box { margin-bottom: 20px; }
+        .input-box label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-light); }
+        .input-box input, .input-box select, .input-box textarea {
+            width: 100%; padding: 16px; border: 2px solid #eee; border-radius: 14px; font-size: 16px;
         }
 
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 18px;
-            border: 2px solid #f2f2f2;
-            border-radius: 16px;
-            font-size: 16px;
-            outline: none;
-            background: #fafafa;
-            transition: 0.3s;
-        }
-
-        .form-group input:focus {
-            border-color: var(--gold);
-            background: #fff;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-        }
-
-        .wa-submit-btn {
-            background: var(--whatsapp);
+        .wa-btn {
+            background: var(--success);
             color: white;
             border: none;
             width: 100%;
-            padding: 22px;
-            border-radius: 18px;
+            padding: 20px;
+            border-radius: 16px;
             font-size: 20px;
             font-weight: 700;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-top: 20px;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.25);
+            cursor: pointer;
         }
 
-        /* 7. রেসপন্সিভ ডিজাইন */
+        /* =========================================
+           7. RESPONSIVE
+           ========================================= */
         @media (max-width: 768px) {
-            header { height: 75px; padding: 0 6%; }
-            .logo-area { font-size: 22px; }
-            .hero-container { height: 250px; margin: 20px auto; }
-            .hero-content h1 { font-size: 26px; }
-            .shop-wrapper { grid-template-columns: 1fr; padding: 15px 6% 100px; gap: 35px; }
-            .modal-content-area { padding: 35px 25px; }
-            .btn-order { padding: 18px; font-size: 19px; }
+            header { padding: 0 5%; }
+            .hero-section { height: 240px; }
+            .container { grid-template-columns: 1fr; padding: 15px 5% 80px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo-area">
+        <a href="#" class="brand-name">
             <i class="fas fa-gem"></i> Ar RaiyanMart
         </a>
-        <div class="header-actions">
-            <div class="lang-badge">বাংলা</div>
-            <i class="fas fa-search" style="color: var(--gold); font-size: 20px; cursor: pointer;"></i>
-        </div>
+        <div class="lang-badge">বাংলা</div>
     </header>
 
-    <section class="hero-container">
-        <img src="hero-banner.jpg" alt="Luxury Banner" onerror="this.src='https://via.placeholder.com/1200x450?text=Check+Hero+Banner+Name'">
+    <div class="hero-section">
+        <img src="hero-banner.jpg" alt="Banner" onerror="this.src='https://via.placeholder.com/1200x400?text=Banner+Not+Found'">
         <div class="hero-content">
             <h1>আর রাইয়ানমার্ট প্রিমিয়াম কালেকশন</h1>
             <p>সেরা পণ্যের আস্থার প্রতীক ও আভিজাত্যের নিশ্চয়তা</p>
         </div>
-    </section>
+    </div>
 
-    <main class="shop-wrapper">
+    <main class="container">
         
-        <article class="product-card">
-            <div class="badge-new">New Arrival</div>
-            <div class="product-image-box">
-                <img src="1000000587.jpg" alt="Smart Watch" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/600x450?text=Product+Image+Missing'">
+        <div class="card">
+            <div class="image-wrapper">
+                <img src="1000000587.jpg" alt="Smart Watch" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/600x450?text=Image+Not+Found'">
             </div>
             
-            <h2 class="title-text">প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ</h2>
-            <p class="price-tag">৳ ৩,৫০০ <span style="font-size: 16px; color: #888; font-weight: 400; text-decoration: line-through; margin-left: 10px;">৳ ৪,৫০০</span></p>
+            <h2 class="card-title">প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ</h2>
+            <p class="card-price">৳ ৩,৫০০</p>
 
-            <div class="benefit-box">
-                <h4><i class="fas fa-shield-alt"></i> কেন এটি কিনবেন?</h4>
-                <p>আমাদের এই স্মার্ট ওয়াচটি প্রিমিয়াম বিল্ড কোয়ালিটি সম্পন্ন। এতে রয়েছে সঠিক হার্ট রেট মনিটর, স্লিপ ট্র্যাকিং এবং একবার চার্জে ৫-৭ দিনের ব্যাটারি ব্যাকআপ। এটি সম্পূর্ণ ওয়াটারপ্রুফ এবং প্রিমিয়াম লুক দেয়।</p>
+            <div class="desc-box">
+                <h4><i class="fas fa-check-circle"></i> Best Choice</h4>
+                <p>Amader ei smart watch-ti premium build quality somponno. Heart rate monitor, sleep tracking ebong 5-7 diner battery backup thakbe.</p>
             </div>
 
-            <button class="btn-order" onclick="triggerOrder('প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ', 3500)">
-                <i class="fas fa-shopping-cart"></i> Order Now
+            <button class="cta-button" onclick="openOrder('প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ', 3500)">
+                <i class="fas fa-cart-plus"></i> Order Now
             </button>
-        </article>
+        </div>
 
     </main>
 
-    <div id="checkoutModal" class="modal-background">
-        <div class="modal-content-area">
-            <span class="modal-close" onclick="closeCheckout()">&times;</span>
-            <h2 id="pNameDisplay" style="color: var(--gold); text-align: center; margin-bottom: 30px; font-size: 24px;"></h2>
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeOrder()">&times;</span>
+            <h3 id="pName" style="color: var(--gold); text-align: center; margin-bottom: 25px;"></h3>
             
-            <div class="form-group">
-                <label>আপনার পূর্ণ নাম</label>
-                <input type="text" id="custName" placeholder="উদাঃ রাইয়ান আহমেদ">
+            <div class="input-box">
+                <label>Apnar Nam</label>
+                <input type="text" id="custName" placeholder="Abdullah">
             </div>
 
-            <div class="form-group">
-                <label>মোবাইল নম্বর</label>
-                <input type="tel" id="custPhone" placeholder="01XXXXXXXXX">
+            <div class="input-box">
+                <label>Mobile Number</label>
+                <input type="tel" id="custPhone" placeholder="017XXXXXXXX">
             </div>
 
-            <div class="form-group">
-                <label>ডেলিভারি এরিয়া</label>
+            <div class="input-box">
+                <label>Delivery Area</label>
                 <select id="custDelivery">
-                    <option value="70">ঢাকার ভিতরে (৭০ টাকা)</option>
-                    <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
+                    <option value="70">Dhakar Bhitore (70 TK)</option>
+                    <option value="130">Dhakar Bahire (130 TK)</option>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>বিস্তারিত ঠিকানা (বাসা নং, থানা, জেলা)</label>
-                <textarea id="custAddress" rows="3" placeholder="আপনার পূর্ণ ঠিকানা লিখুন"></textarea>
+            <div class="input-box">
+                <label>Full Thikana</label>
+                <textarea id="custAddress" rows="3" placeholder="Road, Thana, District"></textarea>
             </div>
 
-            <button class="wa-submit-btn" onclick="processOrderToWA()">
-                <i class="fab fa-whatsapp"></i> কনফার্ম করুন (WhatsApp)
+            <button class="wa-btn" onclick="sendOrder()">
+                <i class="fab fa-whatsapp"></i> Confirm Order
             </button>
         </div>
     </div>
 
     <script>
-        let orderContext = { title: "", price: 0 };
+        let selectedItem = { title: "", price: 0 };
 
-        // ওপেন অর্ডার ফাংশন
-        function triggerOrder(title, price) {
-            orderContext.title = title;
-            orderContext.price = price;
-            document.getElementById('pNameDisplay').innerText = title;
+        function openOrder(name, price) {
+            selectedItem = { title: name, price: price };
+            document.getElementById('pName').innerText = name;
             document.getElementById('checkoutModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // বন্ধ করে স্ক্রলিং
+            document.body.style.overflow = 'hidden';
         }
 
-        // ক্লোজ অর্ডার ফাংশন
-        function closeCheckout() {
+        function closeOrder() {
             document.getElementById('checkoutModal').style.display = 'none';
-            document.body.style.overflow = 'auto'; // চালু করে স্ক্রলিং
+            document.body.style.overflow = 'auto';
         }
 
-        // হোয়াটসঅ্যাপ সেন্ডার
-        function processOrderToWA() {
-            const name = document.getElementById('custName').value.trim();
-            const phone = document.getElementById('custPhone').value.trim();
-            const address = document.getElementById('custAddress').value.trim();
-            const deliveryCharge = parseInt(document.getElementById('custDelivery').value);
-            const totalAmount = orderContext.price + deliveryCharge;
+        function sendOrder() {
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const address = document.getElementById('custAddress').value;
+            const delivery = parseInt(document.getElementById('custDelivery').value);
+            const total = selectedItem.price + delivery;
 
             if(!name || !phone || !address) {
-                alert("দয়া করে সব তথ্য সঠিকভাবে পূরণ করুন!");
+                alert("Sob tothyo puron korun!");
                 return;
             }
 
-            // প্রফেশনাল মেসেজ ফরম্যাট
-            const message = `🔔 *নতুন অর্ডার এসেছে!* 🔔\n\n` +
-                          `🏪 *দোকান:* Ar RaiyanMart\n` +
-                          `--------------------------------\n` +
-                          `📦 *পণ্য:* ${orderContext.title}\n` +
-                          `💰 *মূল্য:* ${orderContext.price} TK\n` +
-                          `🚚 *ডেলিভারি:* ${deliveryCharge} TK\n` +
-                          `💵 *সর্বমোট:* ${totalAmount} TK\n` +
-                          `--------------------------------\n` +
-                          `👤 *ক্রেতার নাম:* ${name}\n` +
-                          `📞 *মোবাইল:* ${phone}\n` +
-                          `📍 *ঠিকানা:* ${address}`;
+            const msg = `🔔 *New Order!*\n\n` +
+                      `📦 *Product:* ${selectedItem.title}\n` +
+                      `💰 *Price:* ${selectedItem.price} TK\n` +
+                      `🚚 *Delivery:* ${delivery} TK\n` +
+                      `💵 *Total:* ${total} TK\n\n` +
+                      `👤 *Name:* ${name}\n` +
+                      `📞 *Phone:* ${phone}\n` +
+                      `📍 *Address:* ${address}`;
 
-            const whatsappUrl = `https://wa.me/8801704100288?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        // পপআপের বাইরে ক্লিক করলে বন্ধ হবে
-        window.onclick = function(event) {
-            const modal = document.getElementById('checkoutModal');
-            if (event.target == modal) { closeCheckout(); }
+            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
-
 </body>
 </html>
