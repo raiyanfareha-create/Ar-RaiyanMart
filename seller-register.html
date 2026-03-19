@@ -3,60 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Registration - Ar RaiyanMart</title>
+    <title>Ar RaiyanMart | প্রিমিয়াম অনলাইন শপ</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f4; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .register-container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .register-container h2 { text-align: center; color: #D4AF37; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #333; font-weight: bold; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .btn-register { width: 100%; padding: 12px; background-color: #25D366; border: none; border-radius: 5px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        :root {
+            --gold: #D4AF37;
+            --white: #ffffff;
+            --bg: #FAF9F6;
+            --text: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; }
+
+        /* Header */
+        header {
+            background: var(--white);
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo { font-size: 22px; font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+
+        /* Banner (প্রথম ছবির স্টাইল অনুযায়ী) */
+        .banner {
+            width: 90%; max-width: 1200px; margin: 20px auto;
+            border-radius: 15px; overflow: hidden; border: 2px solid var(--gold);
+            position: relative; background: #000;
+        }
+        .banner img { width: 100%; display: block; opacity: 0.6; height: auto; min-height: 180px; object-fit: cover; }
+        .banner-text {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center; color: white; width: 90%;
+        }
+        .banner-text h1 { font-size: 24px; color: var(--gold); margin-bottom: 5px; }
+
+        /* Product Section */
+        .container { padding: 10px 5% 50px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        .product-card {
+            background: var(--white); border-radius: 15px; padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
+            transition: 0.3s;
+        }
+        .product-card:hover { transform: translateY(-5px); }
+        
+        .product-img { width: 100%; border-radius: 10px; cursor: pointer; margin-bottom: 15px; }
+        .product-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #000; }
+        .product-price { color: var(--gold); font-size: 22px; font-weight: 700; margin-bottom: 15px; }
+
+        .desc-box {
+            background: #fdfaf0; padding: 15px; border-radius: 10px;
+            border-left: 4px solid var(--gold); margin-bottom: 20px; font-size: 15px;
+        }
+
+        .order-btn {
+            background: var(--gold); color: white; border: none;
+            width: 100%; padding: 15px; border-radius: 10px;
+            font-size: 18px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        /* Modal / Popup */
+        .modal {
+            display: none; position: fixed; z-index: 2000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); justify-content: center; align-items: center;
+            padding: 15px;
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 420px;
+            padding: 25px; border-radius: 20px; position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .close-x { position: absolute; top: 12px; right: 20px; font-size: 30px; cursor: pointer; color: #999; }
+
+        label { display: block; margin: 12px 0 5px; font-weight: 600; font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
+        input:focus { border-color: var(--gold); }
+        
+        .whatsapp-submit {
+            background: #25D366; color: white; border: none;
+            width: 100%; padding: 15px; border-radius: 10px;
+            font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .banner-text h1 { font-size: 18px; }
+            .logo { font-size: 18px; }
+            .container { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div class="register-container">
-    <h2>Seller Registration</h2>
-    <p style="text-align: center; font-size: 13px; color: #666;">তথ্যগুলো পূরণ করুন</p>
-    
-    <div class="form-group">
-        <label>আপনার নাম</label>
-        <input type="text" id="name" placeholder="পুরো নাম লিখুন">
+<header>
+    <a href="#" class="logo"><i class="fas fa-shopping-cart"></i> Ar RaiyanMart</a>
+    <select id="langSwitch" style="width: auto; padding: 3px 8px; border-radius: 5px; border: 1px solid var(--gold);">
+        <option value="bn">বাংলা</option>
+        <option value="en">English</option>
+    </select>
+</header>
+
+<div class="banner">
+    <img src="banner.jpg" onerror="this.src='https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200'">
+    <div class="banner-text">
+        <h1 id="bannerTitle">আর রাইয়ানমার্ট প্রিমিয়াম কালেকশন</h1>
+        <p>সেরা মানের পণ্য এবং আপনার আস্থার প্রতীক</p>
     </div>
-    <div class="form-group">
-        <label>দোকানের নাম</label>
-        <input type="text" id="shop" placeholder="দোকানের নাম">
+</div>
+
+<div class="container" id="productArea">
+    <div class="product-card">
+        <img src="watch.jpg" class="product-img" onclick="window.open(this.src, '_blank')" onerror="this.src='https://via.placeholder.com/400x300?text=Product+Image'">
+        <h2 class="product-title">প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ</h2>
+        <p class="product-price">মূল্য: ৩,৫০০ টাকা</p>
+        
+        <div class="desc-box">
+            <strong><i class="fas fa-info-circle"></i> পণ্যের বর্ণনা:</strong><br>
+            আমাদের এই স্মার্ট ওয়াচটি প্রিমিয়াম বিল্ড কোয়ালিটি সম্পন্ন। এতে রয়েছে হার্ট রেট মনিটর, স্লিপ ট্র্যাকিং এবং ৫ দিনের ব্যাটারি ব্যাকআপ। এটি সম্পূর্ণ ওয়াটারপ্রুফ।
+        </div>
+        
+        <button class="order-btn" onclick="openOrder('প্রিমিয়াম হোয়াইট স্মার্ট ওয়াচ', 3500)">
+            <i class="fas fa-shopping-basket"></i> Order Now
+        </button>
     </div>
-    <div class="form-group">
+    </div>
+
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close-x" onclick="closeModal()">&times;</span>
+        <h3 id="pNameDisplay" style="color:var(--gold); text-align:center; margin-bottom:15px; font-size:22px;"></h3>
+        
+        <label>ক্রেতার নাম</label>
+        <input type="text" id="custName" placeholder="আপনার পূর্ণ নাম লিখুন">
+        
         <label>মোবাইল নম্বর</label>
-        <input type="tel" id="phone" placeholder="০১৭XXXXXXXX">
+        <input type="tel" id="custPhone" placeholder="01XXXXXXXXX">
+        
+        <label>ডেলিভারি এরিয়া</label>
+        <select id="deliveryCharge">
+            <option value="70">ঢাকার ভিতরে (৭০ টাকা)</option>
+            <option value="130">ঢাকার বাইরে (১৩০ টাকা)</option>
+        </select>
+        
+        <label>পূর্ণ ঠিকানা</label>
+        <textarea id="custAddress" rows="3" placeholder="গ্রাম/মহল্লা, থানা, জেলা লিখুন"></textarea>
+
+        <button class="whatsapp-submit" onclick="confirmOrder()">
+            <i class="fab fa-whatsapp"></i> WhatsApp অর্ডার করুন
+        </button>
     </div>
-    
-    <button onclick="sendToWhatsApp()" class="btn-register">WhatsApp-এ আবেদন পাঠান</button>
 </div>
 
 <script>
-    function sendToWhatsApp() {
-        var myNumber = "8801704100288"; 
-        var name = document.getElementById('name').value;
-        var shop = document.getElementById('shop').value;
-        var phone = document.getElementById('phone').value;
+    let activeProduct = { name: "", price: 0 };
 
-        if(name == "" || shop == "" || phone == "") {
+    function openOrder(name, price) {
+        activeProduct = { name, price };
+        document.getElementById('pNameDisplay').innerText = name;
+        document.getElementById('orderModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('orderModal').style.display = 'none';
+    }
+
+    function confirmOrder() {
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
+        const address = document.getElementById('custAddress').value;
+        const delivery = document.getElementById('deliveryCharge').value;
+        const total = activeProduct.price + parseInt(delivery);
+
+        if(!name || !phone || !address) {
             alert("দয়া করে সব তথ্য পূরণ করুন!");
             return;
         }
-        
-        var message = "আসসালামু আলাইকুম,%0Aআমি Ar RaiyanMart-এ সেলার হতে চাই।%0A%0A" + 
-                      "*নাম:* " + name + "%0A" + 
-                      "*দোকানের নাম:* " + shop + "%0A" + 
-                      "*মোবাইল:* " + phone;
-        
-        var whatsappUrl = "https://wa.me/" + myNumber + "?text=" + message;
-        
-        // সরাসরি লোকেশন চেঞ্জ করে দেওয়া যাতে কাজ করে
-        window.location.href = whatsappUrl;
+
+        // আপনার নোটের ইমোজি ফরম্যাট অনুযায়ী মেসেজ
+        const message = `🔔 *নতুন অর্ডার!*\n\n` +
+                      `🏪 *Shop:* Ar RaiyanMart\n` +
+                      `📦 *Product:* ${activeProduct.name}\n` +
+                      `🖼️ *Image:* [প্রোডাক্ট ইমেজ]\n` +
+                      `💰 *দাম:* ${activeProduct.price} TK\n` +
+                      `🚚 *ডেলিভারি:* ${delivery} TK\n` +
+                      `💵 *মোট:* ${total} TK\n\n` +
+                      `👤 *ক্রেতা:* ${name}\n` +
+                      `📞 *ফোন:* ${phone}\n` +
+                      `📍 *ঠিকানা:* ${address}`;
+
+        const whatsappURL = `https://wa.me/8801704100288?text=${encodeURIComponent(message)}`;
+        window.open(whatsappURL, '_blank');
+    }
+
+    // Modal এর বাইরে ক্লিক করলে বন্ধ হবে
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('orderModal')) {
+            closeModal();
+        }
     }
 </script>
 
