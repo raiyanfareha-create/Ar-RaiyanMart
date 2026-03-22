@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart - Premium Marketplace</title>
+    <title>Ar RaiyanMart - Your Premium Marketplace</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -20,10 +20,8 @@
         .hidden { display: none; }
         .product-card { border-radius: 28px; background: #fff; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        
         .zoom-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
         .zoom-img { max-width: 95%; max-height: 90vh; border-radius: 12px; transform: scale(0.9); transition: 0.3s ease-in-out; }
-        .zoom-overlay:not(.hidden) .zoom-img { transform: scale(1); }
     </style>
 </head>
 <body>
@@ -34,10 +32,9 @@
                 <i class="fa-solid fa-gem"></i>
                 <span class="text-gray-800">Ar RaiyanMart</span>
             </div>
-
             <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-full border">
-                <button onclick="changeLang('bn')" id="btn-bn" class="px-4 py-1.5 rounded-full font-bold text-xs gold-bg text-white">বাংলা</button>
-                <button onclick="changeLang('en')" id="btn-en" class="px-4 py-1.5 rounded-full font-bold text-xs text-gray-500">English</button>
+                <button onclick="changeLang('bn')" id="btn-bn" class="px-4 py-1.5 rounded-full font-bold text-xs gold-bg text-white transition-all">বাংলা</button>
+                <button onclick="changeLang('en')" id="btn-en" class="px-4 py-1.5 rounded-full font-bold text-xs text-gray-500 transition-all">English</button>
             </div>
         </div>
         
@@ -56,7 +53,7 @@
         <div id="productList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="col-span-full py-20 text-center text-gray-400">
                 <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
-                <p>Loading...</p>
+                <p>Loading Products...</p>
             </div>
         </div>
     </main>
@@ -69,13 +66,12 @@
     <div id="orderModal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center p-4 z-[300]">
         <div class="bg-white w-full max-w-md rounded-[35px] p-8 relative shadow-2xl">
             <button onclick="document.getElementById('orderModal').classList.add('hidden')" class="absolute top-5 right-6 text-3xl text-gray-300 hover:text-red-500">&times;</button>
-            <h2 id="order-form-title" class="text-xl font-bold mb-6 text-gray-800" data-bn="ডেলিভারি তথ্য দিন" data-en="Delivery Info">ডেলিভারি তথ্য দিন</h2>
+            <h2 class="text-xl font-bold mb-6 text-gray-800" data-bn="অর্ডার করার জন্য তথ্য দিন" data-en="Delivery Details">ডেলিভারি তথ্য দিন</h2>
             <div class="space-y-4">
-                <input type="text" id="custName" placeholder="Name" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
-                <input type="number" id="custPhone" placeholder="Phone Number" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
-                <textarea id="custAddr" placeholder="Full Address" class="w-full p-4 bg-gray-50 rounded-2xl h-28 border-none"></textarea>
+                <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
+                <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
+                <textarea id="custAddr" placeholder="পুরো ঠিকানা" class="w-full p-4 bg-gray-50 rounded-2xl h-28 border-none"></textarea>
                 <div class="p-4 bg-yellow-50 rounded-2xl border border-yellow-100">
-                    <p class="text-xs text-gray-500 flex justify-between">Delivery: ৳ 60</p>
                     <p class="text-sm font-bold text-gray-800 flex justify-between mt-1">Total: <span id="totalDisplay" class="gold-text"></span></p>
                 </div>
                 <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-2xl font-bold uppercase tracking-widest">Confirm Order</button>
@@ -119,7 +115,10 @@
             const list = document.getElementById('productList');
             list.innerHTML = "";
             products.forEach(p => {
+                // ইমেজ এবং ডেসক্রিপশন ফিক্স: ডাটাবেসে পপুলার সব Key চেক করা হয়েছে
                 let img = p.image || p.imageUrl || p.img || (p.allImages && p.allImages[0]) || 'https://via.placeholder.com/400';
+                let desc = p.description || p.desc || p.details || (currentLang === 'bn' ? 'কোনো বিবরণ নেই' : 'No description');
+                
                 list.innerHTML += `
                     <div class="product-card p-5 border border-gray-100 flex flex-col h-full">
                         <img src="${img}" class="w-full h-72 object-cover rounded-2xl cursor-zoom-in" onclick="openFullImg('${img}')">
@@ -127,15 +126,15 @@
                             <h3 class="text-xl font-bold text-gray-800">${p.name}</h3>
                             <p class="gold-text font-black text-2xl mt-2">৳ ${p.price}</p>
                             <div class="mt-4 text-sm text-gray-500 bg-gray-50/50 p-4 rounded-2xl border border-dashed">
-                                <b>Description:</b> ${p.description || '...'}
+                                <b>${currentLang === 'bn' ? 'বিবরণ:' : 'Description:'}</b> ${desc}
                             </div>
                             <div class="mt-6 flex gap-2">
-                                <input type="text" id="q-${p.id}" placeholder="Ask question..." class="flex-1 text-xs p-3 rounded-xl bg-gray-100 border-none outline-none">
-                                <button onclick="askQuestion('${p.id}', '${p.name}')" class="bg-green-500 text-white w-10 h-10 rounded-xl transition flex items-center justify-center">
+                                <input type="text" id="q-${p.id}" placeholder="${currentLang === 'bn' ? 'প্রশ্ন লিখুন...' : 'Ask question...'}" class="flex-1 text-xs p-3 rounded-xl bg-gray-100 border-none outline-none">
+                                <button onclick="askQuestion('${p.id}', '${p.name}')" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center">
                                     <i class="fa-solid fa-paper-plane text-xs"></i>
                                 </button>
                             </div>
-                            <button onclick="openOrderModal('${p.id}')" class="w-full mt-6 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-xl">Order Now</button>
+                            <button onclick="openOrderModal('${p.id}')" class="w-full mt-6 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-xl">ORDER NOW</button>
                         </div>
                     </div>`;
             });
@@ -149,7 +148,7 @@
         function askQuestion(id, name) {
             const val = document.getElementById('q-' + id).value;
             if(!val) return;
-            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent('আসসালামু আলাইকুম, "'+name+'" সম্পর্কে প্রশ্ন: '+val)}`, '_blank');
+            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent('আসসালামু আলাইকুম, "'+name+'" সম্পর্কে জানতে চাই: '+val)}`, '_blank');
         }
 
         function openOrderModal(id) {
@@ -160,12 +159,19 @@
 
         function submitOrder() {
             const n = document.getElementById('custName').value, ph = document.getElementById('custPhone').value, a = document.getElementById('custAddr').value;
-            if(!n || !ph || !a) { alert("Please fill all fields!"); return; }
+            if(!n || !ph || !a) { alert("সবগুলো তথ্য সঠিকভাবে পূরণ করুন"); return; }
             
-            // Image undefined fixed here
-            const pImg = activeProduct.image || activeProduct.imageUrl || (activeProduct.allImages && activeProduct.allImages[0]) || 'No Image Link';
+            const pImg = activeProduct.image || activeProduct.imageUrl || (activeProduct.allImages && activeProduct.allImages[0]) || 'No Image';
             
-            const msg = `🔔 *নতুন অর্ডার (New Order)*\n\n🏪 *Shop:* ${activeProduct.seller || 'Ar RaiyanMart'}\n📦 *Product:* ${activeProduct.name}\n💰 *দাম:* ${activeProduct.price} Tk\n🚚 *ডেলিভারি:* 60 Tk\n💵 *মোট:* ${parseInt(activeProduct.price)+60} Tk\n\n👤 *ক্রেতা:* ${n}\n📞 *ফোন:* ${ph}\n📍 *ঠিকানা:* ${a}\n\n🖼️ *Image:* ${pImg}`;
+            const msg = `🔔 *নতুন অর্ডার (Ar RaiyanMart)*\n\n` +
+                        `📦 *পণ্য:* ${activeProduct.name}\n` +
+                        `💰 *মূল্য:* ${activeProduct.price} Tk\n` +
+                        `🚚 *ডেলিভারি:* 60 Tk\n` +
+                        `💵 *মোট:* ${parseInt(activeProduct.price)+60} Tk\n\n` +
+                        `👤 *নাম:* ${n}\n` +
+                        `📞 *ফোন:* ${ph}\n` +
+                        `📍 *ঠিকানা:* ${a}\n\n` +
+                        `🖼️ *Image:* ${pImg}`;
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
