@@ -67,8 +67,8 @@
             <div class="space-y-4">
                 <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
                 <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
-                <textarea id="custAddr" placeholder="ঠিকানা" class="w-full p-4 bg-gray-50 rounded-2xl h-24 border-none"></textarea>
-                <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-2xl font-bold">অর্ডার করুন</button>
+                <textarea id="custAddr" placeholder="পুরো ঠিকানা" class="w-full p-4 bg-gray-50 rounded-2xl h-24 border-none"></textarea>
+                <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-2xl font-bold">অর্ডার সম্পন্ন করুন</button>
             </div>
         </div>
     </div>
@@ -104,22 +104,21 @@
             const list = document.getElementById('productList');
             list.innerHTML = "";
             products.forEach(p => {
+                // ইমেজ এবং ডেসক্রিপশন ফিক্স
                 let img = p.image || p.imageUrl || p.img || (p.allImages && p.allImages[0]) || 'https://via.placeholder.com/400';
-                let desc = p.description || p.desc || 'No description available';
+                let desc = p.description || p.desc || (currentLang === 'bn' ? 'কোনো বিবরণ নেই' : 'No description available');
+                let shop = p.seller || p.shopName || 'Ar RaiyanMart';
+
                 list.innerHTML += `
                     <div class="product-card p-5 border flex flex-col h-full">
                         <img src="${img}" class="w-full h-72 object-cover rounded-2xl cursor-zoom-in" onclick="openFullImg('${img}')">
                         <div class="mt-5 flex-1 flex flex-col">
                             <h3 class="text-xl font-bold text-gray-800">${p.name}</h3>
                             <p class="gold-text font-black text-2xl mt-1">৳ ${p.price}</p>
-                            <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-500 border border-dashed">
+                            <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-600 border border-dashed">
                                 <b>Description:</b> ${desc}
                             </div>
-                            <div class="mt-4 flex gap-2">
-                                <input type="text" id="q-${p.id}" placeholder="প্রশ্ন করুন..." class="flex-1 text-xs p-3 rounded-xl bg-gray-100 border-none outline-none">
-                                <button onclick="ask('${p.id}', '${p.name}')" class="bg-green-500 text-white w-10 h-10 rounded-xl"><i class="fa-solid fa-paper-plane text-xs"></i></button>
-                            </div>
-                            <button onclick="openOrderModal('${p.id}')" class="w-full mt-5 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-lg">Order Now</button>
+                            <button onclick="openOrderModal('${p.id}')" class="w-full mt-6 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-lg">Order Now</button>
                         </div>
                     </div>`;
             });
@@ -128,16 +127,31 @@
         function openFullImg(s) { document.getElementById('fullImage').src = s; document.getElementById('imageModal').classList.remove('hidden'); }
         function closeImg() { document.getElementById('imageModal').classList.add('hidden'); }
         function openOrderModal(id) { activeProduct = allProducts.find(p => p.id === id); document.getElementById('orderModal').classList.remove('hidden'); }
+
         function submitOrder() {
             const n = document.getElementById('custName').value, ph = document.getElementById('custPhone').value, a = document.getElementById('custAddr').value;
-            if(!n || !ph || !a) { alert("Fill all!"); return; }
-            const pImg = activeProduct.image || activeProduct.imageUrl || (activeProduct.allImages && activeProduct.allImages[0]) || 'No Image';
-            const msg = `🔔 *New Order*\n📦 *Product:* ${activeProduct.name}\n💰 *Price:* ${activeProduct.price} Tk\n👤 *Name:* ${n}\n📞 *Phone:* ${ph}\n📍 *Address:* ${a}\n🖼️ *Image:* ${pImg}`;
+            if(!n || !ph || !a) { alert("সবগুলো তথ্য দিন!"); return; }
+
+            // হোয়াটসঅ্যাপ মেসেজের জন্য ডাটা ফিক্স
+            const pImg = activeProduct.image || activeProduct.imageUrl || activeProduct.img || (activeProduct.allImages && activeProduct.allImages[0]) || 'No Image Link';
+            const sName = activeProduct.seller || activeProduct.shopName || 'Ar RaiyanMart';
+
+            const msg = `🔔 *নতুন অর্ডার (Ar RaiyanMart)*\n\n` +
+                        `🏪 *Shop:* ${sName}\n` +
+                        `📦 *Product:* ${activeProduct.name}\n` +
+                        `💰 *Price:* ${activeProduct.price} Tk\n` +
+                        `🚚 *Delivery:* 60 Tk\n` +
+                        `💵 *Total:* ${parseInt(activeProduct.price)+60} Tk\n\n` +
+                        `👤 *Name:* ${n}\n` +
+                        `📞 *Phone:* ${ph}\n` +
+                        `📍 *Address:* ${a}\n\n` +
+                        `🖼️ *Image:* ${pImg}`;
+            
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
         }
+
         function searchProducts() { const q = document.getElementById('searchInput').value.toLowerCase(); renderAll(allProducts.filter(p => p.name.toLowerCase().includes(q))); }
         function clearSearch() { document.getElementById('searchInput').value = ""; renderAll(allProducts); }
-        function ask(id, name) { const v = document.getElementById('q-'+id).value; if(v) window.open(`https://wa.me/8801704100288?text=${encodeURIComponent('Product: '+name+'\nQuestion: '+v)}`, '_blank'); }
     </script>
 </body>
 </html>
