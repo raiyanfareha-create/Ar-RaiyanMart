@@ -31,8 +31,8 @@
             <span class="text-gray-800">Ar RaiyanMart</span>
         </div>
         <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-full border">
-            <button onclick="changeLang('bn')" id="btn-bn" class="px-4 py-1.5 rounded-full font-bold text-[10px] gold-bg text-white">বাংলা</button>
-            <button onclick="changeLang('en')" id="btn-en" class="px-4 py-1.5 rounded-full font-bold text-[10px] text-gray-500">EN</button>
+            <button onclick="changeLang('bn')" id="btn-bn" class="px-4 py-1.5 rounded-full font-bold text-[10px] gold-bg text-white transition-all">বাংলা</button>
+            <button onclick="changeLang('en')" id="btn-en" class="px-4 py-1.5 rounded-full font-bold text-[10px] text-gray-500 transition-all">EN</button>
         </div>
     </header>
 
@@ -45,13 +45,13 @@
         <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="পণ্য খুঁজুন..." 
                class="w-full pl-12 pr-12 py-4 rounded-2xl border-none bg-white shadow-md focus:ring-2 focus:ring-[#D4AF37] outline-none">
         <i class="fa-solid fa-magnifying-glass absolute left-9 top-5 text-gray-400"></i>
-        <button onclick="clearSearch()" class="absolute right-9 top-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-2xl"></i></button>
+        <button onclick="clearSearch()" class="absolute right-9 top-4 text-gray-400"><i class="fa-solid fa-circle-xmark text-2xl"></i></button>
     </div>
 
     <main class="container mx-auto p-4 md:p-8">
         <h2 id="section-title" class="text-xl font-bold text-gray-800 mb-8 border-l-4 border-[#D4AF37] pl-3">সেরা কালেকশন</h2>
         <div id="productList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <p class="col-span-full text-center py-20 text-gray-400">লোড হচ্ছে...</p>
+            <p class="col-span-full text-center py-20 text-gray-400">Loading...</p>
         </div>
     </main>
 
@@ -60,15 +60,15 @@
     </div>
 
     <div id="orderModal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center p-4 z-[300]">
-        <div class="bg-white w-full max-w-md rounded-[35px] p-8 relative shadow-2xl">
+        <div class="bg-white w-full max-w-md rounded-[35px] p-8 relative">
             <button onclick="document.getElementById('orderModal').classList.add('hidden')" class="absolute top-5 right-6 text-3xl text-gray-300 hover:text-red-500">&times;</button>
-            <h2 class="text-xl font-bold mb-6 text-gray-800">অর্ডার ডিটেইলস</h2>
+            <h2 id="modal-title" class="text-xl font-bold mb-6 text-gray-800 border-b pb-2">অর্ডার কনফার্ম করুন</h2>
             <div class="space-y-4">
                 <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none">
                 <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none">
                 <textarea id="custAddr" placeholder="পুরো ঠিকানা" class="w-full p-4 bg-gray-50 rounded-2xl h-24 border-none outline-none"></textarea>
                 <div class="bg-yellow-50 p-3 rounded-2xl text-sm font-bold text-gray-800">Total: <span id="totalDisplay" class="gold-text"></span></div>
-                <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-2xl font-bold uppercase">কনফার্ম অর্ডার</button>
+                <button onclick="submitOrder()" id="confirm-btn" class="w-full bg-black text-white py-4 rounded-2xl font-bold uppercase">কনফার্ম অর্ডার</button>
             </div>
         </div>
     </div>
@@ -87,21 +87,42 @@
         const db = firebase.database();
         let allProducts = [], currentLang = 'bn', activeProduct = null;
 
+        const uiText = {
+            bn: { title: "সেরা কালেকশন", search: "পণ্য খুঁজুন...", desc: "বিবরণ:", ask: "প্রশ্ন লিখুন...", order: "অর্ডার করুন", modalHead: "অর্ডার কনফার্ম করুন", confirm: "কনফার্ম অর্ডার", name: "আপনার নাম", phone: "মোবাইল নম্বর", addr: "পুরো ঠিকানা" },
+            en: { title: "Our Collections", search: "Search products...", desc: "Description:", ask: "Ask question...", order: "Order Now", modalHead: "Confirm Order", confirm: "Order Now", name: "Your Name", phone: "Phone Number", addr: "Full Address" }
+        };
+
         db.ref('live_products').on('value', (s) => {
             const d = s.val(); allProducts = [];
             for(let k in d) { 
                 let p = d[k]; p.id = k; 
                 p.finalImg = p.image || p.imageUrl || p.img || (p.allImages && p.allImages[0]) || 'https://via.placeholder.com/400';
-                p.finalDesc = p.description || p.desc || p.details || 'No Description';
-                p.finalShop = p.seller || p.shopName || 'Ar RaiyanMart';
                 allProducts.push(p); 
             }
             renderAll(allProducts);
         });
 
+        function changeLang(l) {
+            currentLang = l;
+            document.getElementById('btn-bn').className = l === 'bn' ? 'px-4 py-1.5 rounded-full font-bold text-[10px] gold-bg text-white transition-all' : 'px-4 py-1.5 rounded-full font-bold text-[10px] text-gray-500 transition-all';
+            document.getElementById('btn-en').className = l === 'en' ? 'px-4 py-1.5 rounded-full font-bold text-[10px] gold-bg text-white transition-all' : 'px-4 py-1.5 rounded-full font-bold text-[10px] text-gray-500 transition-all';
+            
+            // UI text update
+            document.getElementById('section-title').innerText = uiText[l].title;
+            document.getElementById('searchInput').placeholder = uiText[l].search;
+            document.getElementById('modal-title').innerText = uiText[l].modalHead;
+            document.getElementById('confirm-btn').innerText = uiText[l].confirm;
+            document.getElementById('custName').placeholder = uiText[l].name;
+            document.getElementById('custPhone').placeholder = uiText[l].phone;
+            document.getElementById('custAddr').placeholder = uiText[l].addr;
+            
+            renderAll(allProducts);
+        }
+
         function renderAll(products) {
             const list = document.getElementById('productList');
             list.innerHTML = "";
+            const t = uiText[currentLang];
             products.forEach(p => {
                 list.innerHTML += `
                     <div class="product-card p-5 border flex flex-col h-full bg-white">
@@ -110,17 +131,15 @@
                             <h3 class="text-xl font-bold text-gray-800">${p.name}</h3>
                             <p class="gold-text font-black text-2xl mt-1">৳ ${p.price}</p>
                             <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-500 border border-dashed border-gray-200">
-                                <b>বিবরণ:</b> ${p.finalDesc}
+                                <b>${t.desc}</b> ${p.description || p.desc || '...'}
                             </div>
-                            
                             <div class="mt-5 flex gap-2">
-                                <input type="text" id="q-${p.id}" placeholder="প্রশ্ন লিখুন..." class="flex-1 text-xs p-3 rounded-xl bg-gray-100 border-none outline-none focus:ring-1 focus:ring-[#D4AF37]">
-                                <button onclick="askQ('${p.id}', '${p.name}')" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md active:scale-90 transition">
+                                <input type="text" id="q-${p.id}" placeholder="${t.ask}" class="flex-1 text-xs p-3 rounded-xl bg-gray-100 border-none outline-none">
+                                <button onclick="askQ('${p.id}', '${p.name}')" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md">
                                     <i class="fa-solid fa-paper-plane text-xs"></i>
                                 </button>
                             </div>
-
-                            <button onclick="openOrder('${p.id}')" class="w-full mt-4 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-lg">Order Now</button>
+                            <button onclick="openOrder('${p.id}')" class="w-full mt-4 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-lg">${t.order}</button>
                         </div>
                     </div>`;
             });
@@ -132,28 +151,19 @@
             document.getElementById('totalDisplay').innerText = `৳ ${parseInt(activeProduct.price) + 60}`;
             document.getElementById('orderModal').classList.remove('hidden'); 
         }
-
         function askQ(id, name) {
             const val = document.getElementById('q-'+id).value;
-            if(!val) { alert("কিছু তো লিখুন!"); return; }
-            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent('আসসালামু আলাইকুম, "'+name+'" সম্পর্কে প্রশ্ন: '+val)}`, '_blank');
+            if(!val) return;
+            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent('Product: '+name+'\nQuestion: '+val)}`, '_blank');
         }
-
         function submitOrder() {
             const n = document.getElementById('custName').value, ph = document.getElementById('custPhone').value, a = document.getElementById('custAddr').value;
-            if(!n || !ph || !a) { alert("তথ্য দিন!"); return; }
-            const msg = `🔔 *নতুন অর্ডার (Ar RaiyanMart)*\n\n🏪 *Shop:* ${activeProduct.finalShop}\n📦 *Product:* ${activeProduct.name}\n💰 *Price:* ${activeProduct.price} Tk\n🚚 *Delivery:* 60 Tk\n💵 *Total:* ${parseInt(activeProduct.price)+60} Tk\n\n👤 *Name:* ${n}\n📞 *Phone:* ${ph}\n📍 *Address:* ${a}\n\n🖼️ *Link:* ${activeProduct.finalImg}`;
+            if(!n || !ph || !a) return;
+            const msg = `🔔 *New Order*\n🏪 *Shop:* ${activeProduct.seller || 'Ar RaiyanMart'}\n📦 *Product:* ${activeProduct.name}\n💰 *Price:* ${activeProduct.price} Tk\n🚚 *Delivery:* 60 Tk\n💵 *Total:* ${parseInt(activeProduct.price)+60} Tk\n\n👤 *Name:* ${n}\n📞 *Phone:* ${ph}\n📍 *Address:* ${a}\n🖼️ *Link:* ${activeProduct.finalImg}`;
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
         }
-
         function searchProducts() { const q = document.getElementById('searchInput').value.toLowerCase(); renderAll(allProducts.filter(p => p.name.toLowerCase().includes(q))); }
         function clearSearch() { document.getElementById('searchInput').value = ""; renderAll(allProducts); }
-        function changeLang(l) {
-            currentLang = l;
-            document.getElementById('btn-bn').className = l === 'bn' ? 'px-4 py-1.5 rounded-full font-bold text-[10px] gold-bg text-white' : 'px-4 py-1.5 rounded-full font-bold text-[10px] text-gray-500';
-            document.getElementById('btn-en').className = l === 'en' ? 'px-4 py-1.5 rounded-full font-bold text-[10px] gold-bg text-white' : 'px-4 py-1.5 rounded-full font-bold text-[10px] text-gray-500';
-            renderAll(allProducts);
-        }
     </script>
 </body>
 </html>
