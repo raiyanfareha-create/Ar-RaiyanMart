@@ -12,7 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&family=Inter:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
         body { background-color: #FAF9F6; font-family: 'Hind Siliguri', sans-serif; transition: all 0.3s; scroll-behavior: smooth; }
         .gold-text { color: #D4AF37; }
         .gold-bg { background-color: #D4AF37; }
@@ -21,7 +21,6 @@
         .product-card { border-radius: 28px; background: #fff; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         
-        /* Image Zoom Styles */
         .zoom-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
         .zoom-img { max-width: 95%; max-height: 90vh; border-radius: 12px; transform: scale(0.9); transition: 0.3s ease-in-out; }
         .zoom-overlay:not(.hidden) .zoom-img { transform: scale(1); }
@@ -37,15 +36,15 @@
             </div>
 
             <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-full border">
-                <button onclick="changeLang('bn')" id="btn-bn" class="px-4 py-1.5 rounded-full font-bold text-xs gold-bg text-white transition-all">বাংলা</button>
-                <button onclick="changeLang('en')" id="btn-en" class="px-4 py-1.5 rounded-full font-bold text-xs text-gray-500 transition-all">English</button>
+                <button onclick="changeLang('bn')" id="btn-bn" class="px-4 py-1.5 rounded-full font-bold text-xs gold-bg text-white">বাংলা</button>
+                <button onclick="changeLang('en')" id="btn-en" class="px-4 py-1.5 rounded-full font-bold text-xs text-gray-500">English</button>
             </div>
         </div>
         
         <div class="container mx-auto mt-4 px-2">
             <div class="relative">
                 <input type="text" id="searchInput" onkeyup="searchProducts()" data-bn="পছন্দের পণ্যটি খুঁজুন..." data-en="Search for products..." placeholder="পছন্দের পণ্যটি খুঁজুন..." 
-                       class="w-full pl-10 pr-10 py-3 rounded-2xl border-none bg-gray-100 focus:ring-2 focus:ring-[#D4AF37] transition-all">
+                       class="w-full pl-10 pr-10 py-3 rounded-2xl border-none bg-gray-100 focus:ring-2 focus:ring-[#D4AF37]">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-4 text-gray-400"></i>
                 <button onclick="clearSearch()" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-circle-xmark text-xl"></i></button>
             </div>
@@ -54,7 +53,6 @@
 
     <main class="container mx-auto p-4 md:p-8">
         <h2 id="section-title" class="text-xl font-bold text-gray-800 mb-8 border-l-4 border-[#D4AF37] pl-3" data-bn="সেরা সংগ্রহসমূহ" data-en="Our Collections">সেরা সংগ্রহসমূহ</h2>
-        
         <div id="productList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="col-span-full py-20 text-center text-gray-400">
                 <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
@@ -64,27 +62,23 @@
     </main>
 
     <div id="imageModal" class="zoom-overlay hidden" onclick="closeImg()">
-        <button class="absolute top-6 right-6 text-white text-4xl hover:text-red-500 transition">&times;</button>
+        <button class="absolute top-6 right-6 text-white text-4xl">&times;</button>
         <img id="fullImage" src="" class="zoom-img shadow-2xl">
     </div>
 
     <div id="orderModal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center p-4 z-[300]">
         <div class="bg-white w-full max-w-md rounded-[35px] p-8 relative shadow-2xl">
-            <button onclick="document.getElementById('orderModal').classList.add('hidden')" class="absolute top-5 right-6 text-3xl text-gray-300 hover:text-red-500 transition">&times;</button>
-            
+            <button onclick="document.getElementById('orderModal').classList.add('hidden')" class="absolute top-5 right-6 text-3xl text-gray-300 hover:text-red-500">&times;</button>
             <h2 id="order-form-title" class="text-xl font-bold mb-6 text-gray-800" data-bn="ডেলিভারি তথ্য দিন" data-en="Delivery Info">ডেলিভারি তথ্য দিন</h2>
-            
             <div class="space-y-4">
-                <input type="text" id="custName" placeholder="Name" class="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-[#D4AF37]">
-                <input type="number" id="custPhone" placeholder="Phone Number" class="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-[#D4AF37]">
-                <textarea id="custAddr" placeholder="Full Address" class="w-full p-4 bg-gray-50 rounded-2xl h-28 border-none focus:ring-2 focus:ring-[#D4AF37]"></textarea>
-                
+                <input type="text" id="custName" placeholder="Name" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
+                <input type="number" id="custPhone" placeholder="Phone Number" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
+                <textarea id="custAddr" placeholder="Full Address" class="w-full p-4 bg-gray-50 rounded-2xl h-28 border-none"></textarea>
                 <div class="p-4 bg-yellow-50 rounded-2xl border border-yellow-100">
-                    <p class="text-xs text-gray-500 flex justify-between" id="summary-text" data-bn="ডেলিভারি চার্জ: ৳ ৬০" data-en="Delivery: ৳ 60">ডেলিভারি চার্জ: ৳ ৬০</p>
+                    <p class="text-xs text-gray-500 flex justify-between">Delivery: ৳ 60</p>
                     <p class="text-sm font-bold text-gray-800 flex justify-between mt-1">Total: <span id="totalDisplay" class="gold-text"></span></p>
                 </div>
-
-                <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-gray-800 transition uppercase tracking-widest" id="confirm-btn" data-bn="অর্ডার কনফার্ম করুন" data-en="Confirm Order">অর্ডার কনফার্ম করুন</button>
+                <button onclick="submitOrder()" class="w-full bg-black text-white py-4 rounded-2xl font-bold uppercase tracking-widest">Confirm Order</button>
             </div>
         </div>
     </div>
@@ -108,97 +102,54 @@
 
         function changeLang(lang) {
             currentLang = lang;
-            document.querySelectorAll('[data-bn]').forEach(el => {
-                el.innerText = el.getAttribute(`data-${lang}`);
-            });
-            document.getElementById('searchInput').placeholder = document.getElementById('searchInput').getAttribute(`data-${lang}`);
-            
+            document.querySelectorAll('[data-bn]').forEach(el => { el.innerText = el.getAttribute(`data-${lang}`); });
             document.getElementById('btn-bn').className = lang === 'bn' ? 'px-4 py-1.5 rounded-full font-bold text-xs gold-bg text-white' : 'px-4 py-1.5 rounded-full font-bold text-xs text-gray-500';
             document.getElementById('btn-en').className = lang === 'en' ? 'px-4 py-1.5 rounded-full font-bold text-xs gold-bg text-white' : 'px-4 py-1.5 rounded-full font-bold text-xs text-gray-500';
-            
             renderAll(allProducts);
         }
 
         db.ref('live_products').on('value', (snapshot) => {
             const data = snapshot.val();
             allProducts = [];
-            for(let key in data) {
-                let p = data[key];
-                p.id = key;
-                allProducts.push(p);
-            }
+            for(let key in data) { let p = data[key]; p.id = key; allProducts.push(p); }
             renderAll(allProducts);
         });
 
         function renderAll(products) {
             const list = document.getElementById('productList');
             list.innerHTML = "";
-            
-            if(products.length === 0) {
-                list.innerHTML = `<p class="col-span-full text-center text-gray-400 py-10">No products found</p>`;
-                return;
-            }
-
             products.forEach(p => {
                 let img = p.image || p.imageUrl || p.img || (p.allImages && p.allImages[0]) || 'https://via.placeholder.com/400';
                 list.innerHTML += `
                     <div class="product-card p-5 border border-gray-100 flex flex-col h-full">
-                        <div class="relative overflow-hidden rounded-2xl h-72 bg-gray-50 group">
-                            <img src="${img}" class="w-full h-full object-cover cursor-zoom-in transition-transform duration-500 group-hover:scale-110" onclick="openFullImg('${img}')">
-                            <div class="absolute top-3 right-3 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-gray-600 shadow-sm">
-                                <i class="fa-solid fa-shop mr-1 gold-text"></i> ${p.seller || 'Ar RaiyanMart'}
-                            </div>
-                        </div>
-                        
+                        <img src="${img}" class="w-full h-72 object-cover rounded-2xl cursor-zoom-in" onclick="openFullImg('${img}')">
                         <div class="mt-5 flex-1 flex flex-col">
-                            <h3 class="text-xl font-bold text-gray-800 leading-tight">${p.name}</h3>
+                            <h3 class="text-xl font-bold text-gray-800">${p.name}</h3>
                             <p class="gold-text font-black text-2xl mt-2">৳ ${p.price}</p>
-                            
-                            <div class="mt-4 text-sm text-gray-500 bg-gray-50/50 p-4 rounded-2xl border border-dashed border-gray-200">
-                                <span class="font-bold text-gray-700 block mb-1">
-                                    <i class="fa-solid fa-circle-info mr-1 text-[#D4AF37]"></i> ${currentLang === 'bn' ? 'বিস্তারিত:' : 'Description:'}
-                                </span>
-                                ${p.description || '...'}
+                            <div class="mt-4 text-sm text-gray-500 bg-gray-50/50 p-4 rounded-2xl border border-dashed">
+                                <b>Description:</b> ${p.description || '...'}
                             </div>
-
-                            <div class="mt-6">
-                                <p class="text-[11px] font-bold text-gray-400 mb-2 uppercase tracking-widest flex items-center gap-2">
-                                    <i class="fa-solid fa-comments gold-text"></i> ${currentLang === 'bn' ? 'সেলারকে প্রশ্ন করুন' : 'Ask Anything'}
-                                </p>
-                                <div class="flex gap-2 bg-gray-100 p-2 rounded-2xl border border-gray-200 focus-within:border-[#D4AF37] transition">
-                                    <input type="text" id="q-${p.id}" placeholder="${currentLang === 'bn' ? 'আপনার প্রশ্ন...' : 'Your question...'}" 
-                                           class="flex-1 text-xs px-3 py-2 rounded-xl border-none bg-transparent outline-none">
-                                    <button onclick="askQuestion('${p.id}', '${p.name}')" class="bg-green-500 text-white w-10 h-10 rounded-xl transition flex items-center justify-center shadow-lg shadow-green-200">
-                                        <i class="fa-solid fa-paper-plane text-xs"></i>
-                                    </button>
-                                </div>
+                            <div class="mt-6 flex gap-2">
+                                <input type="text" id="q-${p.id}" placeholder="Ask question..." class="flex-1 text-xs p-3 rounded-xl bg-gray-100 border-none outline-none">
+                                <button onclick="askQuestion('${p.id}', '${p.name}')" class="bg-green-500 text-white w-10 h-10 rounded-xl transition flex items-center justify-center">
+                                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                                </button>
                             </div>
-
-                            <button onclick="openOrderModal('${p.id}')" class="w-full mt-6 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-xl hover:opacity-90 active:scale-95 transition-all">
-                                ${currentLang === 'bn' ? 'এখনই অর্ডার করুন' : 'Order Now'}
-                            </button>
+                            <button onclick="openOrderModal('${p.id}')" class="w-full mt-6 gold-bg text-white py-4 rounded-2xl font-bold uppercase shadow-xl">Order Now</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
-        function openFullImg(src) {
-            document.getElementById('fullImage').src = src;
-            document.getElementById('imageModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeImg() {
-            document.getElementById('imageModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
+        function openFullImg(src) { document.getElementById('fullImage').src = src; document.getElementById('imageModal').classList.remove('hidden'); }
+        function closeImg() { document.getElementById('imageModal').classList.add('hidden'); }
+        function searchProducts() { const q = document.getElementById('searchInput').value.toLowerCase(); renderAll(allProducts.filter(p => p.name.toLowerCase().includes(q))); }
+        function clearSearch() { document.getElementById('searchInput').value = ""; renderAll(allProducts); }
 
-        function askQuestion(id, productName) {
-            const input = document.getElementById('q-' + id);
-            if(!input.value.trim()) return;
-            const msg = `আসসালামু আলাইকুম, "${productName}" সম্পর্কে জানতে চাই:\n\n💬 *প্রশ্ন:* ${input.value}`;
-            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
-            input.value = "";
+        function askQuestion(id, name) {
+            const val = document.getElementById('q-' + id).value;
+            if(!val) return;
+            window.open(`https://wa.me/8801704100288?text=${encodeURIComponent('আসসালামু আলাইকুম, "'+name+'" সম্পর্কে প্রশ্ন: '+val)}`, '_blank');
         }
 
         function openOrderModal(id) {
@@ -208,26 +159,14 @@
         }
 
         function submitOrder() {
-            const n = document.getElementById('custName').value;
-            const ph = document.getElementById('custPhone').value;
-            const a = document.getElementById('custAddr').value;
-            if(!n || !ph || !a) { alert("Please complete the form!"); return; }
-
-            const total = parseInt(activeProduct.price) + 60;
-            const msg = `🔔 *নতুন অর্ডার (Order)*\n\n🏪 *Shop:* ${activeProduct.seller || 'Ar RaiyanMart'}\n📦 *Product:* ${activeProduct.name}\n💰 *দাম:* ${activeProduct.price} Tk\n🚚 *ডেলিভারি:* 60 Tk\n💵 *মোট:* ${total} Tk\n\n👤 *ক্রেতা:* ${n}\n📞 *ফোন:* ${ph}\n📍 *ঠিকানা:* ${a}\n\n🖼️ *Image:* ${activeProduct.image || activeProduct.imageUrl}`;
+            const n = document.getElementById('custName').value, ph = document.getElementById('custPhone').value, a = document.getElementById('custAddr').value;
+            if(!n || !ph || !a) { alert("Please fill all fields!"); return; }
             
+            // Image undefined fixed here
+            const pImg = activeProduct.image || activeProduct.imageUrl || (activeProduct.allImages && activeProduct.allImages[0]) || 'No Image Link';
+            
+            const msg = `🔔 *নতুন অর্ডার (New Order)*\n\n🏪 *Shop:* ${activeProduct.seller || 'Ar RaiyanMart'}\n📦 *Product:* ${activeProduct.name}\n💰 *দাম:* ${activeProduct.price} Tk\n🚚 *ডেলিভারি:* 60 Tk\n💵 *মোট:* ${parseInt(activeProduct.price)+60} Tk\n\n👤 *ক্রেতা:* ${n}\n📞 *ফোন:* ${ph}\n📍 *ঠিকানা:* ${a}\n\n🖼️ *Image:* ${pImg}`;
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
-            document.getElementById('orderModal').classList.add('hidden');
-        }
-
-        function searchProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
-            renderAll(filtered);
-        }
-        function clearSearch() {
-            document.getElementById('searchInput').value = "";
-            renderAll(allProducts);
         }
     </script>
 </body>
