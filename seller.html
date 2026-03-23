@@ -8,6 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
@@ -31,11 +32,8 @@
             <h2 class="text-orange-600 font-bold mb-6">নতুন পণ্য যোগ করুন</h2>
             <div class="space-y-4">
                 <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border p-2.5 rounded outline-none focus:ring-1 focus:ring-orange-400">
-                
                 <input type="number" id="pPrice" placeholder="দাম (৳)" class="w-full border p-2.5 rounded outline-none focus:ring-1 focus:ring-orange-400">
-                
-                <input type="text" id="pColor" placeholder="কালারগুলো লিখুন (যেমন: Red, Blue, Black)" class="w-full border p-2.5 rounded outline-none focus:ring-1 focus:ring-orange-400">
-                
+                <input type="text" id="pColor" placeholder="কালারগুলো লিখুন" class="w-full border p-2.5 rounded outline-none focus:ring-1 focus:ring-orange-400">
                 <textarea id="pDesc" placeholder="পণ্যের বিবরণ লিখুন..." class="w-full border p-2.5 rounded h-28 outline-none focus:ring-1 focus:ring-orange-400"></textarea>
                 
                 <div class="bg-orange-50 p-3 rounded-lg border border-orange-100">
@@ -44,6 +42,13 @@
                 </div>
                 
                 <button onclick="submitProduct()" id="uploadBtn" class="w-full orange-btn py-4 rounded-xl font-bold mt-4 shadow-lg uppercase tracking-wider text-sm">রিভিউয়ের জন্য পাঠান</button>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+            <h2 class="text-orange-600 font-bold mb-4">আপনার লাইভ পণ্যসমূহ</h2>
+            <div id="myProducts" class="space-y-3">
+                <p class="text-center text-gray-400 italic py-2">লোড হচ্ছে...</p>
             </div>
         </div>
 
@@ -60,7 +65,7 @@
     </div>
 
     <script>
-        // আপনার অরিজিনাল Firebase Configuration
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBucf0IG8NerMCC6zyxUJzZOautG-EQLwRU",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -75,15 +80,16 @@
         const db = firebase.database();
         const storage = firebase.storage();
 
-        // ১. শপের নাম সেভ করা (LocalStorage এ রাখা হচ্ছে যাতে বারবার লিখতে না হয়)
+        // 1. Save Shop Profile
         function saveProfile() {
             const name = document.getElementById('shopName').value;
             if(!name) return alert("দয়া করে দোকানের নাম লিখুন!");
             localStorage.setItem('raiyan_shop_name', name);
             alert("✅ প্রোফাইল সফলভাবে সেভ হয়েছে!");
+            loadMyProducts();
         }
 
-        // ২. একাধিক ছবিসহ পণ্য আপলোড ফাংশন
+        // 2. Submit Product
         async function submitProduct() {
             const fileInput = document.getElementById('pImage');
             const files = fileInput.files;
@@ -94,66 +100,86 @@
             const shop = localStorage.getItem('raiyan_shop_name') || "RaiyanMart Seller";
             const btn = document.getElementById('uploadBtn');
 
-            if(files.length === 0 || !name || !price) {
-                return alert("দয়া করে নাম, দাম এবং অন্তত একটি ছবি সিলেক্ট করুন!");
-            }
+            if(files.length === 0 || !name || !price) return alert("তথ্য পূরণ করুন!");
 
-            btn.innerText = "ছবিগুলো আপলোড হচ্ছে... (" + files.length + ")";
+            btn.innerText = "ছবিগুলো আপলোড হচ্ছে...";
             btn.disabled = true;
 
             try {
                 let imageUrls = [];
-
-                // লুপ চালিয়ে প্রতিটি ছবি আপলোড করা
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
-                    const storagePath = 'products/' + Date.now() + "_" + file.name;
-                    const ref = storage.ref(storagePath);
-                    
+                    const ref = storage.ref('products/' + Date.now() + "_" + file.name);
                     const uploadTask = await ref.put(file);
-                    const downloadURL = await uploadTask.ref.getDownloadURL();
-                    imageUrls.push(downloadURL);
+                    const url = await uploadTask.ref.getDownloadURL();
+                    imageUrls.push(url);
                 }
 
-                // ডাটাবেসে তথ্য সেভ (pending_products ফোল্ডারে যাবে রিভিউ এর জন্য)
+                // রিভিউ এর জন্য পাঠানো
                 await db.ref('pending_products').push({
-                    name: name,
-                    price: parseInt(price),
-                    color: color,
-                    description: desc,
-                    imageUrl: imageUrls[0], // প্রথম ছবিটিকে থাম্বনেইল হিসেবে রাখা হলো
-                    allImages: imageUrls,    // সব ছবির লিস্ট
-                    seller: shop,
-                    status: "pending",
-                    timestamp: Date.now()
+                    name: name, price: parseInt(price), color: color, description: desc,
+                    imageUrl: imageUrls[0], allImages: imageUrls, seller: shop,
+                    status: "pending", timestamp: Date.now()
                 });
 
                 alert("🎉 অভিনন্দন! পণ্যটি রিভিউয়ের জন্য পাঠানো হয়েছে।");
                 location.reload();
+            } catch(e) { alert("ভুল হয়েছে: " + e.message); btn.disabled = false; }
+        }
 
-            } catch(error) {
-                console.error(error);
-                alert("দুঃখিত, কোনো সমস্যা হয়েছে: " + error.message);
-                btn.innerText = "আবার চেষ্টা করুন";
-                btn.disabled = false;
+        // Function to Load and Delete Live Products
+        function loadMyProducts() {
+            const shop = localStorage.getItem('raiyan_shop_name');
+            const listDiv = document.getElementById('myProducts');
+            
+            db.ref('live_products').on('value', snap => {
+                listDiv.innerHTML = "";
+                let found = false;
+                snap.forEach(child => {
+                    const p = child.val();
+                    if(p.seller === shop) {
+                        found = true;
+                        listDiv.innerHTML += `
+                            <div class="flex items-center gap-3 p-2 border rounded-lg bg-gray-50">
+                                <img src="${p.imageUrl}" class="w-10 h-10 rounded object-cover">
+                                <div class="flex-1">
+                                    <h4 class="text-xs font-bold text-gray-700">${p.name}</h4>
+                                    <p class="text-orange-600 text-[10px] font-bold">৳ ${p.price}</p>
+                                </div>
+                                <button onclick="deleteProduct('${child.key}')" class="text-red-500 p-2 hover:bg-red-50 rounded">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>`;
+                    }
+                });
+                if(!found) listDiv.innerHTML = "<p class='text-center text-gray-400 text-xs italic'>কোনো লাইভ পণ্য নেই।</p>";
+            });
+        }
+
+        function deleteProduct(id) {
+            if(confirm("আপনি কি নিশ্চিত যে এই পণ্যটি চিরতরে ডিলিট করতে চান?")) {
+                db.ref('live_products/' + id).remove()
+                .then(() => alert("✅ সফলভাবে ডিলিট করা হয়েছে।"))
+                .catch(e => alert("Error: " + e.message));
             }
         }
 
-        // ৩. রিয়েলটাইম ডাটা আপডেট (লোড হওয়া টেক্সট পরিবর্তন)
+        // Live Status Updates
         db.ref('orders').limitToLast(1).on('value', snap => {
-            document.getElementById('orders').innerText = snap.exists() ? "অর্ডার লিস্ট চেক করুন" : "বর্তমানে কোনো অর্ডার নেই";
+            document.getElementById('orders').innerText = snap.exists() ? "নতুন অর্ডার চেক করুন" : "বর্তমানে কোনো অর্ডার নেই";
         });
         
         db.ref('comments').limitToLast(1).on('value', snap => {
-            document.getElementById('queries').innerText = snap.exists() ? "নতুন কাস্টমার মেসেজ আছে" : "কোনো প্রশ্ন নেই";
+            document.getElementById('queries').innerText = snap.exists() ? "নতুন মেসেজ আছে" : "কোনো প্রশ্ন নেই";
         });
 
-        // পেজ লোড হলে আগের সেভ করা নাম দেখানো
         window.onload = () => {
             const savedName = localStorage.getItem('raiyan_shop_name');
-            if(savedName) document.getElementById('shopName').value = savedName;
+            if(savedName) {
+                document.getElementById('shopName').value = savedName;
+                loadMyProducts();
+            }
         };
-
     </script>
 </body>
 </html>
