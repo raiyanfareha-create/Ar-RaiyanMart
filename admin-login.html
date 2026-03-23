@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart | Admin Control</title>
+    <title>Ar RaiyanMart | Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -11,69 +11,72 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f4f6f9; margin: 0; padding: 20px; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #f8fafc; margin: 0; padding: 20px; }
         
-        /* লগইন বক্স স্টাইল */
-        #loginBox { background: white; padding: 40px 30px; text-align: center; border-radius: 20px; max-width: 380px; margin: 80px auto; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 6px solid #f85606; }
-        .admin-icon { font-size: 50px; color: #f85606; margin-bottom: 20px; }
+        /* লগইন সেকশন */
+        #loginBox { background: white; padding: 40px 30px; text-align: center; border-radius: 24px; max-width: 380px; margin: 80px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border-top: 8px solid #f85606; }
         
-        .admin-container { display: none; max-width: 900px; margin: 0 auto; }
-        .section-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h2 { color: #f85606; border-bottom: 2px solid #f85606; padding-bottom: 12px; font-weight: bold; margin-bottom: 20px; font-size: 19px; display: flex; align-items: center; gap: 10px; }
+        /* মেইন কন্টেইনার */
+        .admin-container { display: none; max-width: 950px; margin: 0 auto; }
+        .section-card { background: white; padding: 25px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
         
-        .item-card { background: #ffffff; border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
-        .item-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-        .item-card img { width: 65px; height: 65px; object-fit: cover; border-radius: 10px; border: 1px solid #eee; }
+        h2 { color: #1e293b; font-weight: 700; margin-bottom: 20px; font-size: 18px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; }
+        h2 i { color: #f85606; }
         
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.3s; }
-        .btn-login { background: #22c55e; color: white; width: 100%; font-size: 16px; margin-top: 15px; }
-        .btn-approve { background: #22c55e; color: white; }
-        .btn-deliver { background: #3b82f6; color: white; }
-        .btn-delete { background: #ef4444; color: white; }
+        .item-card { background: #ffffff; border: 1px solid #f1f5f9; padding: 16px; border-radius: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; transition: 0.3s; }
+        .item-card:hover { border-color: #f85606; box-shadow: 0 8px 20px rgba(248, 86, 6, 0.05); }
+        .item-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; background: #f8fafc; }
         
-        input { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; outline: none; transition: 0.3s; font-size: 15px; }
-        input:focus { border-color: #f85606; }
+        .btn { padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; transition: 0.3s; }
+        .btn-green { background: #10b981; color: white; }
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-red { background: #ef4444; color: white; }
+        
+        input { width: 100%; padding: 15px; margin: 12px 0; border: 2px solid #f1f5f9; border-radius: 12px; outline: none; transition: 0.3s; font-size: 15px; background: #f8fafc; }
+        input:focus { border-color: #f85606; background: #fff; }
     </style>
 </head>
 <body>
 
     <div id="loginBox">
-        <div class="admin-icon"><i class="fa-solid fa-user-lock"></i></div>
-        <h2 style="border: none; justify-content: center; margin-bottom: 5px;">অ্যাডমিন প্যানেল</h2>
-        <p class="text-gray-400 text-sm mb-6">গোপন পাসওয়ার্ড দিয়ে ড্যাশবোর্ডে প্রবেশ করুন</p>
+        <div class="mb-6"><i class="fa-solid fa-shield-halved text-5xl text-orange-600"></i></div>
+        <h2 style="border: none; justify-content: center; margin-bottom: 4px; font-size: 22px;">Admin Login</h2>
+        <p class="text-gray-400 text-sm mb-8">সুরক্ষিত ড্যাশবোর্ডে লগইন করুন</p>
         
-        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন (যেমন: admin123)">
-        <button class="btn btn-login" onclick="login()">লগইন করুন</button>
+        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড লিখুন">
+        <button class="btn btn-green w-full py-4 mt-4 text-sm uppercase tracking-wider" onclick="login()">লগইন করুন</button>
     </div>
 
     <div class="admin-container" id="adminDash">
         
-        <div class="flex justify-between items-center mb-8 bg-white p-5 rounded-2xl shadow-sm border-l-8 border-orange-600">
+        <div class="flex justify-between items-center mb-10 bg-white p-6 rounded-2xl shadow-sm border-r-4 border-orange-500">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Ar RaiyanMart</h1>
-                <p class="text-xs text-gray-400 font-bold uppercase">Control Center</p>
+                <h1 class="text-2xl font-black text-slate-800">Ar RaiyanMart</h1>
+                <p class="text-[10px] font-bold text-orange-500 uppercase tracking-[3px]">Official Administration</p>
             </div>
-            <button onclick="location.reload()" class="bg-gray-100 hover:bg-red-50 text-red-500 px-5 py-2 rounded-xl text-sm font-bold transition">Logout</button>
+            <button onclick="location.reload()" class="bg-slate-100 hover:bg-red-50 text-red-500 px-6 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-power-off"></i> Logout
+            </button>
         </div>
 
         <div class="section-card">
-            <h2><i class="fa-solid fa-hourglass-half"></i> পেন্ডিং পণ্য (অ্যাপ্রুভ করুন)</h2>
-            <div id="pendingList" class="space-y-4 text-center text-gray-400 py-4">লোড হচ্ছে...</div>
+            <h2><i class="fa-solid fa-spinner fa-spin-slow"></i> নতুন পেন্ডিং পণ্য</h2>
+            <div id="pendingList" class="space-y-4">লোড হচ্ছে...</div>
         </div>
 
         <div class="section-card">
-            <h2><i class="fa-solid fa-circle-check"></i> লাইভ পণ্য (ম্যানেজ করুন)</h2>
+            <h2><i class="fa-solid fa-check-double"></i> লাইভ পণ্যসমূহ (ম্যানেজ)</h2>
             <div id="manageLiveList" class="grid grid-cols-1 md:grid-cols-2 gap-4">লোড হচ্ছে...</div>
         </div>
 
         <div class="section-card">
-            <h2><i class="fa-solid fa-box-open"></i> অর্ডার ও ডেলিভারি</h2>
+            <h2><i class="fa-solid fa-truck-ramp-box"></i> অর্ডার ও ডেলিভারি ট্র্যাকিং</h2>
             <div id="allOrders" class="space-y-4">লোড হচ্ছে...</div>
         </div>
     </div>
 
     <script>
-        // আপনার Firebase কনফিগ
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBucf0IG8NerMCC6zyxUJzZOautG-EQLwRU",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -87,7 +90,7 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // ৩. লগইন ফাংশন
+        // লগইন ফাংশন
         function login() {
             const pass = document.getElementById('adminPass').value;
             if(pass === "admin123") { 
@@ -97,17 +100,17 @@
                 loadAllOrders();
                 loadLiveProductsManage();
             } else {
-                alert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
+                alert("ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিয়ে আবার চেষ্টা করুন।");
             }
         }
 
-        // ৪. পেন্ডিং পণ্য হ্যান্ডেল
+        // পেন্ডিং প্রোডাক্ট লোড
         function loadPendingProducts() {
             database.ref('pending_products').on('value', (s) => {
                 const div = document.getElementById('pendingList');
                 div.innerHTML = "";
                 const data = s.val();
-                if(!data) { div.innerHTML = "কোনো নতুন পণ্য রিভিউয়ের জন্য নেই।"; return; }
+                if(!data) { div.innerHTML = "<p class='text-gray-400 italic text-sm text-center py-4'>কোনো পেন্ডিং পণ্য নেই।</p>"; return; }
 
                 Object.keys(data).forEach(id => {
                     const p = data[id];
@@ -115,13 +118,13 @@
                         <div class="item-card">
                             <img src="${p.imageUrl || p.img}">
                             <div style="flex:1;">
-                                <h4 class="font-bold text-sm text-gray-800">${p.name}</h4>
+                                <h4 class="font-bold text-sm text-slate-800">${p.name}</h4>
                                 <p class="text-orange-600 font-bold text-xs">৳ ${p.price}</p>
-                                <span class="text-[10px] bg-orange-50 text-orange-700 px-2 py-0.5 rounded font-bold">Seller: ${p.seller || p.shopName}</span>
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Shop: ${p.seller || p.shopName}</span>
                             </div>
                             <div class="flex gap-2">
-                                <button class="btn btn-approve" onclick="approveProduct('${id}')">Approve</button>
-                                <button class="btn btn-delete" onclick="rejectProduct('${id}')"><i class="fa-solid fa-trash-can"></i></button>
+                                <button class="btn btn-green text-[10px]" onclick="approveProduct('${id}')">Approve</button>
+                                <button class="btn btn-red text-[10px]" onclick="rejectProduct('${id}')"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>`;
                 });
@@ -130,8 +133,7 @@
 
         function approveProduct(id) {
             database.ref('pending_products/' + id).once('value').then(s => {
-                const productData = s.val();
-                database.ref('live_products').push(productData).then(() => {
+                database.ref('live_products').push(s.val()).then(() => {
                     database.ref('pending_products/' + id).remove();
                     alert("পণ্যটি লাইভ করা হয়েছে!");
                 });
@@ -139,28 +141,28 @@
         }
 
         function rejectProduct(id) {
-            if(confirm("পণ্যটি ডিলিট করতে চান?")) database.ref('pending_products/' + id).remove();
+            if(confirm("পেনডিং পণ্যটি ডিলিট করবেন?")) database.ref('pending_products/' + id).remove();
         }
 
-        // ৫. লাইভ পণ্য ডিলিট করার লজিক
+        // লাইভ প্রোডাক্ট ম্যানেজ (ভুলবশত লাইভ হলে ডিলিট করার জন্য)
         function loadLiveProductsManage() {
             database.ref('live_products').on('value', (s) => {
                 const div = document.getElementById('manageLiveList');
                 div.innerHTML = "";
                 const data = s.val();
-                if(!data) { div.innerHTML = "<p class='col-span-full text-center py-4'>কোনো লাইভ পণ্য নেই।</p>"; return; }
+                if(!data) { div.innerHTML = "<p class='col-span-full text-center text-gray-400 py-4'>কোনো লাইভ পণ্য নেই।</p>"; return; }
 
                 Object.keys(data).forEach(id => {
                     const p = data[id];
                     div.innerHTML += `
-                        <div class="item-card">
+                        <div class="item-card border-slate-100">
                             <img src="${p.imageUrl || p.img}">
                             <div style="flex:1;">
-                                <h4 class="font-bold text-xs truncate" style="max-width: 120px;">${p.name}</h4>
-                                <p class="text-blue-600 font-bold text-[10px]">৳ ${p.price}</p>
+                                <h4 class="font-bold text-[11px] truncate" style="max-width: 100px;">${p.name}</h4>
+                                <p class="text-blue-500 font-bold text-[10px]">৳ ${p.price}</p>
                             </div>
-                            <button class="text-red-400 hover:text-red-600 p-2" onclick="deleteLiveProduct('${id}')">
-                                <i class="fa-solid fa-trash-can"></i>
+                            <button class="text-red-300 hover:text-red-600 p-2 transition" onclick="deleteLiveProduct('${id}')">
+                                <i class="fa-solid fa-circle-xmark"></i>
                             </button>
                         </div>`;
                 });
@@ -168,37 +170,36 @@
         }
 
         function deleteLiveProduct(id) {
-            if(confirm("এই লাইভ পণ্যটি কি ওয়েবসাইট থেকে ডিলিট করবেন?")) database.ref('live_products/' + id).remove();
+            if(confirm("আপনি কি নিশ্চিত যে পণ্যটি লাইভ থেকে সরিয়ে ফেলবেন?")) database.ref('live_products/' + id).remove();
         }
 
-        // ৬. অর্ডার ম্যানেজমেন্ট
+        // অর্ডার লিস্ট
         function loadAllOrders() {
             database.ref('orders').on('value', s => {
                 const div = document.getElementById('allOrders');
                 div.innerHTML = "";
                 const data = s.val();
-                if(!data) { div.innerHTML = "<p class='text-center py-4'>কোনো অর্ডার নেই।</p>"; return; }
+                if(!data) { div.innerHTML = "<p class='text-center py-4 text-gray-400 italic text-sm'>কোনো অর্ডার পাওয়া যায়নি।</p>"; return; }
 
                 Object.keys(data).reverse().forEach(id => {
                     const o = data[id];
                     const isDelivered = o.status === 'Delivered ✅';
                     div.innerHTML += `
-                        <div class="item-card" style="border-left: 5px solid ${isDelivered ? '#22c55e' : '#f85606'}">
+                        <div class="item-card border-l-4 ${isDelivered ? 'border-emerald-500' : 'border-orange-500'}">
                             <div style="flex:1;">
-                                <div class="flex justify-between items-start mb-2">
-                                    <b class="text-sm">${o.productName}</b>
-                                    <span class="text-[9px] bg-gray-100 px-2 py-1 rounded font-bold">${o.shopName}</span>
+                                <div class="flex justify-between items-center mb-2">
+                                    <b class="text-xs text-slate-800">${o.productName}</b>
+                                    <span class="text-[9px] bg-slate-100 px-2 py-0.5 rounded-full font-bold">${o.shopName}</span>
                                 </div>
-                                <div class="text-[11px] text-gray-600 space-y-1">
-                                    <p><i class="fa-solid fa-user mr-1 text-[9px]"></i> ${o.customerName}</p>
-                                    <p><i class="fa-solid fa-phone mr-1 text-[9px]"></i> ${o.customerPhone}</p>
-                                    <p><i class="fa-solid fa-location-dot mr-1 text-[9px]"></i> ${o.address}</p>
+                                <div class="text-[10px] text-slate-500 space-y-0.5">
+                                    <p><i class="fa-solid fa-circle-user mr-1 text-orange-400"></i> ${o.customerName} (${o.customerPhone})</p>
+                                    <p><i class="fa-solid fa-location-arrow mr-1 text-orange-400"></i> ${o.address}</p>
                                 </div>
-                                <div class="mt-3 flex justify-between items-center">
-                                    <span class="text-[10px] font-bold ${isDelivered ? 'text-green-600' : 'text-orange-600'}">
-                                        স্ট্যাটাস: ${o.status || 'Pending'}
+                                <div class="mt-3 flex justify-between items-center border-t pt-2">
+                                    <span class="text-[9px] font-black ${isDelivered ? 'text-emerald-600' : 'text-orange-600'} uppercase">
+                                        Status: ${o.status || 'Pending'}
                                     </span>
-                                    ${!isDelivered ? `<button class="btn btn-deliver py-1 px-3 text-[10px]" onclick="markDelivered('${id}')">ডেলিভারড করুন</button>` : ''}
+                                    ${!isDelivered ? `<button class="btn btn-blue py-1 px-3 text-[10px]" onclick="markDelivered('${id}')">Deliver Now</button>` : ''}
                                 </div>
                             </div>
                         </div>`;
