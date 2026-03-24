@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f3f4f6; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .card { max-width: 450px; margin: 30px auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 5px solid #25D366; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; font-size: 14px; }
-        input:focus { border-color: #25D366; box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1); }
-        .wa-btn { background-color: #25D366; color: white; width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; cursor: pointer; }
-        .wa-btn:hover { background-color: #128C7E; transform: scale(1.02); }
+        label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; font-size: 14px; transition: 0.3s; }
+        input:focus, textarea:focus { border-color: #25D366; box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1); }
+        .wa-btn { background-color: #25D366; color: white; width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; cursor: pointer; border: none; }
+        .wa-btn:hover { background-color: #128C7E; transform: translateY(-2px); }
     </style>
 </head>
 <body class="p-4">
@@ -21,41 +22,42 @@
     <div class="card">
         <div class="text-center mb-6">
             <div class="text-4xl text-green-500 mb-2"><i class="fa-brands fa-whatsapp"></i></div>
-            <h1 class="text-xl font-bold text-gray-800">সেলার রেজিস্ট্রেশন</h1>
-            <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Ar RaiyanMart Partner Program</p>
+            <h1 class="text-xl font-bold text-gray-800">Seller Registration</h1>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[2px]">Ar RaiyanMart Partner Program</p>
         </div>
 
         <form id="waForm">
-            <label class="text-xs font-bold text-gray-500 uppercase">দোকানের নাম (Shop Name)</label>
-            <input type="text" id="shopName" placeholder="উদা: আর রাইয়ান মার্ট" required>
+            <label>Shop Name</label>
+            <input type="text" id="shopName" placeholder="e.g. Raiyan Mart" required>
 
-            <label class="text-xs font-bold text-gray-500 uppercase">মালিকের নাম</label>
-            <input type="text" id="ownerName" placeholder="আপনার পূর্ণ নাম" required>
+            <label>Owner Name</label>
+            <input type="text" id="ownerName" placeholder="Your full name" required>
 
-            <label class="text-xs font-bold text-gray-500 uppercase">মোবাইল নম্বর</label>
+            <label>Mobile Number</label>
             <input type="tel" id="phone" placeholder="017XXXXXXXX" required>
 
-            <label class="text-xs font-bold text-gray-500 uppercase">পূর্ণ ঠিকানা</label>
-            <textarea id="address" placeholder="আপনার দোকানের ঠিকানা লিখুন" rows="2" class="resize-none" required></textarea>
+            <label>Full Address</label>
+            <textarea id="address" placeholder="Store or home address" rows="2" class="resize-none" required></textarea>
 
-            <label class="text-xs font-bold text-gray-500 uppercase">পণ্যের ধরন</label>
+            <label>Product Category</label>
             <select id="category">
-                <option value="Fashion">পোশাক ও ফ্যাশন</option>
-                <option value="Electronics">ইলেকট্রনিক্স</option>
-                <option value="Groceries">মুদি/গ্রোসারি</option>
-                <option value="Others">অন্যান্য</option>
+                <option value="Fashion">Fashion & Clothing</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Cosmetics">Cosmetics</option>
+                <option value="Others">Others</option>
             </select>
 
             <button type="button" onclick="sendToWhatsApp()" class="wa-btn">
                 <i class="fa-brands fa-whatsapp text-xl"></i>
-                হোয়াটসঅ্যাপে জমা দিন
+                Submit via WhatsApp
             </button>
         </form>
     </div>
 
     <script>
         function sendToWhatsApp() {
-            // আপনার দেওয়া নাম্বারটি এখানে সেট করা হয়েছে
+            // Your WhatsApp Number
             const myNumber = "8801721526868"; 
 
             const shop = document.getElementById('shopName').value.trim();
@@ -65,24 +67,25 @@
             const category = document.getElementById('category').value;
 
             if(!shop || !owner || !phone || !address) {
-                alert("দয়া করে সব তথ্য পূরণ করুন!");
+                alert("Please fill in all the details!");
                 return;
             }
 
-            // হোয়াটসঅ্যাপ মেসেজ ফরম্যাট
-            const message = `*নতুন সেলার রেজিস্ট্রেশন (Ar RaiyanMart)*%0A` +
+            // WhatsApp Message Format (English)
+            const message = `*NEW SELLER REGISTRATION*%0A` +
+                            `*Platform:* Ar RaiyanMart%0A` +
                             `--------------------------%0A` +
-                            `🏪 *দোকানের নাম:* ${shop}%0A` +
-                            `👤 *মালিক:* ${owner}%0A` +
-                            `📞 *ফোন:* ${phone}%0A` +
-                            `📍 *ঠিকানা:* ${address}%0A` +
-                            `📦 *ক্যাটাগরি:* ${category}%0A` +
+                            `🏪 *Shop Name:* ${shop}%0A` +
+                            `👤 *Owner:* ${owner}%0A` +
+                            `📞 *Phone:* ${phone}%0A` +
+                            `📍 *Address:* ${address}%0A` +
+                            `📦 *Category:* ${category}%0A` +
                             `--------------------------%0A` +
-                            `_তথ্যটি যাচাই করে দ্রুত ব্যবস্থা নিন।_`;
+                            `_Please review the information._`;
 
             const waLink = `https://wa.me/${myNumber}?text=${message}`;
 
-            // নতুন ট্যাবে হোয়াটসঅ্যাপ ওপেন করা
+            // Open WhatsApp
             window.open(waLink, '_blank').focus();
         }
     </script>
