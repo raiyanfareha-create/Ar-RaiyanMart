@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard - RaiyanMart</title>
+    <title>Seller Dashboard - Ar RaiyanMart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -13,7 +13,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
         .hidden { display: none; }
-        .orange-btn { background-color: #ff5722; color: white; transition: 0.3s; }
+        .orange-btn { background-color: #ff5722; color: white; transition: 0.3; }
         .orange-btn:hover { background-color: #e64a19; }
     </style>
 </head>
@@ -39,7 +39,7 @@
         <div class="bg-white p-4 rounded-xl shadow flex justify-between items-center border-l-4 border-orange-500">
             <div>
                 <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Welcome back,</p>
-                <h2 id="displayShop" class="text-lg font-bold text-gray-800 tracking-tight text-orange-600">Shop Name</h2>
+                <h2 id="displayShop" class="text-lg font-bold text-gray-800 tracking-tight text-orange-600 tracking-tight">Shop Name</h2>
             </div>
             <button onclick="logout()" class="text-red-500 text-[10px] font-bold border border-red-200 px-3 py-1 rounded-lg">Logout</button>
         </div>
@@ -55,7 +55,7 @@
                 
                 <div class="bg-orange-50 p-3 rounded-lg border border-orange-100">
                     <p class="text-[11px] text-orange-700 mb-2">পণ্যের ছবি সিলেক্ট করুন (একাধিক):</p>
-                    <input type="file" id="pImage" multiple accept="image/*" class="w-full text-[10px] file:mr-3 file:py-1 file:px-2 file:rounded file:border-0 file:bg-orange-600 file:text-white">
+                    <input type="file" id="pImage" multiple accept="image/*" class="w-full text-[10px] file:mr-1 file:py-1 file:px-2 file:rounded file:border-0 file:bg-orange-600 file:text-white">
                 </div>
                 
                 <button onclick="submitProduct()" id="uploadBtn" class="w-full orange-btn py-3.5 rounded-xl font-bold uppercase tracking-wider shadow-lg text-sm">পণ্য আপলোড করুন</button>
@@ -84,7 +84,6 @@
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBucf0IG8NerMCC6zyxUJzZOautG-EQLwRU",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -116,7 +115,6 @@
             if(!name || !pass) return alert("দয়া করে শপের নাম এবং পাসওয়ার্ড দিন!");
 
             if(isLoginMode) {
-                // লগইন চেক
                 db.ref('sellers/' + name).once('value', snap => {
                     const userData = snap.val();
                     if(snap.exists() && userData.password === pass) {
@@ -127,10 +125,8 @@
                     }
                 });
             } else {
-                // রেজিস্ট্রেশন
                 const sellerRef = db.ref('sellers/' + name);
                 const snap = await sellerRef.once('value');
-
                 if(snap.exists()) return alert("এই নামে আগে থেকেই একাউন্ট আছে!");
 
                 await sellerRef.set({
@@ -164,7 +160,6 @@
             const btn = document.getElementById('uploadBtn');
 
             if(files.length === 0 || !name || !price) return alert("সব তথ্য পূরণ করুন!");
-            
             btn.innerText = "ছবি আপলোড হচ্ছে...";
             btn.disabled = true;
 
@@ -228,7 +223,6 @@
             }
         }
 
-        // Live Notifications
         db.ref('orders').limitToLast(1).on('value', snap => {
             document.getElementById('orders').innerText = snap.exists() ? "নতুন অর্ডার আছে!" : "অর্ডার নেই";
         });
