@@ -3,130 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ar RaiyanMart - Professional Marketplace</title>
+    <title>Ar RaiyanMart - Premium Marketplace</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
-        body { background-color: #f8f1f1; font-family: 'Hind Siliguri', sans-serif; overflow-x: hidden; }
+        body { background-color: #fcf8f8; font-family: 'Hind Siliguri', sans-serif; }
         .gold-text { color: #D4AF37; }
         .gold-bg { background-color: #D4AF37; }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            padding: 8px;
-        }
-        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .product-grid { grid-template-columns: repeat(5, 1fr); } }
-
-        .product-card {
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #e1e7eb;
-            transition: all 0.2s;
-        }
-        .product-card:active { transform: scale(0.97); }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #eee; transition: 0.3s; }
         .product-img { height: 160px; width: 100%; object-fit: cover; cursor: pointer; }
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
         .sticky-header { position: sticky; top: 0; z-index: 1000; background: white; }
-        .cart-badge { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; border-radius: 50%; padding: 1px 5px; font-size: 10px; font-weight: bold; }
-        
-        /* Side Cart Animation */
-        #cartModal { transition: transform 0.3s ease-in-out; }
+        .cart-badge { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; }
     </style>
 </head>
 <body>
 
     <header class="sticky-header shadow-sm">
-        <div class="p-3 flex justify-between items-center border-b">
-            <div class="text-xl font-bold gold-text flex items-center gap-1">
-                <i class="fa-solid fa-gem"></i> <span>Ar RaiyanMart</span>
+        <div class="p-4 flex justify-between items-center border-b">
+            <div class="text-xl font-bold gold-text flex items-center gap-2">
+                <i class="fa-solid fa-gem"></i> Ar RaiyanMart
             </div>
-            
-            <div class="flex items-center gap-3">
-                <div class="relative cursor-pointer mr-2" onclick="toggleCart()">
-                    <i class="fa-solid fa-bag-shopping text-2xl text-gray-700"></i>
+            <div class="flex items-center gap-4">
+                <div class="relative cursor-pointer" onclick="toggleCart()">
+                    <i class="fa-solid fa-cart-shopping text-2xl text-gray-700"></i>
                     <span id="cartCount" class="cart-badge">0</span>
                 </div>
-                <div class="flex gap-1 bg-gray-100 p-1 rounded-full scale-90">
-                    <button onclick="changeLang('bn')" id="btn-bn" class="px-2 py-1 rounded-full font-bold text-[10px] gold-bg text-white">বাংলা</button>
-                    <button onclick="changeLang('en')" id="btn-en" class="px-2 py-1 rounded-full font-bold text-[10px] text-gray-700">Eng</button>
+                <div class="flex bg-gray-100 rounded-full p-1 scale-90">
+                    <button onclick="changeLang('bn')" id="btn-bn" class="px-3 py-1 rounded-full text-[10px] font-bold gold-bg text-white">বাংলা</button>
+                    <button onclick="changeLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold text-gray-600">Eng</button>
                 </div>
             </div>
         </div>
-        <div class="p-2 bg-white">
-            <div class="relative max-w-2xl mx-auto">
-                <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="পণ্য খুঁজুন..." 
-                       class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 text-sm outline-none border-none focus:ring-1 focus:ring-[#D4AF37]">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
+        <div class="p-3">
+            <div class="relative">
+                <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="পণ্য খুঁজুন..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-100 text-sm outline-none focus:ring-1 focus:ring-[#D4AF37]">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-gray-400"></i>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto max-w-6xl">
+    <main class="max-w-4xl mx-auto pb-20">
         <div class="p-2">
-            <img src="hero-banner.jpg" alt="Banner" class="w-full h-auto rounded-lg shadow-sm">
+            <img src="hero-banner.jpg" class="w-full rounded-2xl shadow-md" onerror="this.src='https://via.placeholder.com/800x400?text=Ar+RaiyanMart+Banner'">
         </div>
-        <h2 id="section-title" class="text-xx font-bold text-gray-600 p-3 uppercase tracking-widest border-l-4 border-[#D4AF37] mt-3">সমস্ত পণ্য</h2>
-        <div id="productList" class="product-grid"></div>
+        <div class="flex items-center gap-2 p-4">
+            <div class="h-6 w-1 gold-bg"></div>
+            <h2 id="section-title" class="font-bold text-gray-700 uppercase tracking-wider">সমস্ত পণ্য</h2>
+        </div>
+        <div id="productList" class="product-grid">
+            <p class="col-span-2 text-center py-10 text-gray-400">পণ্য লোড হচ্ছে...</p>
+        </div>
     </main>
 
-    <div id="cartModal" class="fixed inset-0 bg-black/70 hidden z-[5000] flex justify-end">
-        <div class="bg-white w-80 h-full p-5 overflow-y-auto relative shadow-2xl">
-            <button onclick="toggleCart()" class="absolute top-4 right-4 text-gray-400 text-2xl font-bold">&times;</button>
-            <h2 class="text-lg font-bold mb-6 border-b pb-2 text-gray-800">
-                <i class="fa-solid fa-cart-arrow-down gold-text"></i> আপনার ব্যাগ
-            </h2>
+    <div id="cartModal" class="fixed inset-0 bg-black/60 hidden z-[5000] flex justify-end">
+        <div class="bg-white w-80 h-full p-5 relative shadow-xl overflow-y-auto">
+            <button onclick="toggleCart()" class="absolute top-4 right-4 text-2xl">&times;</button>
+            <h2 class="text-lg font-bold mb-6 border-b pb-2"><i class="fa-solid fa-bag-shopping gold-text"></i> আপনার ব্যাগ</h2>
             <div id="cartItems" class="space-y-4"></div>
-            
-            <div class="mt-8 border-t pt-4">
-                <div class="flex justify-between font-bold text-lg mb-4">
-                    <span>সর্বমোট:</span>
-                    <span class="gold-text">৳ <span id="cartTotal">0</span></span>
+            <div class="mt-10 border-t pt-5">
+                <div class="flex justify-between font-bold text-lg mb-5">
+                    <span>মোট:</span> <span class="gold-text">৳ <span id="cartTotal">0</span></span>
                 </div>
-                <button onclick="openCheckout()" class="w-full gold-bg text-white py-3.5 rounded-xl font-bold shadow-lg active:scale-95 transition">অর্ডার কনফার্ম করুন</button>
+                <button onclick="openCheckout()" class="w-full gold-bg text-white py-4 rounded-xl font-bold shadow-lg active:scale-95">অর্ডার কনফার্ম করুন</button>
             </div>
         </div>
     </div>
 
-    <div id="orderModal" class="fixed inset-0 bg-black/70 hidden z-[6000] flex items-center justify-center p-4">
+    <div id="orderModal" class="fixed inset-0 bg-black/60 hidden z-[6000] flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-6 relative">
-            <button onclick="document.getElementById('orderModal').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 text-2xl font-bold">&times;</button>
-            <h2 class="text-lg font-bold mb-5 border-b pb-2">অর্ডার তথ্য দিন</h2>
-            <div class="space-y-4">
-                <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-3 bg-gray-50 rounded-xl text-sm border focus:ring-1 focus:ring-[#D4AF37]">
-                <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-3 bg-gray-50 rounded-xl text-sm border focus:ring-1 focus:ring-[#D4AF37]">
-                
-                <div class="text-[10px] font-bold text-gray-500 ml-1">ডেলিভারি এরিয়া:</div>
-                <select id="delCharge" class="w-full p-3 bg-gray-50 rounded-xl text-sm border focus:ring-1 focus:ring-[#D4AF37]">
-                    <option value="80">Inside Dhaka - 80 TK</option>
-                    <option value="140">Outside Dhaka - 140 TK</option>
+            <button onclick="document.getElementById('orderModal').classList.add('hidden')" class="absolute top-4 right-5 text-2xl">&times;</button>
+            <h2 class="text-lg font-bold mb-4 border-b pb-2">ডেলিভারি তথ্য</h2>
+            <div class="space-y-3">
+                <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-3 bg-gray-50 border rounded-xl text-sm">
+                <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-3 bg-gray-50 border rounded-xl text-sm">
+                <select id="delCharge" class="w-full p-3 bg-gray-50 border rounded-xl text-sm">
+                    <option value="80">ঢাকার ভিতরে (Inside Dhaka) - 80 TK</option>
+                    <option value="140">ঢাকার বাইরে (Outside Dhaka) - 140 TK</option>
                 </select>
-                
-                <textarea id="custAddr" placeholder="পুরো ঠিকানা" class="w-full p-3 bg-gray-50 rounded-xl h-20 text-sm border focus:ring-1 focus:ring-[#D4AF37]"></textarea>
-                <button onclick="submitOrder()" class="w-full gold-bg text-white py-3.5 rounded-xl font-bold shadow-lg active:scale-95 transition">অর্ডার করুন (WhatsApp)</button>
+                <textarea id="custAddr" placeholder="বিস্তারিত ঠিকানা" class="w-full p-3 bg-gray-50 border rounded-xl h-20 text-sm"></textarea>
+                <button onclick="submitOrder()" class="w-full gold-bg text-white py-4 rounded-xl font-bold shadow-lg">অর্ডার প্লেস করুন (WhatsApp)</button>
             </div>
         </div>
     </div>
 
-    <div id="imageModal" class="fixed inset-0 bg-black/95 hidden z-[7000] flex items-center justify-center p-4">
-        <button onclick="document.getElementById('imageModal').classList.add('hidden')" class="absolute top-5 right-5 text-white text-3xl">&times;</button>
-        <img id="fullImage" src="" class="max-w-full max-h-[90vh] rounded-lg">
+    <div id="imageModal" class="fixed inset-0 bg-black/90 hidden z-[7000] flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
+        <img id="fullImage" src="" class="max-w-full max-h-[80vh] rounded-lg">
     </div>
 
     <script>
-        // আপনার Firebase Configuration (স্ক্রিনশট থেকে নেওয়া)
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBucDFQ0iHiC6xyxUjz2OwUtG-EQlyRU",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -137,45 +110,47 @@
             appId: "1:336578883565:web:54d73b52c96a26f38601e4"
         };
 
-        // Firebase Initialize
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         let allProducts = [];
         let cart = [];
-        let currentLang = 'bn';
 
-        // ডাটা লোড
-        db.ref('products').on('value', (s) => {
-            const d = s.val(); allProducts = [];
-            for (let k in d) { let p = d[k]; p.id = k; allProducts.push(p); }
+        // ১. ডাটা লোড (live_products থেকে)
+        db.ref('live_products').on('value', (snapshot) => {
+            const data = snapshot.val();
+            allProducts = [];
+            if (data) {
+                for (let key in data) {
+                    let p = data[key];
+                    p.id = key;
+                    allProducts.push(p);
+                }
+            }
             renderAll(allProducts);
         });
 
-        // পণ্য রেন্ডার করার ফাংশন
+        // ২. পণ্য দেখানোর ফাংশন (ইমেজ ও প্রশ্ন বাটনসহ)
         function renderAll(products) {
             const list = document.getElementById('productList');
-            list.innerHTML = "";
+            if(!list) return;
+            list.innerHTML = products.length === 0 ? '<p class="col-span-2 text-center py-10">কোনো পণ্য পাওয়া যায়নি!</p>' : '';
+            
             products.forEach(p => {
-                // সমাধান ১: ইমেজ সোর্স চেক (পাবলিক ইমেজ না থাকলে p.img চেক করবে)
-                let img = p.img || p.image || p.imageURL || 'https://via.placeholder.com/150';
-                
+                let img = p.img || p.image || p.imageURL || 'https://via.placeholder.com/300?text=No+Image';
                 list.innerHTML += `
-                    <div class="product-card shadow-sm">
+                    <div class="product-card shadow-sm border border-gray-100">
                         <img src="${img}" class="product-img" onclick="openImg('${img}')">
-                        <div class="p-2.5 flex-1 flex flex-col justify-between">
+                        <div class="p-3 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 class="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-tight">${p.name}</h3>
+                                <h3 class="text-[12px] font-bold text-gray-800 line-clamp-2 leading-snug">${p.name}</h3>
                                 <p class="gold-text font-bold text-sm mt-1">৳ ${p.price}</p>
-                                <p class="text-[10px] text-gray-500 line-clamp-2 mt-1">${p.description || p.desc || ''}</p>
                             </div>
-                            
-                            <div class="mt-2 space-y-2">
-                                <button onclick="addToCart('${p.id}')" class="w-full gold-bg text-white py-2 rounded-lg text-[11px] font-bold">
+                            <div class="mt-3 space-y-2">
+                                <button onclick="addToCart('${p.id}')" class="w-full gold-bg text-white py-2 rounded-lg text-[11px] font-bold active:scale-95">
                                     <i class="fa-solid fa-cart-plus mr-1"></i> ADD TO CART
                                 </button>
-                                
-                                <a href="https://wa.me/8801704100288?text=আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি সম্পর্কে জানতে চাই: ${p.name} (ID: ${p.id})" 
+                                <a href="https://wa.me/8801704100288?text=আসসালামু আলাইকুম, আমি এই প্রোডাক্টটি সম্পর্কে জানতে চাই: ${p.name}" 
                                    target="_blank" 
                                    class="w-full border border-[#D4AF37] gold-text py-1.5 rounded-lg text-[10px] font-bold flex items-center justify-center">
                                     <i class="fa-brands fa-whatsapp mr-1"></i> প্রশ্ন করুন
@@ -186,69 +161,55 @@
             });
         }
 
-        // কার্ট লজিক
+        // ৩. কার্ট লজিক
         function addToCart(id) {
             const p = allProducts.find(x => x.id === id);
-            const item = cart.find(x => x.id === id);
-            if(item) { item.qty++; } else { cart.push({...p, qty: 1}); }
+            const existing = cart.find(x => x.id === id);
+            if(existing) { existing.qty++; } else { cart.push({...p, qty: 1}); }
             updateCartUI();
-            // কার্ট ওপেন করা (অপশনাল)
             if(cart.length === 1) toggleCart();
         }
 
         function updateCartUI() {
-            // কার্ট আইকন আপডেট
             document.getElementById('cartCount').innerText = cart.reduce((a, b) => a + b.qty, 0);
-            
             const list = document.getElementById('cartItems');
             let total = 0;
-            list.innerHTML = cart.length === 0 ? '<p class="text-center text-gray-400 mt-10 text-sm">ব্যাগ খালি!</p>' : '';
+            list.innerHTML = cart.length === 0 ? '<p class="text-center text-gray-400 mt-10">ব্যাগ খালি!</p>' : '';
 
             cart.forEach(item => {
                 total += item.price * item.qty;
-                // সমাধান ১ (এখানেও ইমেজ সোর্স চেক করা হয়েছে)
-                let img = item.img || item.image || item.imageURL || 'https://via.placeholder.com/150';
-                
+                let img = item.img || item.image || item.imageURL || 'https://via.placeholder.com/100';
                 list.innerHTML += `
-                    <div class="flex items-center gap-3 border-b pb-3 border-gray-100">
-                        <img src="${img}" class="w-14 h-14 rounded-lg object-cover">
+                    <div class="flex items-center gap-3 border-b pb-3">
+                        <img src="${img}" class="w-12 h-12 rounded-lg object-cover">
                         <div class="flex-1">
-                            <h4 class="text-[12px] font-bold text-gray-800 line-clamp-1">${item.name}</h4>
-                            <p class="text-[11px] gold-text font-bold mt-0.5">৳ ${item.price} x ${item.qty}</p>
+                            <h4 class="text-[11px] font-bold line-clamp-1">${item.name}</h4>
+                            <p class="text-[10px] gold-text">৳ ${item.price} x ${item.qty}</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 text-lg">-</button>
-                            <span class="text-sm font-bold w-5 text-center">${item.qty}</span>
-                            <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 text-lg">+</button>
+                            <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 bg-gray-100 rounded-full font-bold">-</button>
+                            <span class="text-xs font-bold">${item.qty}</span>
+                            <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 bg-gray-100 rounded-full font-bold">+</button>
                         </div>
                     </div>`;
             });
-            
             document.getElementById('cartTotal').innerText = total;
         }
 
         function changeQty(id, delta) {
             const item = cart.find(x => x.id === id);
-            if(!item) return;
-            item.qty += delta;
-            if(item.qty <= 0) cart = cart.filter(x => x.id !== id);
-            updateCartUI();
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) cart = cart.filter(x => x.id !== id);
+                updateCartUI();
+            }
         }
 
-        function toggleCart() { 
-            document.getElementById('cartModal').classList.toggle('hidden'); 
-        }
+        function toggleCart() { document.getElementById('cartModal').classList.toggle('hidden'); }
+        function openImg(s) { document.getElementById('fullImage').src = s; document.getElementById('imageModal').classList.remove('hidden'); }
+        function openCheckout() { if(cart.length > 0) document.getElementById('orderModal').classList.remove('hidden'); }
 
-        function openImg(s) { 
-            document.getElementById('fullImage').src = s;
-            document.getElementById('imageModal').classList.remove('hidden'); 
-        }
-
-        function openCheckout() { 
-            if(cart.length > 0) document.getElementById('orderModal').classList.remove('hidden'); 
-        }
-
-        // হোয়াটসঅ্যাপ অর্ডার সাবমিট
+        // ৪. WhatsApp অর্ডার সিস্টেম
         function submitOrder() {
             const n = document.getElementById('custName').value.trim();
             const ph = document.getElementById('custPhone').value.trim();
@@ -257,39 +218,25 @@
 
             if(!n || !ph || !a) return alert('দয়া করে সব তথ্য পূরণ করুন!');
 
-            let itemText = cart.map((i, idx) => `${idx+1}. ${i.name} (${i.qty} টি) - ৳ ${i.price * i.qty}`).join('\n');
-            let subtotal = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-            let total = subtotal + dc;
+            let itemText = cart.map((i, idx) => `${idx+1}. ${i.name} (${i.qty}টি) - ৳${i.price * i.qty}`).join('\n');
+            let total = cart.reduce((a, b) => a + (b.price * b.qty), 0) + dc;
 
-            // সমাধান: WhatsApp মেসেজ টেম্পলেট লিটরাল (ব্যাকটিক ব্যবহার করে `${}` সঠিক করা হয়েছে)
-            const msg = `আসসালামু আলাইকুম (Ar RaiyanMart)\n\nনতুন অর্ডারের তথ্য:\n\n👤 কাস্টমার: ${n}\n📞 ফোন: ${ph}\n📍 ঠিকানা: ${a}\n🚚 ডেলিভারি চার্জ: ৳ ${dc}\n\n🛒 পণ্যসমূহ:\n${itemText}\n\n====================\n💰 সর্বমোট: ৳ ${total}`;
-
-            // সমাধান: WhatsApp লিঙ্ক ওপেন (URL encoding ঠিক করা হয়েছে)
+            const msg = `আসসালামু আলাইকুম (Ar RaiyanMart)\n\n👤 নাম: ${n}\n📞 ফোন: ${ph}\n📍 ঠিকানা: ${a}\n🚚 ডেলিভারি চার্জ: ৳ ${dc}\n\n🛒 পণ্যসমূহ:\n${itemText}\n\n💰 সর্বমোট: ৳ ${total}`;
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // সার্চ লজিক
+        // ৫. সার্চ এবং ল্যাঙ্গুয়েজ
         function searchProducts() {
             const q = document.getElementById('searchInput').value.toLowerCase();
-            if(q === '') { renderAll(allProducts); return; }
             renderAll(allProducts.filter(p => p.name.toLowerCase().includes(q)));
         }
 
-        // ভাষা পরিবর্তন লজিক
         function changeLang(lang) {
-            currentLang = lang;
-            if(lang === 'bn') {
-                document.getElementById('btn-bn').className = "px-2 py-1 rounded-full font-bold text-[10px] gold-bg text-white";
-                document.getElementById('btn-en').className = "px-2 py-1 rounded-full font-bold text-[10px] text-gray-700";
-                document.getElementById('section-title').innerText = "সমস্ত পণ্য";
-                // কার্ট এবং অন্যান্য এলিমেন্ট বাংলা করা যেতে পারে এখানে
-            } else {
-                document.getElementById('btn-en').className = "px-2 py-1 rounded-full font-bold text-[10px] gold-bg text-white";
-                document.getElementById('btn-bn').className = "px-2 py-1 rounded-full font-bold text-[10px] text-gray-700";
-                document.getElementById('section-title').innerText = "All Products";
-            }
-            // সার্চ বা অন্যান্য ফিল্টার অ্যাক্টিভ থাকলে সেটি রিসেট করে লোড
-            renderAll(allProducts);
+            document.getElementById('section-title').innerText = (lang === 'bn') ? "সমস্ত পণ্য" : "All Products";
+            document.getElementById('btn-bn').classList.toggle('gold-bg', lang === 'bn');
+            document.getElementById('btn-bn').classList.toggle('text-white', lang === 'bn');
+            document.getElementById('btn-en').classList.toggle('gold-bg', lang === 'en');
+            document.getElementById('btn-en').classList.toggle('text-white', lang === 'en');
         }
     </script>
 </body>
