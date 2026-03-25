@@ -16,23 +16,14 @@
         .gold-text { color: #D4AF37; }
         .gold-bg { background-color: #D4AF37; }
         
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 8px; 
-            padding: 8px; 
-        }
+        /* Grid System from your original design */
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; }
         @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1024px) { .product-grid { grid-template-columns: repeat(5, 1fr); } }
 
         .product-card { 
-            background: #fff; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            border: 1px solid #e1e7eb; 
-            transition: all 0.2s;
+            background: #fff; border-radius: 8px; overflow: hidden; display: flex; 
+            flex-direction: column; border: 1px solid #e1e7eb; transition: all 0.2s;
         }
         .product-card:active { transform: scale(0.97); }
         .product-img { height: 160px; width: 100%; object-fit: cover; cursor: pointer; }
@@ -40,8 +31,6 @@
 
         .sticky-header { position: sticky; top: 0; z-index: 1000; background: white; }
         .cart-badge { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
-        
-        #cartModal { transition: transform 0.3s ease-in-out; }
     </style>
 </head>
 <body>
@@ -92,7 +81,7 @@
                 <div class="flex justify-between font-bold text-lg mb-4">
                     <span>সর্বমোট:</span> <span class="gold-text">৳ <span id="cartTotal">0</span></span>
                 </div>
-                <button onclick="openCheckout()" class="w-full gold-bg text-white py-3.5 rounded-xl font-bold shadow-lg active:scale-95 transition">অর্ডার কনফার্ম করুন</button>
+                <button onclick="openCheckout()" class="w-full gold-bg text-white py-3.5 rounded-xl font-bold shadow-lg">অর্ডার কনফার্ম করুন</button>
             </div>
         </div>
     </div>
@@ -105,7 +94,7 @@
                 <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-3 bg-gray-50 rounded-xl text-sm border">
                 <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-3 bg-gray-50 rounded-xl text-sm border">
                 <textarea id="custAddr" placeholder="পুরো ঠিকানা" class="w-full p-3 bg-gray-50 rounded-xl h-20 text-sm border"></textarea>
-                <button onclick="submitOrder()" class="w-full gold-bg text-white py-3.5 rounded-xl font-bold shadow-lg">WhatsApp-এ অর্ডার করুন</button>
+                <button onclick="submitOrder()" class="w-full gold-bg text-white py-3.5 rounded-xl font-bold shadow-lg">অর্ডার করুন (WhatsApp)</button>
             </div>
         </div>
     </div>
@@ -116,6 +105,7 @@
     </div>
 
     <script>
+        // Your Verified Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBucDFQ0iHiC6xyxUjz2OwUtG-EQlyRU",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -130,24 +120,29 @@
         const db = firebase.database();
         let allProducts = [], cart = [], currentLang = 'bn';
 
-        // ডাটাবেস থেকে ডাটা রিড করা
-        db.ref('live_products').on('value', (s) => {
-            const d = s.val(); 
+        // ডাটাবেস থেকে পণ্য লোড (live_products নোড থেকে)
+        db.ref('live_products').on('value', (snapshot) => {
+            const data = snapshot.val(); 
             allProducts = [];
-            if(d) {
-                for(let k in d) { 
-                    let p = d[k]; p.id = k; 
+            if(data) {
+                for(let key in data) { 
+                    let p = data[key]; p.id = key; 
                     allProducts.push(p); 
                 }
             }
             renderAll(allProducts);
         });
 
+        // পণ্য দেখানোর মূল ফাংশন
         function renderAll(products) {
             const list = document.getElementById('productList');
             list.innerHTML = "";
+            if(products.length === 0) {
+                list.innerHTML = '<p class="col-span-2 text-center py-10">কোনো পণ্য নেই।</p>';
+                return;
+            }
             products.forEach(p => {
-                let img = p.img || p.image || p.imageURL || 'https://via.placeholder.com/150';
+                let img = p.img || p.image || p.imageURL || 'https://via.placeholder.com/300';
                 list.innerHTML += `
                     <div class="product-card shadow-sm">
                         <img src="${img}" class="product-img" onclick="openImg('${img}')">
@@ -164,6 +159,7 @@
             });
         }
 
+        // কার্ট ম্যানেজমেন্ট
         function addToCart(id) {
             const p = allProducts.find(x => x.id === id);
             const item = cart.find(x => x.id === id);
@@ -180,7 +176,11 @@
             cart.forEach(item => {
                 total += item.price * item.qty;
                 let img = item.img || item.image || item.imageURL || 'https://via.placeholder.com/50';
-                list.innerHTML += `<div class="flex items-center gap-3 border-b pb-3"><img src="${img}" class="w-10 h-10 rounded"><div class="flex-1"><h4 class="text-[10px] font-bold">${item.name}</h4><p class="text-[10px] gold-text">৳ ${item.price} x ${item.qty}</p></div></div>`;
+                list.innerHTML += `
+                    <div class="flex items-center gap-3 border-b pb-3 border-gray-100">
+                        <img src="${img}" class="w-10 h-10 rounded object-cover">
+                        <div class="flex-1"><h4 class="text-[10px] font-bold">${item.name}</h4><p class="text-[10px] gold-text">৳ ${item.price} x ${item.qty}</p></div>
+                    </div>`;
             });
             document.getElementById('cartTotal').innerText = total;
         }
@@ -189,14 +189,15 @@
         function openImg(s) { document.getElementById('fullImage').src = s; document.getElementById('imageModal').classList.remove('hidden'); }
         function openCheckout() { if(cart.length > 0) document.getElementById('orderModal').classList.remove('hidden'); }
 
+        // WhatsApp অর্ডার সিস্টেম
         function submitOrder() {
             const n = document.getElementById('custName').value;
             const ph = document.getElementById('custPhone').value;
             const a = document.getElementById('custAddr').value;
             if(!n || !ph || !a) return alert('সব তথ্য দিন!');
-            let items = cart.map(i => `${i.name} (${i.qty})`).join(', ');
-            let total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-            const msg = `অর্ডার তথ্য:\nনাম: ${n}\nফোন: ${ph}\nঠিকানা: ${a}\nপণ্য: ${items}\nমোট: ${total} TK`;
+            let items = cart.map(i => `${i.name} (x${i.qty})`).join(', ');
+            let total = document.getElementById('cartTotal').innerText;
+            const msg = `আসসালামু আলাইকুম (Ar RaiyanMart)\n\nনতুন অর্ডার:\nনাম: ${n}\nফোন: ${ph}\nঠিকানা: ${a}\nপণ্য: ${items}\nমোট: ${total} TK`;
             window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -207,6 +208,7 @@
 
         function changeLang(lang) {
             currentLang = lang;
+            document.getElementById('section-title').innerText = lang === 'bn' ? "সমস্ত পণ্য" : "All Products";
             document.getElementById('btn-bn').className = lang === 'bn' ? "px-2 py-1 rounded-full font-bold text-[10px] gold-bg text-white" : "px-2 py-1 rounded-full font-bold text-[10px] text-gray-700";
             document.getElementById('btn-en').className = lang === 'en' ? "px-2 py-1 rounded-full font-bold text-[10px] gold-bg text-white" : "px-2 py-1 rounded-full font-bold text-[10px] text-gray-700";
         }
