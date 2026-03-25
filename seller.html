@@ -1,60 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Center | RaiyanMart</title>
+    <title>Seller Dashboard - RaiyanMart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #f3f4f6; }
-        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        input, textarea { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; font-size: 14px; }
-        .btn { background: #f85606; color: white; width: 100%; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:hover { background: #d44905; }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
+        .hidden { display: none; }
+        .orange-btn { background-color: #ff5722; color: white; transition: 0.3s; }
+        .orange-btn:hover { background-color: #e64a19; }
     </style>
 </head>
 <body class="p-4">
 
-    <div id="authBox" class="max-w-md mx-auto mt-10">
-        <div class="card" id="regForm">
-            <h2 class="text-2xl font-bold text-center mb-6">Create Seller Account</h2>
-            <input type="text" id="regShopName" placeholder="Shop Name">
-            <input type="tel" id="regPhone" placeholder="Mobile Number (017...)">
-            <input type="password" id="regPass" placeholder="Set Password">
-            <button class="btn w-full bg-green-600" onclick="registerSeller()">Register Now</button>
-            <p class="text-center text-sm mt-4">Already registered? <a href="#" onclick="toggleAuth()" class="text-orange-600 font-bold">Login</a></p>
-        </div>
-
-        <div class="card" id="loginForm" style="display: none;">
-            <h2 class="text-2xl font-bold text-center mb-6">Seller Login</h2>
-            <input type="tel" id="loginPhone" placeholder="Phone Number">
-            <input type="password" id="loginPass" placeholder="Password">
-            <button class="btn w-full" onclick="loginSeller()">Login</button>
-            <p class="text-center text-sm mt-4">New seller? <a href="#" onclick="toggleAuth()" class="text-orange-600 font-bold">Create Account</a></p>
+    <div id="authSection" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-2xl mt-10 border-t-4 border-orange-500">
+        <h2 id="authTitle" class="text-xl font-bold text-center mb-6 text-gray-800 uppercase tracking-widest">Seller Login</h2>
+        
+        <div class="space-y-4">
+            <input type="text" id="logShopName" placeholder="শপের নাম (যেমন: Pure Mart)" class="w-full border p-3 rounded-lg outline-none">
+            <input type="password" id="logPass" placeholder="পাসওয়ার্ড দিন" class="w-full border p-3 rounded-lg outline-none">
+            
+            <button onclick="handleAuth()" id="authBtn" class="w-full bg-orange-600 text-white py-3 rounded-lg font-bold">লগইন করুন</button>
+            
+            <p class="text-center text-xs text-gray-500 mt-4">
+                <span id="toggleText">একাউন্ট নেই?</span> 
+                <button onclick="toggleAuth()" id="toggleBtn" class="text-orange-600 font-bold underline">নতুন একাউন্ট খুলুন</button>
+            </p>
         </div>
     </div>
 
-    <div id="sellerDash" class="max-w-xl mx-auto mt-6" style="display: none;">
-        <div class="card">
-            <div class="flex justify-between items-center border-b pb-4 mb-6">
-                <h1 class="text-lg font-bold" id="dashShopName">Dashboard</h1>
-                <button onclick="location.reload()" class="text-red-500 font-bold text-sm">Logout</button>
+    <div id="dashboard" class="max-w-2xl mx-auto space-y-6 hidden mt-4">
+        <div class="bg-white p-4 rounded-xl shadow flex justify-between items-center border-l-4 border-orange-500">
+            <div>
+                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Welcome back,</p>
+                <h2 id="displayShop" class="text-lg font-bold text-gray-800 tracking-tight text-orange-600">Shop Name</h2>
             </div>
-            
-            <h3 class="font-bold text-slate-700 mb-4 text-sm">Upload New Product</h3>
-            <input type="text" id="pName" placeholder="Product Name">
-            <input type="number" id="pPrice" placeholder="Price (৳)">
-            <textarea id="pDesc" placeholder="Product Description..." rows="3"></textarea>
-            <input type="text" id="pImg" placeholder="Image URL (ImgBB)">
-            <button class="btn w-full" onclick="uploadProduct()">Upload to Shop</button>
+            <button onclick="logout()" class="text-red-500 text-[10px] font-bold border border-red-200 px-3 py-1 rounded-lg">Logout</button>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+            <h2 class="text-orange-600 font-bold mb-5 text-sm uppercase flex items-center gap-2">
+                <i class="fa-solid fa-plus-circle"></i> নতুন পণ্য যোগ করুন
+            </h2>
+            <div class="space-y-4">
+                <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border p-2.5 rounded-lg text-sm outline-none">
+                <input type="number" id="pPrice" placeholder="দাম (৳)" class="w-full border p-2.5 rounded-lg text-sm outline-none">
+                <textarea id="pDesc" placeholder="পণ্যের বিবরণ..." class="w-full border p-2.5 rounded-lg h-24 text-sm outline-none"></textarea>
+                
+                <div class="bg-orange-50 p-3 rounded-lg border border-orange-100">
+                    <p class="text-[11px] text-orange-700 mb-2">পণ্যের ছবি সিলেক্ট করুন (একাধিক):</p>
+                    <input type="file" id="pImage" multiple accept="image/*" class="w-full text-[10px] file:mr-3 file:py-1 file:px-2 file:rounded file:border-0 file:bg-orange-600 file:text-white">
+                </div>
+                
+                <button onclick="submitProduct()" id="uploadBtn" class="w-full orange-btn py-3.5 rounded-xl font-bold uppercase tracking-wider shadow-lg text-sm">পণ্য আপলোড করুন</button>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+            <h2 class="text-blue-600 font-bold mb-4 text-sm uppercase flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked"></i> আপনার লাইভ পণ্যসমূহ
+            </h2>
+            <div id="liveProductList" class="space-y-3">
+                <p class="text-center text-gray-400 text-[11px] italic py-3">লোড হচ্ছে...</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow text-center border-b-2 border-orange-400">
+                <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">নতুন অর্ডার</p>
+                <div id="orders" class="text-xs font-semibold text-gray-600 italic tracking-tighter">অর্ডার নেই...</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow text-center border-b-2 border-blue-400">
+                <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">নতুন মেসেজ</p>
+                <div id="queries" class="text-xs font-semibold text-gray-600 italic tracking-tighter">মেসেজ নেই...</div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBucf0IG8NerMCC6zyxUJzZOautG-EQLwRU",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -64,71 +94,152 @@
             messagingSenderId: "336578883565",
             appId: "1:336578883565:web:54d73b52c96a26f38601e4"
         };
+
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const db = firebase.database();
+        const storage = firebase.storage();
+
+        let isLoginMode = true;
 
         function toggleAuth() {
-            const l = document.getElementById('loginForm'), r = document.getElementById('regForm');
-            l.style.display = l.style.display === "none" ? "block" : "none";
-            r.style.display = r.style.display === "none" ? "block" : "none";
+            isLoginMode = !isLoginMode;
+            document.getElementById('authTitle').innerText = isLoginMode ? "Seller Login" : "Seller Registration";
+            document.getElementById('authBtn').innerText = isLoginMode ? "লগইন করুন" : "একাউন্ট তৈরি করুন";
+            document.getElementById('toggleText').innerText = isLoginMode ? "একাউন্ট নেই?" : "আগে থেকেই একাউন্ট আছে?";
+            document.getElementById('toggleBtn').innerText = isLoginMode ? "নতুন একাউন্ট খুলুন" : "লগইন করুন";
         }
 
-        function registerSeller() {
-            const name = document.getElementById('regShopName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
+        async function handleAuth() {
+            const name = document.getElementById('logShopName').value.trim();
+            const pass = document.getElementById('logPass').value.trim();
 
-            if(!name || !phone || !pass) { alert("Please fill all fields!"); return; }
+            if(!name || !pass) return alert("দয়া করে শপের নাম এবং পাসওয়ার্ড দিন!");
 
-            // Check if phone already exists
-            database.ref('sellers').orderByChild('phone').equalTo(phone).once('value', s => {
-                if(s.exists()){
-                    alert("This phone is already registered!");
-                } else {
-                    database.ref('sellers').push({
-                        shopName: name,
-                        phone: phone,
-                        password: pass,
-                        status: "Approved"
-                    }).then(() => {
-                        alert("Registration Successful!");
-                        toggleAuth();
-                    }).catch(e => alert("Error: " + e.message));
+            if(isLoginMode) {
+                // লগইন চেক
+                db.ref('sellers/' + name).once('value', snap => {
+                    const userData = snap.val();
+                    if(snap.exists() && userData.password === pass) {
+                        sessionStorage.setItem('seller_session', name);
+                        showDashboard(name);
+                    } else {
+                        alert("ভুল শপ নেম বা পাসওয়ার্ড!");
+                    }
+                });
+            } else {
+                // রেজিস্ট্রেশন
+                const sellerRef = db.ref('sellers/' + name);
+                const snap = await sellerRef.once('value');
+
+                if(snap.exists()) return alert("এই নামে আগে থেকেই একাউন্ট আছে!");
+
+                await sellerRef.set({
+                    password: pass,
+                    createdAt: Date.now()
+                });
+                alert("✅ একাউন্ট তৈরি হয়েছে! এখন লগইন করুন।");
+                toggleAuth();
+            }
+        }
+
+        function showDashboard(shopName) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('displayShop').innerText = shopName;
+            loadMyProducts(shopName);
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            location.reload();
+        }
+
+        async function submitProduct() {
+            const shop = sessionStorage.getItem('seller_session');
+            const fileInput = document.getElementById('pImage');
+            const files = fileInput.files;
+            const name = document.getElementById('pName').value.trim();
+            const price = document.getElementById('pPrice').value.trim();
+            const desc = document.getElementById('pDesc').value.trim();
+            const btn = document.getElementById('uploadBtn');
+
+            if(files.length === 0 || !name || !price) return alert("সব তথ্য পূরণ করুন!");
+            
+            btn.innerText = "ছবি আপলোড হচ্ছে...";
+            btn.disabled = true;
+
+            try {
+                let imageUrls = [];
+                for (let i = 0; i < files.length; i++) {
+                    const ref = storage.ref('products/' + Date.now() + "_" + files[i].name);
+                    const uploadTask = await ref.put(files[i]);
+                    imageUrls.push(await uploadTask.ref.getDownloadURL());
                 }
+
+                await db.ref('pending_products').push({
+                    name,
+                    price: parseInt(price),
+                    description: desc,
+                    imageUrl: imageUrls[0],
+                    allImages: imageUrls,
+                    seller: shop,
+                    status: "pending",
+                    timestamp: Date.now()
+                });
+
+                alert("🚀 পণ্যটি রিভিউয়ের জন্য পাঠানো হয়েছে। এডমিন অ্যাপ্রুভ করলে লাইভ হবে!");
+                location.reload();
+            } catch (e) {
+                alert("ভুল: " + e.message);
+                btn.disabled = false;
+                btn.innerText = "আবার চেষ্টা করুন";
+            }
+        }
+
+        function loadMyProducts(shop) {
+            const listDiv = document.getElementById('liveProductList');
+            db.ref('live_products').on('value', snap => {
+                listDiv.innerHTML = "";
+                let count = 0;
+                snap.forEach(child => {
+                    const p = child.val();
+                    if(p.seller === shop) {
+                        count++;
+                        listDiv.innerHTML += `
+                            <div class="flex items-center gap-4 p-3 border rounded-xl bg-white shadow-sm hover:shadow-md transition">
+                                <img src="${p.imageUrl}" class="w-12 h-12 rounded-lg object-cover shadow">
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-xs text-gray-800">${p.name}</h4>
+                                    <p class="text-orange-600 font-bold text-[10px]">৳ ${p.price}</p>
+                                </div>
+                                <button onclick="deleteProduct('${child.key}')" class="text-red-400 p-2 hover:text-red-600">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>`;
+                    }
+                });
+                if(count === 0) listDiv.innerHTML = "<p class='text-center text-gray-400 text-[10px] italic py-3'>কোনো পণ্য লাইভ নেই...</p>";
             });
         }
 
-        let currentShop = "";
-        function loginSeller() {
-            const phone = document.getElementById('loginPhone').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-
-            database.ref('sellers').orderByChild('phone').equalTo(phone).once('value', s => {
-                const data = s.val();
-                if(data){
-                    const id = Object.keys(data)[0];
-                    const seller = data[id];
-                    if(seller.password === pass){
-                        currentShop = seller.shopName;
-                        document.getElementById('authBox').style.display = "none";
-                        document.getElementById('sellerDash').style.display = "block";
-                        document.getElementById('dashShopName').innerText = seller.shopName;
-                    } else { alert("Wrong Password!"); }
-                } else { alert("No account found!"); }
-            });
+        function deleteProduct(id) {
+            if(confirm("আপনি কি নিশ্চিত যে পণ্যটি ডিলিট করতে চান?")) {
+                db.ref('live_products/' + id).remove();
+            }
         }
 
-        function uploadProduct() {
-            const name = document.getElementById('pName').value, price = document.getElementById('pPrice').value, desc = document.getElementById('pDesc').value, img = document.getElementById('pImg').value;
-            if(!name || !price || !img) return alert("Fill all details");
+        // Live Notifications
+        db.ref('orders').limitToLast(1).on('value', snap => {
+            document.getElementById('orders').innerText = snap.exists() ? "নতুন অর্ডার আছে!" : "অর্ডার নেই";
+        });
+        db.ref('comments').limitToLast(1).on('value', snap => {
+            document.getElementById('queries').innerText = snap.exists() ? "নতুন মেসেজ আছে!" : "মেসেজ নেই";
+        });
 
-            database.ref('pending_products').push({
-                name, price, description: desc, img, shopName: currentShop, status: "Pending"
-            }).then(() => {
-                alert("Product Uploaded! Waiting for Admin Approval.");
-                ['pName','pPrice','pDesc','pImg'].forEach(id => document.getElementById(id).value = "");
-            });
-        }
+        window.onload = () => {
+            const session = sessionStorage.getItem('seller_session');
+            if(session) showDashboard(session);
+        };
     </script>
 </body>
 </html>
