@@ -33,6 +33,10 @@
         
         input, select, textarea { border: 1px solid #ddd !important; transition: all 0.3s; }
         input:focus { border-color: #D4AF37 !important; outline: none; box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1); }
+        
+        /* Banner Style - গিটহাবের ইমেজটি সরাসরি বসানোর স্টাইল */
+        .banner { background-color: #fff; border-bottom: 1px solid #e5e7eb; padding: 0px; text-align: center; overflow: hidden; }
+        .banner-img { width: 100%; height: auto; display: block; }
     </style>
 </head>
 <body>
@@ -46,6 +50,10 @@
         <span id="cartCount" class="cart-badge">0</span>
     </div>
 </header>
+
+<div class="banner">
+    <img src="https://raw.githubusercontent.com/raiyanfareha-create/Ar-RaiyanMart/main/hero-banner.jpg" alt="Ar RaiyanMart Banner" class="banner-img">
+</div>
 
 <main class="container mx-auto max-w-4xl pb-24">
     <div id="productList" class="product-grid">
@@ -94,11 +102,11 @@
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="text-xs font-bold text-gray-500 ml-1">Division</label>
-                    <input type="text" id="custDivision" placeholder="e.g. Dhaka" class="w-full p-3.5 bg-gray-50 rounded-xl text-sm mt-1">
+                    <input type="text" id="custDivision" placeholder="Division" class="w-full p-3.5 bg-gray-50 rounded-xl text-sm mt-1">
                 </div>
                 <div>
                     <label class="text-xs font-bold text-gray-500 ml-1">District</label>
-                    <input type="text" id="custDistrict" placeholder="e.g. Gazipur" class="w-full p-3.5 bg-gray-50 rounded-xl text-sm mt-1">
+                    <input type="text" id="custDistrict" placeholder="District" class="w-full p-3.5 bg-gray-50 rounded-xl text-sm mt-1">
                 </div>
             </div>
 
@@ -191,7 +199,7 @@
                         <div id="qa-${p.id}" class="max-h-52 overflow-y-auto mb-5 px-1 custom-scrollbar"></div>
                         
                         <div class="bg-gray-50 p-3 rounded-xl border space-y-3">
-                            <input type="number" id="phone-${p.id}" placeholder="আপনার মোবাইল নম্বর" class="w-full p-2.5 bg-white border rounded-lg text-xs outline-none">
+                            <input type="text" id="name-${p.id}" placeholder="আপনার নাম" class="w-full p-2.5 bg-white border rounded-lg text-xs outline-none">
                             <div class="flex gap-2">
                                 <input type="text" id="text-${p.id}" placeholder="আপনার প্রশ্নটি এখানে লিখুন..." class="flex-1 p-2.5 bg-white border rounded-lg text-xs outline-none">
                                 <button onclick="saveQuestion('${p.id}')" class="gold-bg text-white px-5 rounded-lg active:scale-90 transition-all">
@@ -220,7 +228,7 @@
             qaBox.innerHTML = "";
             for(let key in data) {
                 const q = data[key];
-                let qHtml = `<div class="q-bubble"><b>👤 প্রশ্ন:</b> ${q.question}</div>`;
+                let qHtml = `<div class="q-bubble"><b>👤 ${q.customerName}:</b> ${q.question}</div>`;
                 if(q.answer) {
                     qHtml += `<div class="a-bubble"><b>✅ উত্তর:</b> ${q.answer}</div>`;
                 }
@@ -231,11 +239,11 @@
     }
 
     function saveQuestion(pid) {
-        const ph = document.getElementById(`phone-${pid}`).value;
-        const txt = document.getElementById(`text-${pid}`).value;
+        const cName = document.getElementById(`name-${pid}`).value.trim();
+        const txt = document.getElementById(`text-${pid}`).value.trim();
 
-        if(!ph || ph.length < 11) {
-            alert("সঠিক মোবাইল নম্বর দিন!");
+        if(!cName) {
+            alert("আপনার নাম লিখুন!");
             return;
         }
         if(!txt || txt.length < 3) {
@@ -245,7 +253,7 @@
 
         db.ref('product_questions').push({
             productId: pid,
-            customerPhone: ph,
+            customerName: cName,
             question: txt,
             answer: "",
             timestamp: Date.now()
@@ -321,7 +329,7 @@
         document.getElementById('modalFinalTotal').innerText = subtotal + deliveryCharge;
     }
 
-    // WhatsApp Order Submission
+    // WhatsApp Order Submission (As per note format)
     function submitOrder() {
         const name = document.getElementById('custName').value.trim();
         const phone = document.getElementById('custPhone').value.trim();
@@ -338,12 +346,10 @@
 
         const baseUrl = window.location.origin + window.location.pathname;
         
-        // Item Details Formatting
         let itemDetails = cart.map(i => {
             return `📦 *Product:* ${i.name} (${i.qty} Pcs)\n🔗 *Link:* ${baseUrl}?id=${i.id}\n💰 *দাম:* ${i.price} TK`;
         }).join('\n\n');
 
-        // Professional WhatsApp Message Format
         const finalMsg = `🔔 *নতুন অর্ডার!*\n\n` +
                          `🏪 *Shop name:* Ar RaiyanMart\n\n` +
                          `${itemDetails}\n\n` +
