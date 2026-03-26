@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RaiyanMart | Premium Experience</title>
+    <title>RaiyanMart | Premium E-commerce</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -13,72 +13,141 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&display=swap');
-        body { background-color: #f7f7f7; font-family: 'Hind Siliguri', sans-serif; margin: 0; padding: 0; }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f8f9fa; font-family: 'Hind Siliguri', sans-serif; margin: 0; }
+        
         .gold-text { color: #D4AF37; }
         .gold-bg { background-color: #D4AF37; }
         
-        /* ক্যাটালগ গ্রিড: ১ স্ক্রিনে ৪টি পণ্য নিশ্চিত করতে */
-        .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
-        .product-card { 
-            background: #fff; border-radius: 12px; overflow: hidden; 
-            display: flex; flex-direction: column; box-shadow: 0 2px 4px rgba(0,0,0,0.04); 
-            height: 255px; cursor: pointer; border: 1px solid #eee; transition: 0.2s;
+        /* ক্যাটালগ গ্রিড সেটআপ - এক স্ক্রিনে ৪টি পণ্য দেখানোর জন্য */
+        .catalog-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 10px; 
+            padding: 12px; 
         }
-        .product-card:active { transform: scale(0.97); }
-        .product-img { width: 100%; height: 140px; object-fit: contain; background: #fff; padding: 8px; }
         
-        /* ডিটেইল ভিউ মোডাল */
-        #productDetails { position: fixed; inset: 0; background: #fff; z-index: 2000; display: none; overflow-y: auto; }
-        .back-btn { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2001; }
+        .product-card { 
+            background: #fff; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+            height: 260px; /* ফিক্সড হাইট */
+            border: 1px solid #f0f0f0;
+            transition: transform 0.2s;
+        }
         
-        .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 12px; display: flex; gap: 10px; border-top: 1px solid #eee; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
+        .product-card:active { transform: scale(0.96); }
         
-        /* চেকআউট মোডাল */
-        #checkoutModal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 15px; }
+        .product-img { 
+            width: 100%; 
+            height: 150px; 
+            object-fit: contain; 
+            background: #fff; 
+            padding: 10px;
+        }
         
-        input, select, textarea { font-size: 14px !important; }
+        /* ডিটেইলস এবং মোডাল স্টাইল */
+        #productDetails { 
+            position: fixed; 
+            inset: 0; 
+            background: #fff; 
+            z-index: 2000; 
+            display: none; 
+            overflow-y: auto; 
+        }
+        
+        .back-btn { 
+            position: absolute; 
+            top: 15px; 
+            left: 15px; 
+            background: rgba(255,255,255,0.9); 
+            color: #333; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 2001; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sticky-footer { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: #fff; 
+            padding: 15px; 
+            display: flex; 
+            gap: 12px; 
+            border-top: 1px solid #eee; 
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05); 
+        }
+        
+        #checkoutModal { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.6); 
+            z-index: 3000; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+            backdrop-filter: blur(4px);
+        }
+
+        /* স্ক্রলবার হাইড করা (ঐচ্ছিক) */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="bg-gray-900 text-white text-[11px] py-2 px-4 flex justify-end gap-6 border-b border-gray-700">
-        <button onclick="changeLang('bn')" id="btn-bn" class="font-bold transition">বাংলা</button>
-        <button onclick="changeLang('en')" id="btn-en" class="font-bold opacity-50 transition">English</button>
+    <div class="bg-gray-900 text-white text-[12px] py-2.5 px-5 flex justify-end gap-6 border-b border-gray-800">
+        <button onclick="changeLang('bn')" id="btn-bn" class="font-bold tracking-wide">বাংলা</button>
+        <button onclick="changeLang('en')" id="btn-en" class="font-bold tracking-wide opacity-50">English</button>
     </div>
 
     <div id="homeScreen">
         <header class="bg-white p-4 shadow-sm flex justify-between items-center sticky top-0 z-50">
-            <span class="text-xl font-extrabold gold-text tracking-tight uppercase">RaiyanMart</span>
+            <span class="text-xl font-black gold-text tracking-tighter uppercase italic">RaiyanMart</span>
             <div class="relative cursor-pointer" onclick="openCheckout()">
-                <i class="fa-solid fa-bag-shopping text-2xl text-gray-700"></i>
-                <span id="cartCount" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] rounded-full px-1.5 font-bold border-2 border-white">0</span>
+                <i class="fa-solid fa-cart-shopping text-2xl text-gray-800"></i>
+                <span id="cartCount" class="absolute -top-1.5 -right-2 bg-red-600 text-white text-[10px] rounded-full px-1.5 font-bold border-2 border-white">0</span>
             </div>
         </header>
 
-        <div class="p-3 bg-white">
+        <div class="p-4 bg-white">
             <div class="relative">
-                <input type="text" id="searchInput" onkeyup="searchProduct(this.value)" placeholder="পণ্য খুঁজুন..." class="w-full p-3 pl-10 bg-gray-100 rounded-xl text-sm outline-none border-none focus:ring-1 focus:ring-[#D4AF37]">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+                <input type="text" id="searchInput" onkeyup="searchProduct(this.value)" placeholder="পণ্য খুঁজুন..." class="w-full p-3.5 pl-11 bg-gray-100 rounded-2xl text-sm outline-none border-none focus:ring-2 focus:ring-[#D4AF37] transition-all">
+                <i class="fa-solid fa-search absolute left-4 top-4 text-gray-400"></i>
             </div>
         </div>
 
-        <div id="productList" class="catalog-grid"></div>
-        <div class="pb-20"></div> 
+        <div id="productList" class="catalog-grid">
+            </div>
+        
+        <div class="h-20"></div>
     </div>
 
     <div id="productDetails">
-        <button onclick="closeDetails()" class="back-btn"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+        <button onclick="closeDetails()" class="back-btn"><i class="fa-solid fa-chevron-left"></i></button>
         <div id="detailsContent"></div>
     </div>
 
     <div id="checkoutModal">
-        <div class="bg-white w-full max-w-md rounded-3xl p-6 relative shadow-2xl">
-            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
-            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-800" id="orderFormTitle">অর্ডার তথ্য</h2>
-            <div class="space-y-3">
-                <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#D4AF37]">
-                <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#D4AF37]">
-                <textarea id="custAddr" placeholder="বিস্তারিত ঠিকানা" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#D4AF37] h-20"></textarea>
+        <div class="bg-white w-full max-w-lg rounded-[30px] p-7 relative shadow-2xl">
+            <button onclick="closeCheckout()" class="absolute top-5 right-6 text-3xl text-gray-300">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-gray-800" id="orderFormTitle">অর্ডার কনফার্ম করুন</h2>
+            
+            <div class="space-y-4">
+                <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                <textarea id="custAddr" placeholder="বিস্তারিত ঠিকানা" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-[#D4AF37] h-24"></textarea>
                 
                 <select id="deliverySelect" onchange="updateTotal()" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none">
                     <option value="80">ঢাকার ভেতরে - 80 TK</option>
@@ -86,20 +155,25 @@
                 </select>
 
                 <div class="p-5 bg-yellow-50 rounded-2xl border border-dashed border-yellow-200">
-                    <div class="flex justify-between text-sm text-gray-600"><span>আইটেম মোট:</span> <span id="summarySubtotal" class="font-bold">0</span> TK</div>
+                    <div class="flex justify-between text-gray-600 text-sm">
+                        <span>আইটেম মূল্য:</span> 
+                        <span class="font-bold"><span id="summarySubtotal">0</span> TK</span>
+                    </div>
                     <div class="flex justify-between font-bold text-xl mt-3 pt-3 border-t border-yellow-200 gold-text">
-                        <span>সর্বমোট:</span> <span id="summaryTotal">0</span> TK
+                        <span>সর্বমোট:</span> 
+                        <span><span id="summaryTotal">0</span> TK</span>
                     </div>
                 </div>
 
-                <button onclick="sendOrder()" class="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg active:scale-95 transition">
-                    <i class="fa-brands fa-whatsapp text-2xl"></i> হোয়াটসঅ্যাপ অর্ডার
+                <button onclick="sendOrder()" class="w-full bg-[#25D366] text-white py-4.5 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-transform text-lg">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> হোয়াটসঅ্যাপে অর্ডার দিন
                 </button>
             </div>
         </div>
     </div>
+
     <script>
-        // Firebase Configuration
+        // ৫.১ ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyBucDF68HVd8nyxUJz20utG-EQLYRU",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -112,62 +186,88 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         
+        // গ্লোবাল ভেরিয়েবল
         let allProducts = [], cart = [], currentLang = localStorage.getItem('lang') || 'bn';
 
+        // ৫.২ ভাষা ডেটা
         const langData = {
-            bn: { search: "পণ্য খুঁজুন...", buy: "এখনই কিনুন", cart: "কার্টে রাখুন", desc: "পণ্যের বিবরণ", order: "অর্ডার তথ্য", name: "আপনার নাম", addr: "বিস্তারিত ঠিকানা", phone: "মোবাইল নম্বর", success: "ব্যাগ-এ যোগ করা হয়েছে!" },
-            en: { search: "Search products...", buy: "Buy Now", cart: "Add to Cart", desc: "Product Description", order: "Order Info", name: "Your Name", addr: "Full Address", phone: "Phone Number", success: "Added to bag!" }
+            bn: { 
+                search: "পণ্য খুঁজুন...", buy: "এখনই কিনুন", cart: "কার্টে রাখুন", 
+                desc: "পণ্যের বিবরণ", order: "অর্ডার কনফার্ম করুন", name: "আপনার নাম", 
+                addr: "বিস্তারিত ঠিকানা", phone: "মোবাইল নম্বর", success: "কার্টে যোগ করা হয়েছে!" 
+            },
+            en: { 
+                search: "Search products...", buy: "Order Now", cart: "Add to Cart", 
+                desc: "Description", order: "Confirm Order", name: "Your Name", 
+                addr: "Full Address", phone: "Phone Number", success: "Added to cart!" 
+            }
         };
 
+        // ৫.৩ ভাষা পরিবর্তনের ফাংশন
         function changeLang(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
-            document.getElementById('btn-bn').style.opacity = lang === 'bn' ? '1' : '0.5';
-            document.getElementById('btn-en').style.opacity = lang === 'en' ? '1' : '0.5';
+            
+            // বাটন স্টাইল আপডেট
+            document.getElementById('btn-bn').style.opacity = (lang === 'bn' ? '1' : '0.5');
+            document.getElementById('btn-en').style.opacity = (lang === 'en' ? '1' : '0.5');
+            
+            // ইনপুট প্লেসহোল্ডার এবং টাইটেল আপডেট
             document.getElementById('searchInput').placeholder = langData[lang].search;
             document.getElementById('orderFormTitle').innerText = langData[lang].order;
             document.getElementById('custName').placeholder = langData[lang].name;
             document.getElementById('custAddr').placeholder = langData[lang].addr;
             document.getElementById('custPhone').placeholder = langData[lang].phone;
-            renderCatalog(allProducts);
+
+            renderCatalog(allProducts); // পুনরায় রেন্ডার
         }
 
+        // ৫.৪ ফায়ারবেস থেকে পণ্য লোড করা
         db.ref('live_products').on('value', (snap) => {
             const data = snap.val();
             allProducts = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
             renderCatalog(allProducts);
         });
 
+        // ৫.৫ ক্যাটালগ রেন্ডার করার ফাংশন
         function renderCatalog(products) {
             const list = document.getElementById('productList');
             list.innerHTML = products.map(p => `
                 <div class="product-card" onclick="openDetails('${p.id}')">
                     <img src="${p.img || p.image}" class="product-img">
-                    <div class="p-3 flex flex-col justify-between flex-grow">
-                        <h3 class="text-[12px] font-bold leading-tight h-8 overflow-hidden text-gray-800">${p.name}</h3>
-                        <p class="gold-text font-bold text-sm mt-1">৳${p.price}</p>
+                    <div class="p-3.5 flex flex-col justify-between flex-grow">
+                        <h3 class="text-[13px] font-bold leading-tight h-8 overflow-hidden text-gray-800">${p.name}</h3>
+                        <div class="flex justify-between items-center mt-2">
+                            <p class="gold-text font-black text-[15px]">৳${p.price}</p>
+                            <i class="fa-solid fa-plus-circle text-gray-300 text-lg"></i>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
 
+        // ৫.৬ ডিটেইল ভিউ ওপেন করার ফাংশন
         function openDetails(id) {
             const p = allProducts.find(x => x.id === id);
             const content = document.getElementById('detailsContent');
             const t = langData[currentLang];
+            
             content.innerHTML = `
-                <img src="${p.img || p.image}" class="w-full h-80 object-contain bg-white pt-10">
-                <div class="p-6 pb-32">
-                    <p class="text-2xl font-bold gold-text">৳${p.price}</p>
-                    <h1 class="text-xl font-bold mt-2 text-gray-900">${p.name}</h1>
-                    <div class="mt-6 p-5 bg-gray-50 rounded-2xl border border-gray-100">
-                        <h4 class="font-bold text-gray-400 text-[11px] mb-2 uppercase tracking-widest">${t.desc}</h4>
-                        <p class="text-gray-600 text-sm leading-relaxed">${p.description || 'বিবরণ নেই'}</p>
+                <div class="w-full bg-white relative">
+                   <img src="${p.img || p.image}" class="w-full h-96 object-contain p-6">
+                </div>
+                <div class="p-7 pb-32">
+                    <p class="text-3xl font-black gold-text">৳${p.price}</p>
+                    <h1 class="text-2xl font-bold mt-3 text-gray-900 leading-tight">${p.name}</h1>
+                    <div class="h-[1px] bg-gray-100 my-6"></div>
+                    <div class="p-5 bg-gray-50 rounded-[25px]">
+                        <h4 class="font-bold text-gray-400 text-[11px] mb-3 uppercase tracking-[2px]">${t.desc}</h4>
+                        <p class="text-gray-600 text-[15px] leading-relaxed">${p.description || 'বিবরণ দেওয়া হয়নি'}</p>
                     </div>
                 </div>
                 <div class="sticky-footer">
-                    <button onclick="addToCart('${p.id}')" class="flex-1 border-2 border-[#D4AF37] text-[#D4AF37] py-4 rounded-xl font-bold text-sm">${t.cart}</button>
-                    <button onclick="buyNow('${p.id}')" class="flex-1 gold-bg text-white py-4 rounded-xl font-bold text-sm shadow-lg">${t.buy}</button>
+                    <button onclick="addToCart('${p.id}')" class="flex-1 border-2 border-[#D4AF37] text-[#D4AF37] py-4 rounded-2xl font-bold text-sm transition-all active:bg-[#D4AF37] active:text-white">${t.cart}</button>
+                    <button onclick="buyNow('${p.id}')" class="flex-1 gold-bg text-white py-4 rounded-2xl font-bold text-sm shadow-lg shadow-[#D4AF37]/30">${t.buy}</button>
                 </div>
             `;
             document.getElementById('productDetails').style.display = 'block';
@@ -179,9 +279,10 @@
             document.body.style.overflow = 'auto';
         }
 
+        // ৫.৭ কার্ড এবং অর্ডার ম্যানেজমেন্ট
         function addToCart(id) {
             const p = allProducts.find(x => x.id === id);
-            cart = [{...p, qty: 1}];
+            cart = [{...p, qty: 1}]; // সহজ করার জন্য ১টি পণ্যই সেট হচ্ছে
             document.getElementById('cartCount').innerText = "1";
             alert(langData[currentLang].success);
         }
@@ -193,7 +294,7 @@
         }
 
         function openCheckout() {
-            if(cart.length === 0) return alert("ব্যাগ খালি!");
+            if(cart.length === 0) return alert(currentLang === 'bn' ? "ব্যাগ খালি!" : "Bag is empty!");
             document.getElementById('summarySubtotal').innerText = cart[0].price;
             updateTotal();
             document.getElementById('checkoutModal').style.display = 'flex';
@@ -207,27 +308,47 @@
             document.getElementById('summaryTotal').innerText = sub + dev;
         }
 
+        // ৫.৮ হোয়াটসঅ্যাপে অর্ডার পাঠানো
         function sendOrder() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
-            if(!name || !phone || !addr) return alert("সব তথ্য দিন");
+            
+            if(!name || !phone || !addr) {
+                return alert(currentLang === 'bn' ? "সবগুলো তথ্য পূরণ করুন" : "Please fill all fields");
+            }
 
             const p = cart[0];
             const delivery = document.getElementById('deliverySelect').value;
             const total = document.getElementById('summaryTotal').innerText;
             const orderID = "RM" + Math.floor(1000 + Math.random() * 9000);
 
-            const invoice = `*🛍️ ORDER INVOICE - RAIYANMART*\n---------------------------------------\n*Order ID:* #${orderID}\n*Product:* ${p.name}\n*Price:* ${p.price} TK\n*Delivery:* ${delivery} TK\n---------------------------------------\n*Total Payable: ${total} TK*\n---------------------------------------\n*Customer Details:*\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Address: ${addr}\n---------------------------------------\n_Thank you for shopping with us!_`;
+            const invoice = `*🛍️ ORDER INVOICE - RAIYANMART*
+---------------------------------------
+*Order ID:* #${orderID}
+*Product:* ${p.name}
+*Price:* ${p.price} TK
+*Delivery:* ${delivery} TK
+---------------------------------------
+*Total Payable: ${total} TK*
+---------------------------------------
+*Customer Details:*
+👤 Name: ${name}
+📞 Phone: ${phone}
+📍 Address: ${addr}
+---------------------------------------
+_Sent from RaiyanMart Web Platform_`;
 
             window.open(`https://wa.me/8801704100286?text=${encodeURIComponent(invoice)}`, '_blank');
         }
 
+        // ৫.৯ সার্চ ফাংশন
         function searchProduct(val) {
             const filtered = allProducts.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
             renderCatalog(filtered);
         }
 
+        // পেজ লোড হলে ডিফল্ট ভাষা সেট করা
         changeLang(currentLang);
     </script>
 </body>
