@@ -21,12 +21,12 @@
     <div id="authSection" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl mt-10 border-t-4 border-orange-600">
         <h2 id="authTitle" class="text-xl font-bold text-center mb-6 text-gray-800">সেলার লগইন</h2>
         <div class="space-y-4">
-            <input type="text" id="logShopName" placeholder="শপের নাম" class="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-orange-500">
-            <input type="password" id="logPass" placeholder="পাসওয়ার্ড" class="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-orange-500">
+            <input type="text" id="logShopName" placeholder="শপের নাম" class="w-full border p-3 rounded-lg outline-none">
+            <input type="password" id="logPass" placeholder="পাসওয়ার্ড" class="w-full border p-3 rounded-lg outline-none">
             <button onclick="handleAuth()" id="authBtn" class="w-full bg-orange-600 text-white py-3 rounded-lg font-bold">লগইন করুন</button>
             <p class="text-center text-sm text-gray-600 mt-4">
                 <span id="toggleText">অ্যাকাউন্ট নেই?</span>
-                <button onclick="toggleAuth()" id="toggleBtn" class="text-orange-600 font-bold underline ml-1">নতুন অ্যাকাউন্ট খুলুন</button>
+                <button onclick="toggleAuth()" id="toggleBtn" class="text-orange-600 font-bold underline ml-1">নতুন অ্যাকাউন্ট</button>
             </p>
         </div>
     </div>
@@ -34,16 +34,16 @@
     <div id="dashboard" class="max-w-2xl mx-auto space-y-6 hidden mt-4">
         <div class="bg-white p-4 rounded-xl shadow flex justify-between items-center border-l-4 border-orange-600">
             <div>
-                <p class="text-xs text-gray-500 uppercase">Welcome,</p>
+                <p class="text-xs text-gray-500 uppercase">Welcome, </p>
                 <h2 id="displayShop" class="text-lg font-bold text-gray-800">Shop Name</h2>
             </div>
-            <button onclick="logout()" class="text-red-500 font-bold border border-red-200 px-4 py-1 rounded-lg hover:bg-red-50">লগআউট</button>
+            <button onclick="logout()" class="text-red-500 font-bold border border-red-200 px-4 py-1 rounded-lg hover:bg-red-50">Logout</button>
         </div>
 
         <div class="grid grid-cols-2 gap-4 text-sm font-bold">
             <div class="bg-white p-4 rounded-xl shadow text-center border-b-4 border-orange-500">
                 <p class="text-gray-400 uppercase text-[10px] mb-1">নতুন অর্ডার</p>
-                <div id="ordersNotify" class="text-orange-600 italic">কোনো অর্ডার নেই</div>
+                <div id="ordersNotify" class="text-orange-600 italic">অর্ডার চেক করুন</div>
             </div>
             <div class="bg-white p-4 rounded-xl shadow text-center border-b-4 border-blue-500">
                 <p class="text-gray-400 uppercase text-[10px] mb-1">কাস্টমার প্রশ্ন</p>
@@ -58,6 +58,9 @@
             <div class="space-y-4">
                 <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border p-3 rounded-lg outline-none">
                 <input type="number" id="pPrice" placeholder="মূল্য (৳)" class="w-full border p-3 rounded-lg outline-none">
+                
+                <input type="text" id="pColors" placeholder="কালার (যেমন: Red, Blue, Green)" class="w-full border p-3 rounded-lg outline-none">
+                
                 <textarea id="pDesc" placeholder="পণ্যের বিবরণ..." class="w-full border p-3 rounded-lg h-24 outline-none"></textarea>
                 <div class="bg-gray-50 p-3 rounded-lg border">
                     <p class="text-xs text-gray-500 mb-2 font-bold">ছবি সিলেক্ট করুন:</p>
@@ -80,7 +83,7 @@
     <script>
         // --- আপনার FIREBASE CONFIG এখানে দিন ---
         const firebaseConfig = {
-            apiKey: "AIzaSyDucfOI08VerRECZzydJJzZDautG-BQLw8U",
+            apiKey: "AIzaSyDuoF0108YerBICZzydjjZzDawtG-BQLW8U",
             authDomain: "ar-raiyanmart.firebaseapp.com",
             databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "ar-raiyanmart",
@@ -88,8 +91,7 @@
             messagingSenderId: "336578883565",
             appId: "1:336578883565:web:54d73b52c96a26f38601e4"
         };
-        // ---------------------------------------
-
+        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const storage = firebase.storage();
@@ -101,7 +103,7 @@
             document.getElementById('authTitle').innerText = isLoginMode ? "সেলার লগইন" : "সেলার রেজিস্ট্রেশন";
             document.getElementById('authBtn').innerText = isLoginMode ? "লগইন করুন" : "অ্যাকাউন্ট তৈরি করুন";
             document.getElementById('toggleText').innerText = isLoginMode ? "অ্যাকাউন্ট নেই?" : "আগে থেকেই অ্যাকাউন্ট আছে?";
-            document.getElementById('toggleBtn').innerText = isLoginMode ? "নতুন অ্যাকাউন্ট খুলুন" : "লগইন করুন";
+            document.getElementById('toggleBtn').innerText = isLoginMode ? "নতুন অ্যাকাউন্ট" : "লগইন করুন";
         }
 
         async function handleAuth() {
@@ -111,23 +113,21 @@
             if (!name || !pass) return alert("সব ঘর পূরণ করুন!");
 
             if (isLoginMode) {
-                // লগইন চেক (Snapshot ঠিক করা হয়েছে)
                 db.ref('sellers/' + name).once('value', (snapshot) => {
                     if (snapshot.exists() && snapshot.val().password === pass) {
                         localStorage.setItem('seller_name', name);
                         showDashboard(name);
                     } else {
-                        alert("ভুল শপ নেম বা পাসওয়ার্ড!");
+                        alert("ভুল শপ নাম বা পাসওয়ার্ড!");
                     }
                 });
             } else {
-                // রেজিস্ট্রেশন
                 const sellerRef = db.ref('sellers/' + name);
                 const snap = await sellerRef.once('value');
                 if (snap.exists()) return alert("এই নামে আগে থেকেই শপ আছে!");
-                
+
                 await sellerRef.set({ password: pass, createdAt: Date.now() });
-                alert("✅ অ্যাকাউন্ট তৈরি হয়েছে! এবার লগইন করুন।");
+                alert("অ্যাকাউন্ট তৈরি হয়েছে! এবার লগইন করুন।");
                 toggleAuth();
             }
         }
@@ -151,6 +151,7 @@
             const files = fileInput.files;
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
+            const colors = document.getElementById('pColors').value; // নতুন ভ্যালু
             const desc = document.getElementById('pDesc').value;
             const btn = document.getElementById('uploadBtn');
 
@@ -167,12 +168,17 @@
                 }
 
                 await db.ref('pending_products').push({
-                    name, price: parseInt(price), description: desc,
-                    imageUrl: imageUrls[0], allImages: imageUrls,
-                    seller: shop, timestamp: Date.now()
+                    name: name,
+                    price: parseInt(price),
+                    colors: colors, // কালার ডেটাবেজে সেভ হচ্ছে
+                    description: desc,
+                    imageUrl: imageUrls[0],
+                    allImages: imageUrls,
+                    seller: shop,
+                    timestamp: Date.now()
                 });
 
-                alert("🔥 পেন্ডিং আছে। এডমিন চেক করে এপ্রুভ করলে লাইভ দেখাবে।");
+                alert("পণ্য পাঠানো হয়েছে! এডমিন চেক করে এপ্রুভ করলে শো করবে।");
                 location.reload();
             } catch (e) {
                 alert("ভুল: " + e.message);
@@ -200,7 +206,7 @@
                             </div>`;
                     }
                 });
-                if (!hasProduct) listDiv.innerHTML = `<p class="text-center text-gray-400 text-xs py-3 italic">কোনো লাইভ পণ্য নেই।</p>`;
+                if (!hasProduct) listDiv.innerHTML = '<p class="text-center text-gray-400 text-xs py-3 italic">কোনো পণ্য নেই</p>';
             });
         }
 
@@ -210,10 +216,10 @@
 
         function listenToNotif() {
             db.ref('orders').limitToLast(1).on('value', s => {
-                document.getElementById('ordersNotify').innerText = s.exists() ? "নতুন অর্ডার চেক করুন" : "কোনো অর্ডার নেই";
+                document.getElementById('ordersNotify').innerText = s.exists() ? "নতুন অর্ডার! চেক করুন" : "কোনো অর্ডার নেই";
             });
             db.ref('comments').limitToLast(1).on('value', s => {
-                document.getElementById('queriesNotify').innerText = s.exists() ? "নতুন প্রশ্ন এসেছে" : "কোনো প্রশ্ন নেই";
+                document.getElementById('queriesNotify').innerText = s.exists() ? "নতুন প্রশ্ন এসেছে!" : "কোনো প্রশ্ন নেই";
             });
         }
 
