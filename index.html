@@ -17,23 +17,26 @@
         .gold-text { color: #D4AF37; }
         .gold-bg { background-color: #D4AF37; }
         
-        /* Catalog Grid: 1 screen-ay 4ti product nishchit korte */
+        /* ক্যাটালগ গ্রিড: ১ স্ক্রিনে ৪টি পণ্য নিশ্চিত করতে */
         .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 10px; }
         .product-card { 
             background: #fff; border-radius: 12px; overflow: hidden; 
             display: flex; flex-direction: column; box-shadow: 0 2px 4px rgba(0,0,0,0.04); 
-            height: 245px; cursor: pointer; border: 1px solid #eee;
+            height: 255px; cursor: pointer; border: 1px solid #eee; transition: 0.2s;
         }
+        .product-card:active { transform: scale(0.97); }
         .product-img { width: 100%; height: 140px; object-fit: contain; background: #fff; padding: 8px; }
         
-        /* Detail View Modal */
+        /* ডিটেইল ভিউ মোডাল */
         #productDetails { position: fixed; inset: 0; background: #fff; z-index: 2000; display: none; overflow-y: auto; }
         .back-btn { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2001; }
         
         .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 12px; display: flex; gap: 10px; border-top: 1px solid #eee; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
         
-        /* Checkout Modal */
+        /* চেকআউট মোডাল */
         #checkoutModal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 15px; }
+        
+        input, select, textarea { font-size: 14px !important; }
     </style>
 </head>
 <body>
@@ -45,7 +48,7 @@
 
     <div id="homeScreen">
         <header class="bg-white p-4 shadow-sm flex justify-between items-center sticky top-0 z-50">
-            <span class="text-xl font-extrabold gold-text tracking-tight">RaiyanMart</span>
+            <span class="text-xl font-extrabold gold-text tracking-tight uppercase">RaiyanMart</span>
             <div class="relative cursor-pointer" onclick="openCheckout()">
                 <i class="fa-solid fa-bag-shopping text-2xl text-gray-700"></i>
                 <span id="cartCount" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] rounded-full px-1.5 font-bold border-2 border-white">0</span>
@@ -53,11 +56,14 @@
         </header>
 
         <div class="p-3 bg-white">
-            <input type="text" id="searchInput" onkeyup="searchProduct(this.value)" placeholder="পণ্য খুঁজুন..." class="w-full p-3 bg-gray-100 rounded-xl text-sm outline-none border-none focus:ring-1 focus:ring-[#D4AF37]">
+            <div class="relative">
+                <input type="text" id="searchInput" onkeyup="searchProduct(this.value)" placeholder="পণ্য খুঁজুন..." class="w-full p-3 pl-10 bg-gray-100 rounded-xl text-sm outline-none border-none focus:ring-1 focus:ring-[#D4AF37]">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-gray-400 text-xs"></i>
+            </div>
         </div>
 
-        <div id="productList" class="catalog-grid">
-            </div>
+        <div id="productList" class="catalog-grid"></div>
+        <div class="pb-20"></div> 
     </div>
 
     <div id="productDetails">
@@ -66,33 +72,32 @@
     </div>
 
     <div id="checkoutModal">
-        <div class="bg-white w-full max-w-md rounded-2xl p-6 relative">
-            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-2xl text-gray-400">&times;</button>
-            <h2 class="text-xl font-bold mb-4 border-b pb-2" id="orderFormTitle">অর্ডার তথ্য</h2>
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 relative shadow-2xl">
+            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500">&times;</button>
+            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-800" id="orderFormTitle">অর্ডার তথ্য</h2>
             <div class="space-y-3">
-                <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
-                <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
-                <input type="text" id="custAddr" placeholder="বিস্তারিত ঠিকানা" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
+                <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#D4AF37]">
+                <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#D4AF37]">
+                <textarea id="custAddr" placeholder="বিস্তারিত ঠিকানা" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#D4AF37] h-20"></textarea>
                 
-                <select id="deliverySelect" onchange="updateTotal()" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
+                <select id="deliverySelect" onchange="updateTotal()" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none">
                     <option value="80">ঢাকার ভেতরে - 80 TK</option>
                     <option value="140">ঢাকার বাইরে - 140 TK</option>
                 </select>
 
-                <div class="p-4 bg-yellow-50 rounded-xl border border-dashed border-yellow-200">
-                    <div class="flex justify-between text-sm"><span>আইটেম মোট:</span> <span id="summarySubtotal">0</span> TK</div>
-                    <div class="flex justify-between font-bold text-lg mt-2 pt-2 border-t border-yellow-200 gold-text">
+                <div class="p-5 bg-yellow-50 rounded-2xl border border-dashed border-yellow-200">
+                    <div class="flex justify-between text-sm text-gray-600"><span>আইটেম মোট:</span> <span id="summarySubtotal" class="font-bold">0</span> TK</div>
+                    <div class="flex justify-between font-bold text-xl mt-3 pt-3 border-t border-yellow-200 gold-text">
                         <span>সর্বমোট:</span> <span id="summaryTotal">0</span> TK
                     </div>
                 </div>
 
-                <button onclick="sendOrder()" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg">
-                    <i class="fa-brands fa-whatsapp text-xl"></i> হোয়াটসঅ্যাপ অর্ডার
+                <button onclick="sendOrder()" class="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg active:scale-95 transition">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> হোয়াটসঅ্যাপ অর্ডার
                 </button>
             </div>
         </div>
     </div>
-
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -117,16 +122,13 @@
         function changeLang(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
-            
             document.getElementById('btn-bn').style.opacity = lang === 'bn' ? '1' : '0.5';
             document.getElementById('btn-en').style.opacity = lang === 'en' ? '1' : '0.5';
-            
             document.getElementById('searchInput').placeholder = langData[lang].search;
             document.getElementById('orderFormTitle').innerText = langData[lang].order;
             document.getElementById('custName').placeholder = langData[lang].name;
             document.getElementById('custAddr').placeholder = langData[lang].addr;
             document.getElementById('custPhone').placeholder = langData[lang].phone;
-
             renderCatalog(allProducts);
         }
 
@@ -142,7 +144,7 @@
                 <div class="product-card" onclick="openDetails('${p.id}')">
                     <img src="${p.img || p.image}" class="product-img">
                     <div class="p-3 flex flex-col justify-between flex-grow">
-                        <h3 class="text-[13px] font-bold leading-tight h-8 overflow-hidden text-gray-800">${p.name}</h3>
+                        <h3 class="text-[12px] font-bold leading-tight h-8 overflow-hidden text-gray-800">${p.name}</h3>
                         <p class="gold-text font-bold text-sm mt-1">৳${p.price}</p>
                     </div>
                 </div>
@@ -153,20 +155,19 @@
             const p = allProducts.find(x => x.id === id);
             const content = document.getElementById('detailsContent');
             const t = langData[currentLang];
-            
             content.innerHTML = `
                 <img src="${p.img || p.image}" class="w-full h-80 object-contain bg-white pt-10">
-                <div class="p-6 pb-28">
+                <div class="p-6 pb-32">
                     <p class="text-2xl font-bold gold-text">৳${p.price}</p>
                     <h1 class="text-xl font-bold mt-2 text-gray-900">${p.name}</h1>
                     <div class="mt-6 p-5 bg-gray-50 rounded-2xl border border-gray-100">
                         <h4 class="font-bold text-gray-400 text-[11px] mb-2 uppercase tracking-widest">${t.desc}</h4>
-                        <p class="text-gray-600 text-sm leading-relaxed">${p.description || '...'}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">${p.description || 'বিবরণ নেই'}</p>
                     </div>
                 </div>
                 <div class="sticky-footer">
-                    <button onclick="addToCart('${p.id}')" class="flex-1 border-2 border-[#D4AF37] text-[#D4AF37] py-3.5 rounded-xl font-bold text-sm">${t.cart}</button>
-                    <button onclick="buyNow('${p.id}')" class="flex-1 gold-bg text-white py-3.5 rounded-xl font-bold text-sm shadow-lg">${t.buy}</button>
+                    <button onclick="addToCart('${p.id}')" class="flex-1 border-2 border-[#D4AF37] text-[#D4AF37] py-4 rounded-xl font-bold text-sm">${t.cart}</button>
+                    <button onclick="buyNow('${p.id}')" class="flex-1 gold-bg text-white py-4 rounded-xl font-bold text-sm shadow-lg">${t.buy}</button>
                 </div>
             `;
             document.getElementById('productDetails').style.display = 'block';
@@ -192,7 +193,7 @@
         }
 
         function openCheckout() {
-            if(cart.length === 0) return alert(currentLang === 'bn' ? "ব্যাগ খালি!" : "Bag is empty!");
+            if(cart.length === 0) return alert("ব্যাগ খালি!");
             document.getElementById('summarySubtotal').innerText = cart[0].price;
             updateTotal();
             document.getElementById('checkoutModal').style.display = 'flex';
@@ -201,8 +202,8 @@
         function closeCheckout() { document.getElementById('checkoutModal').style.display = 'none'; }
 
         function updateTotal() {
-            const sub = parseInt(document.getElementById('summarySubtotal').innerText);
-            const dev = parseInt(document.getElementById('deliverySelect').value);
+            const sub = parseInt(document.getElementById('summarySubtotal').innerText) || 0;
+            const dev = parseInt(document.getElementById('deliverySelect').value) || 0;
             document.getElementById('summaryTotal').innerText = sub + dev;
         }
 
@@ -210,28 +211,14 @@
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
-            if(!name || !phone || !addr) return alert(currentLang === 'bn' ? "সব তথ্য দিন" : "Fill all info");
+            if(!name || !phone || !addr) return alert("সব তথ্য দিন");
 
             const p = cart[0];
             const delivery = document.getElementById('deliverySelect').value;
             const total = document.getElementById('summaryTotal').innerText;
             const orderID = "RM" + Math.floor(1000 + Math.random() * 9000);
 
-            const invoice = `*🛍️ ORDER INVOICE - RAIYANMART*
----------------------------------------
-*Order ID:* #${orderID}
-*Product:* ${p.name}
-*Price:* ${p.price} TK
-*Delivery:* ${delivery} TK
----------------------------------------
-*Total Payable: ${total} TK*
----------------------------------------
-*Customer Details:*
-👤 Name: ${name}
-📞 Phone: ${phone}
-📍 Address: ${addr}
----------------------------------------
-_Thank you for shopping with us!_`;
+            const invoice = `*🛍️ ORDER INVOICE - RAIYANMART*\n---------------------------------------\n*Order ID:* #${orderID}\n*Product:* ${p.name}\n*Price:* ${p.price} TK\n*Delivery:* ${delivery} TK\n---------------------------------------\n*Total Payable: ${total} TK*\n---------------------------------------\n*Customer Details:*\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Address: ${addr}\n---------------------------------------\n_Thank you for shopping with us!_`;
 
             window.open(`https://wa.me/8801704100286?text=${encodeURIComponent(invoice)}`, '_blank');
         }
@@ -241,7 +228,6 @@ _Thank you for shopping with us!_`;
             renderCatalog(filtered);
         }
 
-        // Initialize UI
         changeLang(currentLang);
     </script>
 </body>
