@@ -74,12 +74,13 @@
     </div>
 </header>
 
-<main class="container mx-auto max-w-6xl">
+<main class="container mx-auto max-w-6xl pb-10">
     <div class="p-2">
         <img src="hero-banner.jpg" alt="Banner" class="w-full h-auto rounded-lg shadow-sm" onerror="this.style.display='none'">
     </div>
 
     <h2 id="section-title" class="text-xs font-bold text-gray-400 p-3 uppercase tracking-widest border-l-4 border-[#D4AF37] ml-2 mt-2">আমাদের পণ্যসমূহ</h2>
+    
     <div id="productList" class="product-grid">
         <p class="col-span-full text-center py-10 text-gray-500">পণ্য লোড হচ্ছে...</p>
     </div>
@@ -110,7 +111,7 @@
             <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-3 bg-gray-50 rounded-xl text-sm border focus:outline-none">
             <input type="number" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-3 bg-gray-50 rounded-xl text-sm border focus:outline-none">
             
-            <div id="del-label" class="text-[10px] font-bold text-gray-500 ml-1">ডেলিভারি এরিয়া:</div>
+            <div class="text-[10px] font-bold text-gray-500 ml-1">ডেলিভারি এরিয়া:</div>
             <select id="delCharge" class="w-full p-3 bg-gray-50 rounded-xl text-sm border focus:outline-none">
                 <option value="80">Inside Dhaka - 80 TK</option>
                 <option value="140">Outside Dhaka - 140 TK</option>
@@ -145,7 +146,7 @@
     let cart = [];
     let currentLang = 'bn';
 
-    // ডাটা লোড (live_products থেকে)
+    // Firebase Data Load
     db.ref('live_products').on('value', (s) => {
         const d = s.val();
         allProducts = [];
@@ -162,7 +163,7 @@
         list.innerHTML = products.length === 0 ? '<p class="col-span-full text-center py-10">কোনো পণ্য পাওয়া যায়নি!</p>' : '';
         
         products.forEach(p => {
-            // ছবির সব ধরণের সম্ভাব্য Key চেক করা হয়েছে
+            // Image Logic: Checks all possible keys from database
             let img = p.img || p.image || p.imageURL || p.imageUrl || p.imgURL || 'https://via.placeholder.com/150';
             
             list.innerHTML += `
@@ -174,9 +175,14 @@
                             <p class="gold-text font-bold text-sm mt-1">৳ ${p.price}</p>
                             <p class="text-[10px] text-gray-500 line-clamp-2 mt-1">${p.description || p.desc || ''}</p>
                         </div>
-                        <button onclick="addToCart('${p.id}')" class="w-full gold-bg text-white py-2 rounded-lg mt-3 text-[12px] font-bold active:scale-95">
-                            <i class="fa-solid fa-cart-plus mr-1"></i> ${currentLang === 'bn' ? 'কার্টে যোগ করুন' : 'ADD TO CART'}
-                        </button>
+                        <div class="flex flex-col gap-2 mt-3">
+                            <button onclick="addToCart('${p.id}')" class="w-full gold-bg text-white py-2 rounded-lg text-[11px] font-bold active:scale-95 transition-all">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> ${currentLang === 'bn' ? 'কার্টে যোগ করুন' : 'ADD TO CART'}
+                            </button>
+                            <button onclick="askQuestion('${p.name}')" class="w-full bg-green-50 text-green-600 border border-green-200 py-1.5 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 active:scale-95">
+                                <i class="fa-brands fa-whatsapp"></i> ${currentLang === 'bn' ? 'প্রশ্ন করুন' : 'ASK QUESTION'}
+                            </button>
+                        </div>
                     </div>
                 </div>`;
         });
@@ -198,18 +204,18 @@
         
         cart.forEach(item => {
             total += item.price * item.qty;
-            let img = item.img || item.image || item.imageURL || item.imageUrl || 'https://via.placeholder.com/150';
+            let img = item.img || item.image || item.imageURL || 'https://via.placeholder.com/150';
             list.innerHTML += `
                 <div class="flex items-center gap-3 border-b pb-3 border-gray-100">
-                    <img src="${img}" class="w-14 h-14 rounded-lg object-cover bg-gray-50">
+                    <img src="${img}" class="w-12 h-12 rounded-lg object-cover bg-gray-50">
                     <div class="flex-1">
                         <h4 class="text-[10px] font-bold text-gray-800 line-clamp-1">${item.name}</h4>
                         <p class="text-[11px] gold-text font-bold mt-0.5">৳ ${item.price} x ${item.qty}</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-600">-</button>
+                        <button onclick="changeQty('${item.id}', -1)" class="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center text-xs font-bold text-gray-600">-</button>
                         <span class="text-xs font-bold">${item.qty}</span>
-                        <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-600">+</button>
+                        <button onclick="changeQty('${item.id}', 1)" class="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center text-xs font-bold text-gray-600">+</button>
                     </div>
                 </div>`;
         });
@@ -229,9 +235,14 @@
     function openImg(s) { document.getElementById('fullImage').src = s; document.getElementById('imageModal').classList.remove('hidden'); }
     function openCheckout() { if(cart.length > 0) document.getElementById('orderModal').classList.remove('hidden'); }
 
+    function askQuestion(productName) {
+        const msg = `আসসালামু আলাইকুম, আমি আপনার Ar RaiyanMart থেকে এই পণ্যটি সম্পর্কে জানতে চাই: ${productName}`;
+        window.open(`https://wa.me/8801704100288?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
     function submitOrder() {
         const n = document.getElementById('custName').value, ph = document.getElementById('custPhone').value, a = document.getElementById('custAddr').value;
-        if(!n || !ph || !a) return alert(currentLang === 'bn' ? "দয়া করে সব তথ্য পূরণ করুন!" : "Please fill all info!");
+        if(!n || !ph || !a) return alert(currentLang === 'bn' ? "দয়া করে সব তথ্য দিন!" : "Please fill all info!");
         
         let itemText = cart.map((i, idx) => `${idx+1}. ${i.name} (${i.qty} Pcs) - ${i.price * i.qty} TK`).join('\n');
         let subtotal = cart.reduce((a, b) => a + (b.price * b.qty), 0);
@@ -253,7 +264,6 @@
         document.getElementById('btn-bn').className = isBn ? 'px-2 py-1 rounded-full font-bold text-[10px] gold-bg text-white' : 'px-2 py-1 rounded-full font-bold text-[10px] text-gray-500';
         document.getElementById('btn-en').className = !isBn ? 'px-2 py-1 rounded-full font-bold text-[10px] gold-bg text-white' : 'px-2 py-1 rounded-full font-bold text-[10px] text-gray-500';
         
-        // UI Text Update
         document.getElementById('searchInput').placeholder = isBn ? "পণ্য খুঁজুন..." : "Search products...";
         document.getElementById('section-title').innerText = isBn ? "আমাদের পণ্যসমূহ" : "OUR PRODUCTS";
         document.getElementById('cart-title').innerHTML = isBn ? '<i class="fa-solid fa-cart-arrow-down gold-text"></i> আপনার ব্যাগ' : '<i class="fa-solid fa-cart-arrow-down gold-text"></i> YOUR BAG';
