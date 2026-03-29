@@ -3,47 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Ar RaiyanMart</title>
+    <title>Admin Dashboard - RaiyanMart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f1f5f9; }
-        .tab-btn.active { border-bottom: 3px solid #ea580c; color: #ea580c; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; }
+        #loginBox { background: white; padding: 40px 30px; text-align: center; border-radius: 20px; max-width: 380px; margin: 100px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .admin-container { display: none; max-width: 950px; margin: 0 auto; }
+        .section-card { background: white; padding: 25px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .item-card { border: 1px solid #f1f5f9; padding: 16px; border-radius: 16px; margin-bottom: 12px; display: flex; align-items: center; transition: 0.3s; }
+        .item-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; background: #f8fafc; margin-right: 15px; }
+        .tab-btn { padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.3s; }
+        .active-tab { border-bottom: 3px solid #f85606; color: #f85606; }
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <div id="loginBox" class="max-w-sm mx-auto bg-white p-10 rounded-3xl shadow-xl mt-20 text-center">
-        <h2 class="text-xl font-bold mb-6 italic text-orange-600">ADMIN LOGIN</h2>
-        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড" class="w-full border p-3 rounded-xl mb-4 text-center">
-        <button onclick="login()" class="w-full bg-orange-600 text-white py-3 rounded-xl font-bold">লগইন</button>
+    <div id="loginBox">
+        <i class="fa-solid fa-shield-halved text-5xl text-orange-600 mb-4"></i>
+        <h2 class="text-2xl font-bold mb-2">Admin Login</h2>
+        <p class="text-gray-400 text-sm mb-6">Sottoikrito password diye proprobesh korun</p>
+        <input type="password" id="adminPass" placeholder="Password likhun" class="w-full border-2 border-gray-100 p-3 rounded-xl mb-4 text-center outline-none focus:border-orange-500">
+        <button onclick="login()" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold shadow-lg">PROBESH KORUN</button>
     </div>
 
-    <div id="adminDash" class="hidden max-w-4xl mx-auto">
-        <div class="bg-white p-5 rounded-2xl shadow mb-6 flex justify-between items-center border-l-8 border-orange-600">
-            <h1 class="text-xl font-black italic">RaiyanMart <span class="text-orange-600">Admin</span></h1>
-            <button onclick="location.reload()" class="text-red-500 font-bold text-xs uppercase">Logout</button>
+    <div class="admin-container" id="adminDash">
+        <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border-r-4 border-orange-500">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 italic">RaiyanMart <span class="text-orange-600">Admin</span></h1>
+                <p class="text-[10px] font-bold text-orange-500 uppercase tracking-widest">Official Administration</p>
+            </div>
+            <button onclick="location.reload()" class="bg-slate-100 hover:bg-red-50 text-red-500 px-6 py-2.5 rounded-xl font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-power-off"></i> Logout
+            </button>
         </div>
 
-        <div class="flex bg-white rounded-xl shadow-sm mb-6">
-            <button onclick="showTab('pending')" id="btn-pending" class="tab-btn active flex-1 py-4 text-xs font-bold uppercase">পেন্ডিং</button>
-            <button onclick="showTab('live')" id="btn-live" class="tab-btn flex-1 py-4 text-xs font-bold uppercase">লাইভ পণ্য</button>
-            <button onclick="showTab('orders')" id="btn-orders" class="tab-btn flex-1 py-4 text-xs font-bold uppercase">অর্ডার লিস্ট</button>
+        <div class="flex bg-white rounded-xl shadow-sm mb-6 overflow-hidden">
+            <button onclick="showTab('pending')" id="tabBtnPending" class="tab-btn active-tab flex-1 py-4 text-xs font-bold uppercase">Pending Products</button>
+            <button onclick="showTab('live')" id="tabBtnLive" class="tab-btn flex-1 py-4 text-xs font-bold uppercase">Live Products</button>
+            <button onclick="showTab('orders')" id="tabBtnOrders" class="tab-btn flex-1 py-4 text-xs font-bold uppercase">Orders & Delivery</button>
         </div>
 
-        <div id="tab-pending" class="tab-content space-y-4">
-            <div id="pendingList" class="space-y-4">লোড হচ্ছে...</div>
+        <div id="pendingSec" class="section-card">
+            <h2 class="font-bold mb-4 text-gray-700 flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin-slow"></i> PENDING REQUESTS</h2>
+            <div id="pendingList" class="space-y-3 text-sm italic text-gray-400">Loading...</div>
         </div>
 
-        <div id="tab-live" class="tab-content hidden space-y-4">
-            <div id="liveProductList" class="grid grid-cols-1 md:grid-cols-2 gap-4">লোড হচ্ছে...</div>
+        <div id="liveSec" class="section-card hidden">
+            <h2 class="font-bold mb-4 text-gray-700 flex items-center gap-2"><i class="fa-solid fa-check-double"></i> ACTIVE PRODUCTS</h2>
+            <div id="manageLiveList" class="grid grid-cols-1 md:grid-cols-2 gap-4">Loading...</div>
         </div>
 
-        <div id="tab-orders" class="tab-content hidden space-y-4">
-            <div id="orderList" class="space-y-4">লোড হচ্ছে...</div>
+        <div id="orderSec" class="section-card hidden">
+            <h2 class="font-bold mb-4 text-gray-700 flex items-center gap-2"><i class="fa-solid fa-truck-ramp-box"></i> DELIVERY TRACKING</h2>
+            <div id="allOrders" class="space-y-4">Loading...</div>
         </div>
     </div>
 
@@ -52,82 +68,141 @@
             apiKey: "AIzaSyDuoF0108YerBICZzydjjZzDawtG-BQLW8U",
             authDomain: "ar-raiyanmart.firebaseapp.com",
             databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "ar-raiyanmart"
+            projectId: "ar-raiyanmart",
+            storageBucket: "ar-raiyanmart.appspot.com"
         };
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        const database = firebase.database();
 
         function login() {
-            if(document.getElementById('adminPass').value === "admin123") {
-                document.getElementById('loginBox').classList.add('hidden');
-                document.getElementById('adminDash').classList.remove('hidden');
-                initData();
-            } else alert("ভুল পাসওয়ার্ড!");
+            const pass = document.getElementById('adminPass').value;
+            if(pass === "admin123") {
+                document.getElementById('loginBox').style.display = "none";
+                document.getElementById('adminDash').style.display = "block";
+                loadPendingProducts();
+                loadAllOrders();
+                loadLiveProductsManage();
+            } else {
+                alert("Vul password! Sothik password diye abar chesta korun.");
+            }
         }
 
         function showTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.remove('hidden');
-            document.getElementById('btn-' + tab).classList.add('active');
+            document.getElementById('pendingSec').classList.add('hidden');
+            document.getElementById('liveSec').classList.add('hidden');
+            document.getElementById('orderSec').classList.add('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+
+            if(tab === 'pending') {
+                document.getElementById('pendingSec').classList.remove('hidden');
+                document.getElementById('tabBtnPending').classList.add('active-tab');
+            } else if(tab === 'live') {
+                document.getElementById('liveSec').classList.remove('hidden');
+                document.getElementById('tabBtnLive').classList.add('active-tab');
+            } else {
+                document.getElementById('orderSec').classList.remove('hidden');
+                document.getElementById('tabBtnOrders').classList.add('active-tab');
+            }
         }
 
-        function initData() { loadPending(); loadLive(); loadOrders(); }
+        function loadPendingProducts() {
+            database.ref('pending_products').on('value', (s) => {
+                const div = document.getElementById('pendingList');
+                div.innerHTML = "";
+                const data = s.val();
+                if(!data) { div.innerHTML = "No pending products found."; return; }
 
-        function loadPending() {
-            db.ref('pending_products').on('value', s => {
-                const div = document.getElementById('pendingList'); div.innerHTML = "";
-                s.forEach(child => {
-                    const p = child.val();
-                    div.innerHTML += `<div class="bg-white p-4 rounded-xl shadow flex gap-4 items-center">
-                        <img src="${p.imageUrl}" class="w-16 h-16 rounded-xl object-cover">
-                        <div class="flex-1"><h4 class="font-bold text-sm">${p.name}</h4><p class="text-orange-600 font-bold text-xs">৳${p.price}</p></div>
-                        <button onclick="approve('${child.key}')" class="bg-green-500 text-white px-4 py-2 rounded-lg text-xs font-bold">Approve</button>
-                    </div>`;
+                Object.keys(data).forEach(id => {
+                    const p = data[id];
+                    // Corrected Image Source
+                    const imgSrc = p.imageUrl || p.img || 'https://via.placeholder.com/150';
+                    div.innerHTML += `
+                        <div class="item-card bg-white shadow-sm">
+                            <img src="${imgSrc}" onerror="this.src='https://via.placeholder.com/150'">
+                            <div style="flex:1;">
+                                <h4 class="font-bold text-sm text-slate-800">${p.name}</h4>
+                                <p class="text-orange-600 font-bold text-xs">৳${p.price}</p>
+                                <span class="text-[9px] font-bold text-gray-400 uppercase">Shop: ${p.seller || 'General'}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="bg-green-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold" onclick="approveProduct('${id}')">APPROVE</button>
+                                <button class="bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-[10px] font-bold" onclick="rejectProduct('${id}')">REJECT</button>
+                            </div>
+                        </div>`;
                 });
             });
         }
 
-        function approve(id) {
-            db.ref('pending_products/' + id).once('value', s => {
-                db.ref('live_products').push(s.val()).then(() => db.ref('pending_products/' + id).remove());
-            });
-        }
-
-        function loadLive() {
-            db.ref('live_products').on('value', s => {
-                const div = document.getElementById('liveProductList'); div.innerHTML = "";
-                s.forEach(child => {
-                    const p = child.val();
-                    div.innerHTML += `<div class="bg-white p-4 rounded-xl shadow flex justify-between items-center">
-                        <div class="flex items-center gap-3"><img src="${p.imageUrl}" class="w-10 h-10 rounded-lg object-cover"><div><h4 class="font-bold text-xs">${p.name}</h4><p class="text-[10px] text-gray-500">Seller: ${p.seller}</p></div></div>
-                        <button onclick="deleteLive('${child.key}')" class="text-red-500 p-2"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>`;
+        function approveProduct(id) {
+            database.ref('pending_products/' + id).once('value').then(s => {
+                database.ref('live_products').push(s.val()).then(() => {
+                    database.ref('pending_products/' + id).remove();
+                    alert("Product Live kora hoyeche!");
                 });
             });
         }
 
-        function deleteLive(id) { if(confirm("ডিলিট করবেন?")) db.ref('live_products/' + id).remove(); }
+        function loadLiveProductsManage() {
+            database.ref('live_products').on('value', (s) => {
+                const div = document.getElementById('manageLiveList');
+                div.innerHTML = "";
+                const data = s.val();
+                if(!data) { div.innerHTML = "No live products."; return; }
 
-        function loadOrders() {
-            db.ref('orders').on('value', s => {
-                const div = document.getElementById('orderList'); div.innerHTML = "";
-                s.forEach(child => {
-                    const o = child.val();
+                Object.keys(data).forEach(id => {
+                    const p = data[id];
+                    const imgSrc = p.imageUrl || p.img || 'https://via.placeholder.com/150';
+                    div.innerHTML += `
+                        <div class="item-card border-slate-100">
+                            <img src="${imgSrc}" onerror="this.src='https://via.placeholder.com/150'">
+                            <div style="flex:1;">
+                                <h4 class="font-bold text-[11px] truncate" style="max-width: 150px;">${p.name}</h4>
+                                <p class="text-blue-500 font-bold text-[10px]">৳${p.price}</p>
+                            </div>
+                            <button class="text-red-400 hover:text-red-600 p-2 transition" onclick="deleteLiveProduct('${id}')">
+                                <i class="fa-solid fa-circle-xmark text-lg"></i>
+                            </button>
+                        </div>`;
+                });
+            });
+        }
+
+        function deleteLiveProduct(id) {
+            if(confirm("Apni ki nishchit je eiti live theke sorate chan?")) {
+                database.ref('live_products/' + id).remove();
+            }
+        }
+
+        function loadAllOrders() {
+            database.ref('orders').on('value', s => {
+                const div = document.getElementById('allOrders');
+                div.innerHTML = "";
+                const data = s.val();
+                if(!data) { div.innerHTML = "No orders received yet."; return; }
+
+                Object.keys(data).reverse().forEach(id => {
+                    const o = data[id];
                     const isDelivered = o.status === 'Delivered ✅';
-                    div.innerHTML += `<div class="bg-white p-5 rounded-xl border-l-4 ${isDelivered ? 'border-green-500' : 'border-orange-500'}">
-                        <div class="flex justify-between font-bold text-sm"><h4>${o.productName}</h4><span>${o.status || 'Pending'}</span></div>
-                        <p class="text-[10px] text-gray-500 mt-1">Customer: ${o.customerName} | Seller: ${o.sellerName}</p>
-                        ${!isDelivered ? `<button onclick="markDelivered('${child.key}')" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">MARK AS DELIVERED</button>` : ''}
-                    </div>`;
+                    div.innerHTML += `
+                        <div class="item-card border-l-4 ${isDelivered ? 'border-emerald-500' : 'border-orange-500'} bg-white p-4">
+                            <div style="flex:1;">
+                                <div class="flex justify-between mb-2">
+                                    <b class="text-xs text-slate-800">${o.productName}</b>
+                                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${isDelivered ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}">${o.status || 'Pending'}</span>
+                                </div>
+                                <div class="text-[10px] text-slate-500 space-y-0.5">
+                                    <p><i class="fa-solid fa-circle-user mr-1 text-orange-400"></i> ${o.customerName} (${o.customerPhone})</p>
+                                    <p><i class="fa-solid fa-location-arrow mr-1 text-orange-400"></i> ${o.address}</p>
+                                </div>
+                                ${!isDelivered ? `<button class="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg text-[10px] font-bold shadow-md" onclick="markDelivered('${id}')">MARK AS DELIVERED</button>` : ''}
+                            </div>
+                        </div>`;
                 });
             });
         }
 
         function markDelivered(id) {
-            if(confirm("ডেলিভারি সম্পন্ন?")) {
-                db.ref('orders/' + id).update({ status: 'Delivered ✅' }).then(() => alert("আপডেট হয়েছে!"));
-            }
+            database.ref('orders/' + id).update({ status: 'Delivered ✅' }).then(() => alert("Order update hoyeche!"));
         }
     </script>
 </body>
