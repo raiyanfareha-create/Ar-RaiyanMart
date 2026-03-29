@@ -18,31 +18,39 @@
 
     <div class="max-w-xl mx-auto space-y-6">
         <div id="authArea" class="bg-white p-8 rounded-3xl shadow-2xl border-t-8 border-slate-800 mt-10">
-            <h2 class="text-xl font-bold text-slate-800 mb-6 text-center italic">Seller <span class="text-orange-600">Login</span></h2>
+            <h2 id="authTitle" class="text-xl font-bold text-slate-800 mb-6 text-center italic">Seller <span class="text-orange-600">Login</span></h2>
             <div class="space-y-4">
                 <input type="text" id="authShopName" placeholder="আপনার শপের নাম লিখুন" class="w-full border-2 border-gray-100 p-4 rounded-2xl outline-none focus:border-orange-500">
-                <button onclick="handleLogin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black transition">ড্যাশবোর্ডে ঢুকুন</button>
+                <input type="password" id="authPassword" placeholder="পাসওয়ার্ড দিন" class="w-full border-2 border-gray-100 p-4 rounded-2xl outline-none focus:border-orange-500">
+                
+                <div id="loginBtns">
+                    <button onclick="handleLogin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black transition mb-3">লগইন করুন</button>
+                    <p class="text-center text-[11px] text-gray-400">অ্যাকাউন্ট নেই? <button onclick="toggleAuth(true)" class="text-orange-600 font-bold underline">নতুন অ্যাকাউন্ট খুলুন</button></p>
+                </div>
+
+                <div id="signupBtns" class="hidden text-center">
+                    <button onclick="handleSignup()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold hover:bg-orange-700 transition mb-3">রেজিস্ট্রেশন করুন</button>
+                    <p class="text-center text-[11px] text-gray-400 font-bold">ইতিমধ্যে অ্যাকাউন্ট আছে? <button onclick="toggleAuth(false)" class="text-slate-800 underline">লগইন করুন</button></p>
+                </div>
             </div>
         </div>
 
         <div id="dashboardArea" class="hidden space-y-6">
             <div class="bg-white p-5 rounded-2xl shadow-sm flex justify-between items-center border-l-8 border-orange-600">
                 <div>
-                    <p class="text-[10px] text-gray-400 uppercase font-bold italic">Seller Dashboard</p>
+                    <p class="text-[10px] text-gray-400 uppercase font-bold italic">Dashboard</p>
                     <h2 id="displayShopName" class="text-lg font-bold text-slate-800 italic">...</h2>
                 </div>
                 <button onclick="handleLogout()" class="text-red-500 font-bold text-xs border border-red-50 px-5 py-2 rounded-xl">Logout</button>
             </div>
 
             <div class="bg-white p-6 rounded-3xl shadow-xl">
-                <h2 class="text-orange-600 font-bold mb-5 flex items-center gap-2 text-sm uppercase italic">
-                    <i class="fa-solid fa-circle-plus"></i> নতুন পণ্য যোগ করুন
-                </h2>
+                <h2 class="text-orange-600 font-bold mb-5 flex items-center gap-2 text-sm uppercase italic"><i class="fa-solid fa-circle-plus"></i> পণ্য আপলোড</h2>
                 <div class="space-y-4">
-                    <input type="text" id="pName" placeholder="পণ্যের নাম লিখুন" class="w-full border border-gray-100 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
+                    <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border border-gray-100 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
                     <input type="number" id="pPrice" placeholder="মূল্য (৳)" class="w-full border border-gray-100 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
-                    <input type="text" id="pColors" placeholder="কালার (উদা: লাল, নীল)" class="w-full border border-gray-100 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
-                    <textarea id="pDesc" placeholder="পণ্যের বিস্তারিত বিবরণ..." class="w-full border border-gray-100 p-3 rounded-xl h-24 outline-none focus:border-orange-500 text-sm"></textarea>
+                    <input type="text" id="pColors" placeholder="কালার" class="w-full border border-gray-100 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
+                    <textarea id="pDesc" placeholder="বিস্তারিত বিবরণ..." class="w-full border border-gray-100 p-3 rounded-xl h-24 outline-none focus:border-orange-500 text-sm"></textarea>
                     
                     <div class="p-4 rounded-xl border-2 border-dashed border-gray-100 text-center bg-gray-50">
                         <input type="file" id="pImage" accept="image/*" class="text-xs w-full cursor-pointer">
@@ -53,14 +61,13 @@
             </div>
 
             <div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-blue-600">
-                <h2 class="text-blue-600 font-bold mb-4 flex items-center gap-2 uppercase text-[10px] italic">আপনার বর্তমান পণ্যসমূহ</h2>
+                <h2 class="text-blue-600 font-bold mb-4 flex items-center gap-2 uppercase text-[10px] italic">আপনার লাইভ পণ্যসমূহ</h2>
                 <div id="liveProductList" class="space-y-3"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // আপনার ফায়ারবেস কনফিগ
         const firebaseConfig = {
             apiKey: "AIzaSyDuoF0108YerBICZzydjjZzDawtG-BQLW8U",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -73,29 +80,57 @@
         // ImgBB API Key
         const IMGBB_API_KEY = "9445100650946777093282f1f0a28f24"; 
 
-        // ১. লগইন/লগআউট সিস্টেম
+        // ১. লগইন এবং সাইন-আপ সুইচিং
+        function toggleAuth(isSignup) {
+            document.getElementById('authTitle').innerHTML = isSignup ? 'Seller <span class="text-orange-600">Sign Up</span>' : 'Seller <span class="text-orange-600">Login</span>';
+            document.getElementById('loginBtns').classList.toggle('hidden', isSignup);
+            document.getElementById('signupBtns').classList.toggle('hidden', !isSignup);
+        }
+
+        // সাইন-আপ ফাংশন
+        function handleSignup() {
+            const name = document.getElementById('authShopName').value.trim();
+            const pass = document.getElementById('authPassword').value.trim();
+            if(!name || !pass) return alert("দয়া করে শপের নাম ও পাসওয়ার্ড দিন!");
+            
+            db.ref('sellers/' + name).once('value', snapshot => {
+                if(snapshot.exists()) { alert("এই শপের নাম ইতিমধ্যে নিবন্ধিত!"); }
+                else {
+                    db.ref('sellers/' + name).set({ password: pass }).then(() => {
+                        alert("রেজিস্ট্রেশন সফল! এখন লগইন করুন।");
+                        toggleAuth(false);
+                    });
+                }
+            });
+        }
+
+        // লগইন ফাংশন
         function handleLogin() {
             const name = document.getElementById('authShopName').value.trim();
-            if(name) {
-                localStorage.setItem('active_seller', name);
-                location.reload();
-            } else { alert("দয়া করে শপের নাম লিখুন!"); }
+            const pass = document.getElementById('authPassword').value.trim();
+            
+            db.ref('sellers/' + name).once('value', snapshot => {
+                if(snapshot.exists() && snapshot.val().password === pass) {
+                    localStorage.setItem('active_seller', name);
+                    showDashboard(name);
+                } else { alert("ভুল শপ নেম বা পাসওয়ার্ড!"); }
+            });
         }
 
-        function handleLogout() {
-            localStorage.removeItem('active_seller');
-            location.reload();
-        }
-
-        const currentSeller = localStorage.getItem('active_seller');
-        if(currentSeller) {
+        function showDashboard(name) {
             document.getElementById('authArea').classList.add('hidden');
             document.getElementById('dashboardArea').classList.remove('hidden');
-            document.getElementById('displayShopName').innerText = currentSeller;
-            loadMyProducts(currentSeller);
+            document.getElementById('displayShopName').innerText = name;
+            loadMyProducts(name);
         }
 
-        // ২. ImgBB-এর মাধ্যমে ছবি আপলোড
+        function handleLogout() { localStorage.removeItem('active_seller'); location.reload(); }
+
+        // পেজ লোড হলে চেক করা
+        const savedSeller = localStorage.getItem('active_seller');
+        if(savedSeller) showDashboard(savedSeller);
+
+        // ২. ImgBB-এর মাধ্যমে ছবি আপলোড এবং ফায়ারবেসে সেভ
         async function submitProduct() {
             const fileInput = document.getElementById('pImage');
             const name = document.getElementById('pName').value.trim();
@@ -109,7 +144,6 @@
                 const formData = new FormData();
                 formData.append("image", fileInput.files[0]);
 
-                // ImgBB আপলোড
                 const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                     method: "POST",
                     body: formData
@@ -117,19 +151,18 @@
                 const data = await response.json();
                 
                 if(data.success) {
-                    // ফায়ারবেসে ডাটা সেভ
                     await db.ref('pending_products').push({
                         name: name,
                         price: parseInt(price),
                         colors: document.getElementById('pColors').value,
                         description: document.getElementById('pDesc').value,
                         imageUrl: data.data.url,
-                        seller: currentSeller,
+                        seller: localStorage.getItem('active_seller'),
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
                     alert("সফলভাবে আপলোড হয়েছে!");
                     location.reload();
-                } else { throw new Error("Upload failed"); }
+                } else { throw new Error("Image Upload Failed"); }
 
             } catch(e) { 
                 alert("ভুল: " + e.message); 
