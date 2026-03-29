@@ -11,164 +11,167 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
         body { font-family: 'Hind Siliguri', sans-serif; background: #f1f5f9; }
-        .admin-card { background: #ffffff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
-        .admin-card:hover { transform: translateY(-2px); }
+        .admin-card { background: #ffffff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .tab-btn.active { border-bottom: 3px solid #ea580c; color: #ea580c; }
     </style>
 </head>
 <body class="p-4">
 
-    <div id="loginBox" class="max-w-sm mx-auto bg-white p-10 rounded-3xl shadow-2xl mt-20 text-center border-t-8 border-orange-600">
-        <div class="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
-            <i class="fa-solid fa-user-shield"></i>
-        </div>
-        <h2 class="text-2xl font-black mb-2 text-slate-800 italic">ADMIN LOGIN</h2>
-        <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">Ar RaiyanMart Control</p>
-        
-        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড লিখুন" class="w-full border-2 border-gray-100 p-3 rounded-xl mb-4 outline-none focus:border-orange-500 transition-all text-center font-bold">
-        <button onclick="login()" class="w-full bg-orange-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-orange-700 transition">প্রবেশ করুন</button>
-    </div>
-
-    <div id="adminDash" class="hidden max-w-4xl mx-auto mt-4">
-        <div class="bg-white p-6 rounded-2xl shadow-sm mb-8 flex justify-between items-center border-l-8 border-orange-600">
+    <div id="adminDash" class="max-w-4xl mx-auto">
+        <div class="bg-white p-6 rounded-2xl shadow-sm mb-6 flex justify-between items-center border-l-8 border-orange-600">
             <div>
                 <h1 class="text-2xl font-black text-slate-800 italic">RaiyanMart <span class="text-orange-600">Admin</span></h1>
-                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Product Management System</p>
+                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Control Center</p>
             </div>
-            <button onclick="location.reload()" class="bg-red-50 text-red-500 px-5 py-2 rounded-xl font-bold text-sm hover:bg-red-500 hover:text-white transition">
-                <i class="fa-solid fa-power-off mr-1"></i> Logout
-            </button>
+            <button onclick="location.reload()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold text-xs">Logout</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-2xl shadow-sm text-center border-b-4 border-blue-500">
-                <p class="text-gray-400 text-[10px] uppercase font-bold">পেন্ডিং পণ্য</p>
-                <div id="pendingCount" class="text-2xl font-black text-blue-600">০</div>
-            </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm text-center border-b-4 border-green-500">
-                <p class="text-gray-400 text-[10px] uppercase font-bold">লাইভ পণ্য</p>
-                <div id="liveCount" class="text-2xl font-black text-green-600">০</div>
-            </div>
+        <div class="flex bg-white rounded-xl shadow-sm mb-6 overflow-x-auto">
+            <button onclick="showTab('pending')" id="btn-pending" class="tab-btn active flex-1 py-4 text-xs font-bold uppercase tracking-wider">পেন্ডিং</button>
+            <button onclick="showTab('live')" id="btn-live" class="tab-btn flex-1 py-4 text-xs font-bold uppercase tracking-wider">লাইভ পণ্য</button>
+            <button onclick="showTab('orders')" id="btn-orders" class="tab-btn flex-1 py-4 text-xs font-bold uppercase tracking-wider">অর্ডার লিস্ট</button>
         </div>
 
-        <div class="space-y-4">
-            <h2 class="font-bold text-slate-700 flex items-center gap-2 text-sm uppercase tracking-wider">
-                <i class="fa-solid fa-clock text-orange-500"></i> নতুন পণ্যের অনুরোধ (Pending)
-            </h2>
-            <div id="pendingList" class="space-y-4">
-                <p class="text-center text-gray-400 py-10 italic">লোড হচ্ছে...</p>
-            </div>
+        <div id="tab-pending" class="tab-content space-y-4">
+            <h2 class="font-bold text-slate-700 text-sm uppercase px-2"><i class="fa-solid fa-clock text-orange-500 mr-2"></i> এপ্রুভাল অনুরোধ</h2>
+            <div id="pendingList" class="space-y-4">লোড হচ্ছে...</div>
+        </div>
+
+        <div id="tab-live" class="tab-content hidden space-y-4">
+            <h2 class="font-bold text-slate-700 text-sm uppercase px-2"><i class="fa-solid fa-boxes-stacked text-green-500 mr-2"></i> বর্তমান লাইভ পণ্যসমূহ</h2>
+            <div id="liveProductList" class="grid grid-cols-1 md:grid-cols-2 gap-4">লোড হচ্ছে...</div>
+        </div>
+
+        <div id="tab-orders" class="tab-content hidden space-y-4">
+            <h2 class="font-bold text-slate-700 text-sm uppercase px-2"><i class="fa-solid fa-truck-fast text-blue-500 mr-2"></i> অর্ডার ও ডেলিভারি ম্যানেজমেন্ট</h2>
+            <div id="orderList" class="space-y-4">লোড হচ্ছে...</div>
         </div>
     </div>
 
     <script>
-        // আপনার সঠিক Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDuoF0108YerBICZzydjjZzDawtG-BQLW8U",
             authDomain: "ar-raiyanmart.firebaseapp.com",
             databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "ar-raiyanmart",
-            storageBucket: "ar-raiyanmart.appspot.com"
+            projectId: "ar-raiyanmart"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // লগইন ফাংশন
-        function login() {
-            const pass = document.getElementById('adminPass').value;
-            if(pass === "admin123") { // আপনি চাইলে পাসওয়ার্ড পরিবর্তন করতে পারেন
-                document.getElementById('loginBox').classList.add('hidden');
-                document.getElementById('adminDash').classList.remove('hidden');
-                initAdmin();
-            } else {
-                alert("ভুল পাসওয়ার্ড!");
-            }
+        // Tab Management
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.getElementById('btn-' + tabName).classList.add('active');
         }
 
-        function initAdmin() {
-            loadPending();
-            updateStats();
-        }
-
-        // পেন্ডিং প্রোডাক্ট লোড
+        // --- 1. Pending Products Logic ---
         function loadPending() {
-            db.ref('pending_products').on('value', snapshot => {
-                const listDiv = document.getElementById('pendingList');
-                listDiv.innerHTML = "";
-                
-                if(!snapshot.exists()) {
-                    listDiv.innerHTML = '<div class="text-center bg-white p-10 rounded-2xl text-gray-400 italic">কোনো পেন্ডিং পণ্য নেই</div>';
-                    return;
-                }
-
-                snapshot.forEach(child => {
+            db.ref('pending_products').on('value', s => {
+                const div = document.getElementById('pendingList');
+                div.innerHTML = "";
+                if(!s.exists()) div.innerHTML = "<p class='text-center py-10 text-gray-400 italic'>কোনো পেন্ডিং নেই</p>";
+                s.forEach(child => {
                     const p = child.val();
-                    const id = child.key;
-                    
-                    listDiv.innerHTML += `
-                        <div class="admin-card p-5 flex flex-col gap-4">
-                            <div class="flex gap-4">
-                                <img src="${p.imageUrl}" class="w-24 h-24 rounded-2xl object-cover border shadow-sm">
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start">
-                                        <h4 class="font-bold text-slate-800 text-lg leading-tight">${p.name}</h4>
-                                        <span class="bg-orange-100 text-orange-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">New</span>
-                                    </div>
-                                    <p class="text-orange-600 font-black text-xl mt-1">৳ ${p.price}</p>
-                                    <div class="mt-2 space-y-1">
-                                        <p class="text-xs text-gray-500 font-bold italic"><i class="fa-solid fa-store mr-1"></i> শপ: ${p.seller}</p>
-                                        <p class="text-xs text-blue-600 font-bold"><i class="fa-solid fa-palette mr-1"></i> কালার: ${p.colors || 'নেই'}</p>
-                                    </div>
-                                </div>
+                    div.innerHTML += `
+                        <div class="admin-card p-4 flex gap-4 items-center">
+                            <img src="${p.imageUrl}" class="w-16 h-16 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm">${p.name}</h4>
+                                <p class="text-orange-600 font-bold text-xs">৳${p.price}</p>
                             </div>
-                            
-                            <div class="bg-gray-50 p-3 rounded-xl text-xs text-gray-600">
-                                <b class="block mb-1 uppercase text-[9px] text-gray-400 tracking-widest">পণ্য বিবরণ:</b>
-                                ${p.description || 'বিবরণ দেওয়া হয়নি'}
-                            </div>
-
-                            <div class="flex gap-3 mt-2">
-                                <button onclick="approveProduct('${id}')" class="flex-1 bg-green-500 text-white py-3 rounded-xl font-bold shadow-md hover:bg-green-600 transition">
-                                    APPROVE
-                                </button>
-                                <button onclick="rejectProduct('${id}')" class="w-1/4 bg-red-50 text-red-500 py-3 rounded-xl font-bold hover:bg-red-500 hover:text-white transition">
-                                    REJECT
-                                </button>
-                            </div>
+                            <button onclick="approve('${child.key}')" class="bg-green-500 text-white px-4 py-2 rounded-lg text-xs font-bold">Approve</button>
                         </div>`;
                 });
             });
         }
 
-        // পণ্য এপ্রুভ করা
-        function approveProduct(id) {
+        function approve(id) {
             db.ref('pending_products/' + id).once('value', snapshot => {
-                const data = snapshot.val();
-                // লাইভ প্রোডাক্ট লিস্টে পাঠানো
-                db.ref('live_products').push(data).then(() => {
-                    // পেন্ডিং থেকে রিমুভ করা
+                db.ref('live_products').push(snapshot.val()).then(() => {
                     db.ref('pending_products/' + id).remove();
-                    alert("পণ্যটি সফলভাবে লাইভ করা হয়েছে!");
                 });
             });
         }
 
-        // পণ্য রিজেক্ট করা
-        function rejectProduct(id) {
-            if(confirm("আপনি কি নিশ্চিত যে পণ্যটি বাতিল করতে চান?")) {
-                db.ref('pending_products/' + id).remove();
+        // --- 2. Live Products Logic (With Delete) ---
+        function loadLive() {
+            db.ref('live_products').on('value', s => {
+                const div = document.getElementById('liveProductList');
+                div.innerHTML = "";
+                if(!s.exists()) div.innerHTML = "<p class='col-span-full text-center py-10 text-gray-400'>লাইভ পণ্য নেই</p>";
+                s.forEach(child => {
+                    const p = child.val();
+                    div.innerHTML += `
+                        <div class="admin-card p-4 flex justify-between items-center border border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <img src="${p.imageUrl}" class="w-12 h-12 rounded-lg object-cover">
+                                <div>
+                                    <h4 class="font-bold text-xs">${p.name}</h4>
+                                    <p class="text-[10px] text-gray-500">Seller: ${p.seller}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteLive('${child.key}')" class="text-red-500 p-2 hover:bg-red-50 rounded-lg">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>`;
+                });
+            });
+        }
+
+        function deleteLive(id) {
+            if(confirm("এই পণ্যটি লাইভ সাইট থেকে ডিলিট করবেন?")) {
+                db.ref('live_products/' + id).remove();
             }
         }
 
-        // স্ট্যাটাস আপডেট
-        function updateStats() {
-            db.ref('pending_products').on('value', s => {
-                document.getElementById('pendingCount').innerText = s.numChildren() || 0;
-            });
-            db.ref('live_products').on('value', s => {
-                document.getElementById('liveCount').innerText = s.numChildren() || 0;
+        // --- 3. Orders & Delivery Logic ---
+        function loadOrders() {
+            db.ref('orders').on('value', s => {
+                const div = document.getElementById('orderList');
+                div.innerHTML = "";
+                if(!s.exists()) div.innerHTML = "<p class='text-center py-10 text-gray-400'>অর্ডার নেই</p>";
+                s.forEach(child => {
+                    const o = child.val();
+                    const isDelivered = o.status === 'Delivered ✅';
+                    div.innerHTML += `
+                        <div class="admin-card p-5 border-l-4 ${isDelivered ? 'border-green-500' : 'border-orange-500'}">
+                            <div class="flex justify-between items-start mb-3">
+                                <h4 class="font-bold text-sm">${o.productName}</h4>
+                                <span class="text-[10px] font-bold px-2 py-1 rounded bg-gray-100">${o.status || 'Pending'}</span>
+                            </div>
+                            <div class="text-[11px] text-gray-600 space-y-1">
+                                <p><b>Customer:</b> ${o.customerName}</p>
+                                <p><b>Seller:</b> ${o.sellerName}</p>
+                            </div>
+                            ${!isDelivered ? `
+                                <button onclick="markAsDelivered('${child.key}')" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold shadow-md">
+                                    <i class="fa-solid fa-check-circle mr-1"></i> Mark as Delivered
+                                </button>
+                            ` : '<p class="text-center text-green-600 font-bold text-[10px] mt-4 italic">ডেলিভারি সম্পন্ন হয়েছে</p>'}
+                        </div>`;
+                });
             });
         }
+
+        function markAsDelivered(orderId) {
+            if(confirm("ডেলিভারি কি সম্পন্ন হয়েছে? এটি করলে সেলার প্যানেলে আপডেট চলে যাবে।")) {
+                db.ref('orders/' + orderId).update({
+                    status: 'Delivered ✅',
+                    deliveredAt: firebase.database.ServerValue.TIMESTAMP
+                }).then(() => {
+                    alert("ডেলিভারি আপডেট করা হয়েছে!");
+                });
+            }
+        }
+
+        // Initialize Data
+        window.onload = () => {
+            loadPending();
+            loadLive();
+            loadOrders();
+        };
     </script>
 </body>
 </html>
