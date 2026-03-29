@@ -24,12 +24,12 @@
                 <input type="password" id="authPassword" placeholder="পাসওয়ার্ড দিন" class="w-full border-2 border-gray-100 p-4 rounded-2xl outline-none focus:border-orange-500">
                 
                 <div id="loginBtns">
-                    <button onclick="handleLogin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-black transition mb-3">লগইন করুন</button>
+                    <button onclick="handleLogin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold active:scale-95 mb-3">লগইন করুন</button>
                     <p class="text-center text-[11px] text-gray-400">অ্যাকাউন্ট নেই? <button onclick="toggleAuth(true)" class="text-orange-600 font-bold underline">নতুন অ্যাকাউন্ট খুলুন</button></p>
                 </div>
 
                 <div id="signupBtns" class="hidden text-center">
-                    <button onclick="handleSignup()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold hover:bg-orange-700 transition mb-3">রেজিস্ট্রেশন করুন</button>
+                    <button onclick="handleSignup()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold active:scale-95 mb-3">রেজিস্ট্রেশন করুন</button>
                     <p class="text-center text-[11px] text-gray-400 font-bold">ইতিমধ্যে অ্যাকাউন্ট আছে? <button onclick="toggleAuth(false)" class="text-slate-800 underline">লগইন করুন</button></p>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                         <p class="text-[9px] text-gray-400 mt-2 italic">একাধিক ছবি সিলেক্ট করতে পারেন</p>
                     </div>
 
-                    <button onclick="submitProduct()" id="uploadBtn" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">পণ্য আপলোড করুন</button>
+                    <button onclick="submitProduct()" id="uploadBtn" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold shadow-lg active:scale-95">পণ্য আপলোড করুন</button>
                 </div>
             </div>
 
@@ -90,11 +90,11 @@
             const name = document.getElementById('authShopName').value.trim();
             const pass = document.getElementById('authPassword').value.trim();
             if(!name || !pass) return alert("সব তথ্য দিন!");
-            db.ref('sellers/' + name).once('value', snap => {
-                if(snap.exists()) alert("এই নাম আগে ব্যবহার হয়েছে!");
+            db.ref('sellers/' + name).once('value', snapshot => {
+                if(snapshot.exists()) alert("এই নাম ইতিমধ্যে নিবন্ধিত!");
                 else {
                     db.ref('sellers/' + name).set({ password: pass }).then(() => {
-                        alert("সফল! লগইন করুন।");
+                        alert("রেজিস্ট্রেশন সফল! এখন লগইন করুন।");
                         toggleAuth(false);
                     });
                 }
@@ -108,7 +108,7 @@
                 if(snapshot.exists() && snapshot.val().password === pass) {
                     localStorage.setItem('active_seller', name);
                     showDashboard(name);
-                } else { alert("ভুল শপ নেম বা পাসওয়ার্ড!"); }
+                } else { alert("ভুল তথ্য!"); }
             });
         }
 
@@ -124,7 +124,6 @@
         const savedSeller = localStorage.getItem('active_seller');
         if(savedSeller) showDashboard(savedSeller);
 
-        // ২. একাধিক ছবি আপলোড সিস্টেম
         async function submitProduct() {
             const fileInput = document.getElementById('pImage');
             const name = document.getElementById('pName').value.trim();
@@ -141,7 +140,6 @@
                 for (let i = 0; i < files.length; i++) {
                     const formData = new FormData();
                     formData.append("image", files[i]);
-
                     const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                         method: "POST", body: formData
                     });
@@ -151,8 +149,7 @@
                 
                 if(uploadedUrls.length > 0) {
                     await db.ref('pending_products').push({
-                        name: name,
-                        price: parseInt(price),
+                        name: name, price: parseInt(price),
                         colors: document.getElementById('pColors').value,
                         description: document.getElementById('pDesc').value,
                         imageUrl: uploadedUrls[0],
@@ -160,12 +157,11 @@
                         seller: localStorage.getItem('active_seller'),
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
-                    alert("সফলভাবে আপলোড হয়েছে!");
+                    alert("সাফল্যের সাথে আপলোড হয়েছে!");
                     location.reload();
                 } else { throw new Error("Upload failed"); }
-
             } catch(e) { 
-                alert("ভুল: " + e.message);
+                alert("ভুল: " + e.message); 
                 btn.disabled = false; btn.innerText = "পণ্য আপলোড করুন"; 
             }
         }
