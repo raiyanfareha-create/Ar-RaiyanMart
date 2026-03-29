@@ -12,54 +12,49 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
+        .upload-card { border: 2px dashed #e2e8f0; transition: 0.3s; }
+        .upload-card:hover { border-color: #ea580c; background: #fff7ed; }
     </style>
 </head>
 <body class="p-4">
 
-    <div id="authSection" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl mt-10">
-        <h2 id="authTitle" class="text-xl font-bold text-center mb-6 text-orange-600 underline">সেলার লগইন</h2>
-        <div class="space-y-4">
-            <input type="text" id="logShopName" placeholder="শপের নাম" class="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-orange-500">
-            <input type="password" id="logPass" placeholder="পাসওয়ার্ড" class="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-orange-500">
-            <button onclick="handleAuth()" id="authBtn" class="w-full bg-orange-600 text-white py-3 rounded-lg font-bold">লগইন করুন</button>
-            <p class="text-center text-sm text-gray-600 mt-4">
-                <span id="toggleText">অ্যাকাউন্ট নেই?</span>
-                <button onclick="toggleAuth()" id="toggleBtn" class="text-orange-600 font-bold underline ml-1">নতুন অ্যাকাউন্ট</button>
-            </p>
-        </div>
-    </div>
-
-    <div id="dashboard" class="max-w-2xl mx-auto space-y-6 hidden mt-4">
-        <div class="bg-white p-4 rounded-xl shadow flex justify-between items-center border-l-4 border-orange-600">
+    <div id="dashboard" class="max-w-xl mx-auto space-y-6">
+        <div class="bg-white p-5 rounded-2xl shadow-sm flex justify-between items-center border-l-8 border-orange-600">
             <div>
-                <p class="text-[10px] text-gray-500 uppercase">Welcome,</p>
-                <h2 id="displayShop" class="text-lg font-bold text-gray-800">Shop Name</h2>
+                <p class="text-[10px] text-gray-400 uppercase font-bold">WELCOME,</p>
+                <h2 id="displayShop" class="text-lg font-bold text-slate-800">Fariha</h2>
             </div>
-            <button onclick="logout()" class="text-red-500 font-bold border px-4 py-1 rounded-lg">Logout</button>
+            <button onclick="location.reload()" class="text-red-500 font-bold text-xs border border-red-100 px-4 py-2 rounded-xl hover:bg-red-50 transition">Logout</button>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="bg-white p-6 rounded-2xl shadow-lg">
             <h2 class="text-orange-600 font-bold mb-5 flex items-center gap-2">
-                <i class="fa-solid fa-plus-circle"></i> নতুন পণ্য যোগ করুন
+                <i class="fa-solid fa-circle-plus"></i> নতুন পণ্য যোগ করুন
             </h2>
             <div class="space-y-4">
-                <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border p-3 rounded-lg outline-none">
-                <input type="number" id="pPrice" placeholder="মূল্য (৳)" class="w-full border p-3 rounded-lg outline-none">
-                <input type="text" id="pColors" placeholder="কালার (যেমন: Black, Red, White)" class="w-full border p-3 rounded-lg outline-none">
-                <textarea id="pDesc" placeholder="পণ্যের বিবরণ..." class="w-full border p-3 rounded-lg h-24 outline-none"></textarea>
-                <div class="bg-gray-50 p-3 rounded-lg border">
+                <input type="text" id="pName" placeholder="পণ্যের নাম (যেমন: Sharara dress)" class="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-orange-500">
+                <input type="number" id="pPrice" placeholder="মূল্য (৳)" class="w-full border p-3 rounded-xl outline-none">
+                <input type="text" id="pColors" placeholder="কালার (যেমন: Black, Purple, Merun)" class="w-full border p-3 rounded-xl outline-none">
+                <textarea id="pDesc" placeholder="পণ্যের বিস্তারিত বিবরণ..." class="w-full border p-3 rounded-xl h-24 outline-none"></textarea>
+                
+                <div class="upload-card p-4 rounded-xl text-center">
                     <p class="text-xs text-gray-500 mb-2 font-bold">ছবি সিলেক্ট করুন (একাধিক সম্ভব):</p>
-                    <input type="file" id="pImage" multiple accept="image/*" class="text-xs">
+                    <input type="file" id="pImage" multiple accept="image/*" class="text-xs cursor-pointer">
                 </div>
-                <button onclick="submitProduct()" id="uploadBtn" class="w-full bg-orange-600 text-white py-3 rounded-xl font-bold shadow-lg">পণ্য আপলোড করুন</button>
+
+                <button onclick="submitProduct()" id="uploadBtn" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold shadow-orange-200 shadow-lg hover:bg-orange-700 transition">
+                    পণ্য আপলোড করুন
+                </button>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-600">
-            <h2 class="text-blue-600 font-bold mb-4 flex items-center gap-2 uppercase text-sm">
+        <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-blue-600">
+            <h2 class="text-blue-600 font-bold mb-4 flex items-center gap-2 uppercase text-xs">
                 <i class="fa-solid fa-boxes-stacked"></i> আপনার পণ্যসমূহ
             </h2>
-            <div id="liveProductList" class="space-y-3"></div>
+            <div id="liveProductList" class="space-y-3">
+                <p class="text-center text-gray-400 text-xs italic py-4">লোড হচ্ছে...</p>
+            </div>
         </div>
     </div>
 
@@ -75,40 +70,9 @@
         const db = firebase.database();
         const storage = firebase.storage();
 
-        let isLoginMode = true;
-
-        function toggleAuth() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? "সেলার লগইন" : "সেলার রেজিস্ট্রেশন";
-            document.getElementById('authBtn').innerText = isLoginMode ? "লগইন করুন" : "রেজিস্ট্রেশন করুন";
-        }
-
-        async function handleAuth() {
-            const name = document.getElementById('logShopName').value.trim();
-            const pass = document.getElementById('logPass').value.trim();
-            if(!name || !pass) return alert("সব তথ্য দিন!");
-            if(isLoginMode) {
-                db.ref('sellers/' + name).once('value', s => {
-                    if(s.exists() && s.val().password === pass) {
-                        localStorage.setItem('seller_name', name);
-                        showDashboard(name);
-                    } else alert("ভুল তথ্য!");
-                });
-            } else {
-                await db.ref('sellers/' + name).set({ password: pass, createdAt: Date.now() });
-                alert("সফল!"); toggleAuth();
-            }
-        }
-
-        function showDashboard(name) {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('displayShop').innerText = name;
-            loadMyProducts(name);
-        }
-
+        // ১. পণ্য আপলোড করার ফাংশন (Image Fix)
         async function submitProduct() {
-            const shop = localStorage.getItem('seller_name');
+            const shop = "Fariha"; // আপনার শপের নাম
             const files = document.getElementById('pImage').files;
             const name = document.getElementById('pName').value.trim();
             const price = document.getElementById('pPrice').value.trim();
@@ -116,49 +80,75 @@
             const desc = document.getElementById('pDesc').value.trim();
             const btn = document.getElementById('uploadBtn');
 
-            if(files.length === 0 || !name || !price) return alert("সব তথ্য দিন!");
-            btn.innerText = "আপলোড হচ্ছে..."; btn.disabled = true;
+            if(files.length === 0 || !name || !price) return alert("দয়া করে নাম, দাম এবং অন্তত একটি ছবি দিন!");
+            
+            btn.innerText = "আপলোড হচ্ছে..."; 
+            btn.disabled = true;
 
             try {
                 let imageUrls = [];
                 for(let i=0; i<files.length; i++) {
-                    const ref = storage.ref('products/' + Date.now() + "_" + files[i].name);
+                    const ref = storage.ref('products/' + Date.now() + "_" + i + ".jpg");
                     const task = await ref.put(files[i]);
                     const url = await task.ref.getDownloadURL();
                     imageUrls.push(url);
                 }
 
+                // ডাটাবেজে সঠিক প্রপার্টি 'imageUrl' নামে ডাটা পাঠানো হচ্ছে
                 await db.ref('pending_products').push({
-                    name, price: parseInt(price), colors, description: desc,
-                    imageUrl: imageUrls[0], allImages: imageUrls,
-                    seller: shop, timestamp: firebase.database.ServerValue.TIMESTAMP
+                    name: name,
+                    price: parseInt(price),
+                    colors: colors,
+                    description: desc,
+                    imageUrl: imageUrls[0], // মেইন ছবি
+                    allImages: imageUrls,   // বাকি সব ছবি
+                    seller: shop,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
 
-                alert("সাফল্যের সাথে পাঠানো হয়েছে!"); location.reload();
-            } catch(e) { alert(e.message); btn.disabled = false; }
+                alert("সাফল্যের সাথে অ্যাডমিন প্যানেলে পাঠানো হয়েছে!");
+                location.reload();
+            } catch(e) { 
+                alert("ত্রুটি: " + e.message); 
+                btn.disabled = false; 
+                btn.innerText = "পণ্য আপলোড করুন";
+            }
         }
 
-        function loadMyProducts(shop) {
+        // ২. পণ্য লোড করার সময় ডেলিভারি স্ট্যাটাস দেখানো
+        function loadMyProducts() {
+            const shop = "Fariha"; 
             db.ref('live_products').on('value', snap => {
                 const list = document.getElementById('liveProductList');
                 list.innerHTML = "";
+                if (!snap.exists()) {
+                    list.innerHTML = "<p class='text-center text-gray-400 text-[10px] py-4'>কোনো লাইভ পণ্য নেই।</p>";
+                    return;
+                }
+
                 snap.forEach(child => {
                     const p = child.val();
                     if(p.seller === shop) {
+                        // অর্ডার স্ট্যাটাস চেক
                         db.ref('orders').orderByChild('productName').equalTo(p.name).once('value', orderSnap => {
                             let badge = "";
                             orderSnap.forEach(oChild => {
-                                if(oChild.val().status === 'Delivered ✅') badge = '<span class="ml-2 bg-green-100 text-green-600 text-[9px] px-2 py-1 rounded-full border border-green-200">DELIVERED</span>';
+                                if(oChild.val().status === 'Delivered ✅') {
+                                    badge = '<span class="ml-2 bg-green-100 text-green-600 text-[8px] px-2 py-0.5 rounded-full font-bold">DELIVERED</span>';
+                                }
                             });
 
-                            list.innerHTML += `<div class="p-3 border rounded-xl flex items-center bg-white shadow-sm mb-2">
-                                <img src="${p.imageUrl}" class="w-10 h-10 rounded-md object-cover mr-3">
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-xs flex items-center">${p.name} ${badge}</h4>
-                                    <p class="text-orange-600 font-bold text-[10px]">৳${p.price}</p>
-                                </div>
-                                <button onclick="deleteProduct('${child.key}')" class="text-red-500 p-2"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>`;
+                            list.innerHTML += `
+                                <div class="p-3 border rounded-xl flex items-center bg-white shadow-sm mb-2">
+                                    <img src="${p.imageUrl}" class="w-12 h-12 rounded-lg object-cover mr-3 border" onerror="this.src='https://via.placeholder.com/50'">
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-xs flex items-center">${p.name} ${badge}</h4>
+                                        <p class="text-orange-600 font-bold text-[10px]">৳ ${p.price}</p>
+                                    </div>
+                                    <button onclick="deleteProduct('${child.key}')" class="text-red-400 p-2 hover:text-red-600">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>`;
                         });
                     }
                 });
@@ -166,11 +156,12 @@
         }
 
         function deleteProduct(id) {
-            if(confirm("ডিলিট করবেন?")) db.ref('live_products/' + id).remove();
+            if(confirm("আপনি কি নিশ্চিত এই পণ্যটি ডিলিট করবেন?")) {
+                db.ref('live_products/' + id).remove();
+            }
         }
 
-        function logout() { localStorage.removeItem('seller_name'); location.reload(); }
-        window.onload = () => { const s = localStorage.getItem('seller_name'); if(s) showDashboard(s); };
+        window.onload = loadMyProducts;
     </script>
 </body>
 </html>
