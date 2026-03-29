@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - RaiyanMart</title>
+    <title>Admin Dashboard - Ar RaiyanMart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -11,39 +11,38 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
         body { font-family: 'Hind Siliguri', sans-serif; background: #f1f5f9; }
-        .admin-card { background: #ffffff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .tab-btn.active { border-bottom: 3px solid #ea580c; color: #ea580c; }
     </style>
 </head>
 <body class="p-4">
 
-    <div id="adminDash" class="max-w-4xl mx-auto">
-        <div class="bg-white p-6 rounded-2xl shadow-sm mb-6 flex justify-between items-center border-l-8 border-orange-600">
-            <div>
-                <h1 class="text-2xl font-black text-slate-800 italic">RaiyanMart <span class="text-orange-600">Admin</span></h1>
-                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Control Center</p>
-            </div>
-            <button onclick="location.reload()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold text-xs">Logout</button>
+    <div id="loginBox" class="max-w-sm mx-auto bg-white p-10 rounded-3xl shadow-xl mt-20 text-center">
+        <h2 class="text-xl font-bold mb-6 italic text-orange-600">ADMIN LOGIN</h2>
+        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড" class="w-full border p-3 rounded-xl mb-4 text-center">
+        <button onclick="login()" class="w-full bg-orange-600 text-white py-3 rounded-xl font-bold">লগইন</button>
+    </div>
+
+    <div id="adminDash" class="hidden max-w-4xl mx-auto">
+        <div class="bg-white p-5 rounded-2xl shadow mb-6 flex justify-between items-center border-l-8 border-orange-600">
+            <h1 class="text-xl font-black italic">RaiyanMart <span class="text-orange-600">Admin</span></h1>
+            <button onclick="location.reload()" class="text-red-500 font-bold text-xs uppercase">Logout</button>
         </div>
 
-        <div class="flex bg-white rounded-xl shadow-sm mb-6 overflow-x-auto">
-            <button onclick="showTab('pending')" id="btn-pending" class="tab-btn active flex-1 py-4 text-xs font-bold uppercase tracking-wider">পেন্ডিং</button>
-            <button onclick="showTab('live')" id="btn-live" class="tab-btn flex-1 py-4 text-xs font-bold uppercase tracking-wider">লাইভ পণ্য</button>
-            <button onclick="showTab('orders')" id="btn-orders" class="tab-btn flex-1 py-4 text-xs font-bold uppercase tracking-wider">অর্ডার লিস্ট</button>
+        <div class="flex bg-white rounded-xl shadow-sm mb-6">
+            <button onclick="showTab('pending')" id="btn-pending" class="tab-btn active flex-1 py-4 text-xs font-bold uppercase">পেন্ডিং</button>
+            <button onclick="showTab('live')" id="btn-live" class="tab-btn flex-1 py-4 text-xs font-bold uppercase">লাইভ পণ্য</button>
+            <button onclick="showTab('orders')" id="btn-orders" class="tab-btn flex-1 py-4 text-xs font-bold uppercase">অর্ডার লিস্ট</button>
         </div>
 
         <div id="tab-pending" class="tab-content space-y-4">
-            <h2 class="font-bold text-slate-700 text-sm uppercase px-2"><i class="fa-solid fa-clock text-orange-500 mr-2"></i> এপ্রুভাল অনুরোধ</h2>
             <div id="pendingList" class="space-y-4">লোড হচ্ছে...</div>
         </div>
 
         <div id="tab-live" class="tab-content hidden space-y-4">
-            <h2 class="font-bold text-slate-700 text-sm uppercase px-2"><i class="fa-solid fa-boxes-stacked text-green-500 mr-2"></i> বর্তমান লাইভ পণ্যসমূহ</h2>
             <div id="liveProductList" class="grid grid-cols-1 md:grid-cols-2 gap-4">লোড হচ্ছে...</div>
         </div>
 
         <div id="tab-orders" class="tab-content hidden space-y-4">
-            <h2 class="font-bold text-slate-700 text-sm uppercase px-2"><i class="fa-solid fa-truck-fast text-blue-500 mr-2"></i> অর্ডার ও ডেলিভারি ম্যানেজমেন্ট</h2>
             <div id="orderList" class="space-y-4">লোড হচ্ছে...</div>
         </div>
     </div>
@@ -58,120 +57,78 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Tab Management
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            document.getElementById('btn-' + tabName).classList.add('active');
+        function login() {
+            if(document.getElementById('adminPass').value === "admin123") {
+                document.getElementById('loginBox').classList.add('hidden');
+                document.getElementById('adminDash').classList.remove('hidden');
+                initData();
+            } else alert("ভুল পাসওয়ার্ড!");
         }
 
-        // --- 1. Pending Products Logic ---
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.getElementById('btn-' + tab).classList.add('active');
+        }
+
+        function initData() { loadPending(); loadLive(); loadOrders(); }
+
         function loadPending() {
             db.ref('pending_products').on('value', s => {
-                const div = document.getElementById('pendingList');
-                div.innerHTML = "";
-                if(!s.exists()) div.innerHTML = "<p class='text-center py-10 text-gray-400 italic'>কোনো পেন্ডিং নেই</p>";
+                const div = document.getElementById('pendingList'); div.innerHTML = "";
                 s.forEach(child => {
                     const p = child.val();
-                    div.innerHTML += `
-                        <div class="admin-card p-4 flex gap-4 items-center">
-                            <img src="${p.imageUrl}" class="w-16 h-16 rounded-xl object-cover">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-sm">${p.name}</h4>
-                                <p class="text-orange-600 font-bold text-xs">৳${p.price}</p>
-                            </div>
-                            <button onclick="approve('${child.key}')" class="bg-green-500 text-white px-4 py-2 rounded-lg text-xs font-bold">Approve</button>
-                        </div>`;
+                    div.innerHTML += `<div class="bg-white p-4 rounded-xl shadow flex gap-4 items-center">
+                        <img src="${p.imageUrl}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-1"><h4 class="font-bold text-sm">${p.name}</h4><p class="text-orange-600 font-bold text-xs">৳${p.price}</p></div>
+                        <button onclick="approve('${child.key}')" class="bg-green-500 text-white px-4 py-2 rounded-lg text-xs font-bold">Approve</button>
+                    </div>`;
                 });
             });
         }
 
         function approve(id) {
-            db.ref('pending_products/' + id).once('value', snapshot => {
-                db.ref('live_products').push(snapshot.val()).then(() => {
-                    db.ref('pending_products/' + id).remove();
-                });
+            db.ref('pending_products/' + id).once('value', s => {
+                db.ref('live_products').push(s.val()).then(() => db.ref('pending_products/' + id).remove());
             });
         }
 
-        // --- 2. Live Products Logic (With Delete) ---
         function loadLive() {
             db.ref('live_products').on('value', s => {
-                const div = document.getElementById('liveProductList');
-                div.innerHTML = "";
-                if(!s.exists()) div.innerHTML = "<p class='col-span-full text-center py-10 text-gray-400'>লাইভ পণ্য নেই</p>";
+                const div = document.getElementById('liveProductList'); div.innerHTML = "";
                 s.forEach(child => {
                     const p = child.val();
-                    div.innerHTML += `
-                        <div class="admin-card p-4 flex justify-between items-center border border-gray-100">
-                            <div class="flex items-center gap-3">
-                                <img src="${p.imageUrl}" class="w-12 h-12 rounded-lg object-cover">
-                                <div>
-                                    <h4 class="font-bold text-xs">${p.name}</h4>
-                                    <p class="text-[10px] text-gray-500">Seller: ${p.seller}</p>
-                                </div>
-                            </div>
-                            <button onclick="deleteLive('${child.key}')" class="text-red-500 p-2 hover:bg-red-50 rounded-lg">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>`;
+                    div.innerHTML += `<div class="bg-white p-4 rounded-xl shadow flex justify-between items-center">
+                        <div class="flex items-center gap-3"><img src="${p.imageUrl}" class="w-10 h-10 rounded-lg object-cover"><div><h4 class="font-bold text-xs">${p.name}</h4><p class="text-[10px] text-gray-500">Seller: ${p.seller}</p></div></div>
+                        <button onclick="deleteLive('${child.key}')" class="text-red-500 p-2"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>`;
                 });
             });
         }
 
-        function deleteLive(id) {
-            if(confirm("এই পণ্যটি লাইভ সাইট থেকে ডিলিট করবেন?")) {
-                db.ref('live_products/' + id).remove();
-            }
-        }
+        function deleteLive(id) { if(confirm("ডিলিট করবেন?")) db.ref('live_products/' + id).remove(); }
 
-        // --- 3. Orders & Delivery Logic ---
         function loadOrders() {
             db.ref('orders').on('value', s => {
-                const div = document.getElementById('orderList');
-                div.innerHTML = "";
-                if(!s.exists()) div.innerHTML = "<p class='text-center py-10 text-gray-400'>অর্ডার নেই</p>";
+                const div = document.getElementById('orderList'); div.innerHTML = "";
                 s.forEach(child => {
                     const o = child.val();
                     const isDelivered = o.status === 'Delivered ✅';
-                    div.innerHTML += `
-                        <div class="admin-card p-5 border-l-4 ${isDelivered ? 'border-green-500' : 'border-orange-500'}">
-                            <div class="flex justify-between items-start mb-3">
-                                <h4 class="font-bold text-sm">${o.productName}</h4>
-                                <span class="text-[10px] font-bold px-2 py-1 rounded bg-gray-100">${o.status || 'Pending'}</span>
-                            </div>
-                            <div class="text-[11px] text-gray-600 space-y-1">
-                                <p><b>Customer:</b> ${o.customerName}</p>
-                                <p><b>Seller:</b> ${o.sellerName}</p>
-                            </div>
-                            ${!isDelivered ? `
-                                <button onclick="markAsDelivered('${child.key}')" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold shadow-md">
-                                    <i class="fa-solid fa-check-circle mr-1"></i> Mark as Delivered
-                                </button>
-                            ` : '<p class="text-center text-green-600 font-bold text-[10px] mt-4 italic">ডেলিভারি সম্পন্ন হয়েছে</p>'}
-                        </div>`;
+                    div.innerHTML += `<div class="bg-white p-5 rounded-xl border-l-4 ${isDelivered ? 'border-green-500' : 'border-orange-500'}">
+                        <div class="flex justify-between font-bold text-sm"><h4>${o.productName}</h4><span>${o.status || 'Pending'}</span></div>
+                        <p class="text-[10px] text-gray-500 mt-1">Customer: ${o.customerName} | Seller: ${o.sellerName}</p>
+                        ${!isDelivered ? `<button onclick="markDelivered('${child.key}')" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">MARK AS DELIVERED</button>` : ''}
+                    </div>`;
                 });
             });
         }
 
-        function markAsDelivered(orderId) {
-            if(confirm("ডেলিভারি কি সম্পন্ন হয়েছে? এটি করলে সেলার প্যানেলে আপডেট চলে যাবে।")) {
-                db.ref('orders/' + orderId).update({
-                    status: 'Delivered ✅',
-                    deliveredAt: firebase.database.ServerValue.TIMESTAMP
-                }).then(() => {
-                    alert("ডেলিভারি আপডেট করা হয়েছে!");
-                });
+        function markDelivered(id) {
+            if(confirm("ডেলিভারি সম্পন্ন?")) {
+                db.ref('orders/' + id).update({ status: 'Delivered ✅' }).then(() => alert("আপডেট হয়েছে!"));
             }
         }
-
-        // Initialize Data
-        window.onload = () => {
-            loadPending();
-            loadLive();
-            loadOrders();
-        };
     </script>
 </body>
 </html>
