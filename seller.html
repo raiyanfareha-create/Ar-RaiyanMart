@@ -24,12 +24,12 @@
                 <input type="password" id="authPassword" placeholder="পাসওয়ার্ড দিন" class="w-full border-2 border-gray-100 p-4 rounded-2xl outline-none focus:border-orange-500">
                 
                 <div id="loginBtns">
-                    <button onclick="handleLogin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold active:scale-95 mb-3 transition">লগইন করুন</button>
+                    <button onclick="handleLogin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold active:scale-95 mb-3">লগইন করুন</button>
                     <p class="text-center text-[11px] text-gray-400">অ্যাকাউন্ট নেই? <button onclick="toggleAuth(true)" class="text-orange-600 font-bold underline">নতুন অ্যাকাউন্ট খুলুন</button></p>
                 </div>
 
                 <div id="signupBtns" class="hidden text-center">
-                    <button onclick="handleSignup()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold active:scale-95 mb-3 transition">রেজিস্ট্রেশন করুন</button>
+                    <button onclick="handleSignup()" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold active:scale-95 mb-3">রেজিস্ট্রেশন করুন</button>
                     <p class="text-center text-[11px] text-gray-400 font-bold">ইতিমধ্যে অ্যাকাউন্ট আছে? <button onclick="toggleAuth(false)" class="text-slate-800 underline">লগইন করুন</button></p>
                 </div>
             </div>
@@ -69,7 +69,6 @@
     </div>
 
     <script>
-        // আপনার ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyDuoF0108YerBICZzydjjZzDawtG-BQLW8U",
             authDomain: "ar-raiyanmart.firebaseapp.com",
@@ -79,8 +78,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // **গুরুত্বপূর্ণ: ImgBB API Key**
-        // যদি আপলোড ফেল করে, তবে নতুন একটি API Key এখানে বসান।
+        // **এখানে আপনার নতুন API Key বসাবেন**
         const IMGBB_API_KEY = "9445100650946777093282f1f0a28f24"; 
 
         function toggleAuth(isSignup) {
@@ -127,7 +125,6 @@
         const savedSeller = localStorage.getItem('active_seller');
         if(savedSeller) showDashboard(savedSeller);
 
-        // ছবি আপলোড ফাংশন
         async function submitProduct() {
             const fileInput = document.getElementById('pImage');
             const name = document.getElementById('pName').value.trim();
@@ -154,8 +151,7 @@
                     if(data.success) {
                         uploadedUrls.push(data.data.url);
                     } else {
-                        // যদি API Key ভুল হয়, এখানে এরর দেখাবে
-                        throw new Error(data.error ? data.error.message : "ImgBB আপলোড ব্যর্থ হয়েছে");
+                        throw new Error(data.error ? data.error.message : "ছবি আপলোড হয়নি");
                     }
                 }
                 
@@ -170,7 +166,7 @@
                         seller: localStorage.getItem('active_seller'),
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
-                    alert("সফলভাবে পণ্যটি জমা দেওয়া হয়েছে!");
+                    alert("সফলভাবে আপলোড হয়েছে!");
                     location.reload();
                 }
 
@@ -187,11 +183,7 @@
                 snap.forEach(child => {
                     const p = child.val();
                     if(p.seller === seller) {
-                        list.innerHTML += `
-                            <div class="p-3 border rounded-xl flex items-center bg-white mb-2 shadow-sm">
-                                <img src="${p.imageUrl}" class="w-10 h-10 rounded-lg object-cover mr-3 border">
-                                <div class="flex-1 font-bold text-[11px]">${p.name}</div>
-                            </div>`;
+                        list.innerHTML += `<div class="p-3 border rounded-xl flex items-center bg-white mb-2 shadow-sm"><img src="${p.imageUrl}" class="w-10 h-10 rounded-lg object-cover mr-3 border"><div class="flex-1 font-bold text-[11px]">${p.name}</div></div>`;
                     }
                 });
             });
