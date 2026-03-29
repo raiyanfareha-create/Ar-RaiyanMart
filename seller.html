@@ -19,8 +19,8 @@
     <div class="max-w-xl mx-auto space-y-6">
         <div class="bg-white p-5 rounded-2xl shadow-sm flex justify-between items-center border-l-8 border-orange-600">
             <div>
-                <p class="text-[10px] text-gray-400 uppercase font-bold">WELCOME,</p>
-                <h2 class="text-lg font-bold text-slate-800 italic">Fariha</h2>
+                <p class="text-[10px] text-gray-400 uppercase font-bold">SELLER DASHBOARD</p>
+                <h2 id="displayShopName" class="text-lg font-bold text-slate-800 italic italic">লোড হচ্ছে...</h2>
             </div>
             <button onclick="handleLogout()" class="text-red-500 font-bold text-xs border border-red-100 px-5 py-2 rounded-xl hover:bg-red-50 transition">Logout</button>
         </div>
@@ -30,13 +30,13 @@
                 <i class="fa-solid fa-circle-plus"></i> নতুন পণ্য যোগ করুন
             </h2>
             <div class="space-y-4">
-                <input type="text" id="pName" placeholder="পণ্যের নাম (যেমন: Sharara dress)" class="w-full border-2 border-gray-50 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
+                <input type="text" id="pName" placeholder="পণ্যের নাম লিখুন" class="w-full border-2 border-gray-50 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
                 <input type="number" id="pPrice" placeholder="মূল্য (৳)" class="w-full border-2 border-gray-50 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
-                <input type="text" id="pColors" placeholder="কালার (Red, Pink, Blue)" class="w-full border-2 border-gray-50 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
-                <textarea id="pDesc" placeholder="পণ্যের বিবরণ..." class="w-full border-2 border-gray-50 p-3 rounded-xl h-24 outline-none focus:border-orange-500 text-sm"></textarea>
+                <input type="text" id="pColors" placeholder="কালার (যেমন: লাল, নীল)" class="w-full border-2 border-gray-50 p-3 rounded-xl outline-none focus:border-orange-500 text-sm">
+                <textarea id="pDesc" placeholder="পণ্যের বিস্তারিত বিবরণ..." class="w-full border-2 border-gray-50 p-3 rounded-xl h-24 outline-none focus:border-orange-500 text-sm"></textarea>
                 
                 <div class="p-4 rounded-xl border-2 border-dashed border-gray-200 text-center bg-gray-50">
-                    <p class="text-[10px] text-gray-400 mb-2 font-bold uppercase italic">ছবি সিলেক্ট করুন (একাধিক সম্ভব):</p>
+                    <p class="text-[10px] text-gray-400 mb-2 font-bold uppercase">ছবি সিলেক্ট করুন (একাধিক সম্ভব):</p>
                     <input type="file" id="pImage" multiple accept="image/*" class="text-xs w-full cursor-pointer">
                 </div>
 
@@ -48,7 +48,7 @@
 
         <div class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-blue-600">
             <h2 class="text-blue-600 font-bold mb-4 flex items-center gap-2 uppercase text-[10px] tracking-widest">
-                <i class="fa-solid fa-boxes-stacked"></i> আপনার পণ্যসমূহ
+                <i class="fa-solid fa-boxes-stacked"></i> আপনার বর্তমান পণ্যসমূহ
             </h2>
             <div id="liveProductList" class="space-y-3">
                 <p class="text-center text-gray-400 text-[10px] py-4 italic">লোড হচ্ছে...</p>
@@ -67,6 +67,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const storage = firebase.storage();
+
+        // সেলারের নাম সেট করা (লগইন থেকে আসা নাম, না থাকলে 'Fariha' ডিফল্ট)
+        const currentSeller = localStorage.getItem('seller_name') || "Fariha";
+        document.getElementById('displayShopName').innerText = currentSeller;
 
         function handleLogout() {
             if(confirm("লগআউট করবেন?")) {
@@ -102,7 +106,7 @@
                     description: document.getElementById('pDesc').value,
                     imageUrl: imageUrls[0], 
                     allImages: imageUrls,
-                    seller: "Fariha",
+                    seller: currentSeller, // বর্তমানে লগইন করা সেলারের নাম যাবে
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
 
@@ -120,12 +124,16 @@
                 const list = document.getElementById('liveProductList');
                 list.innerHTML = "";
                 if (!snap.exists()) {
-                    list.innerHTML = "<p class='text-center text-gray-400 text-[10px] py-4 italic'>কোনো পণ্য লাইভ নেই।</p>";
+                    list.innerHTML = "<p class='text-center text-gray-400 text-[10px] py-4 italic'>আপনার কোনো পণ্য লাইভ নেই।</p>";
                     return;
                 }
+                
+                let hasProduct = false;
                 snap.forEach(child => {
                     const p = child.val();
-                    if(p.seller === "Fariha") {
+                    // শুধুমাত্র বর্তমান সেলারের পণ্যগুলো দেখাবে
+                    if(p.seller === currentSeller) {
+                        hasProduct = true;
                         list.innerHTML += `
                             <div class="p-3 border rounded-xl flex items-center bg-white shadow-sm mb-2">
                                 <img src="${p.imageUrl}" class="w-10 h-10 rounded-lg object-cover mr-3 border" onerror="this.src='https://via.placeholder.com/50'">
@@ -133,12 +141,20 @@
                                     <h4 class="font-bold text-[11px]">${p.name}</h4>
                                     <p class="text-orange-600 font-bold text-[10px]">৳ ${p.price}</p>
                                 </div>
-                                <button onclick="db.ref('live_products/${child.key}').remove()" class="text-red-400 p-2"><i class="fa-solid fa-trash-can"></i></button>
+                                <button onclick="deleteProduct('${child.key}')" class="text-red-400 p-2"><i class="fa-solid fa-trash-can"></i></button>
                             </div>`;
                     }
                 });
+                if(!hasProduct) list.innerHTML = "<p class='text-center text-gray-400 text-[10px] py-4 italic'>আপনার কোনো পণ্য লাইভ নেই।</p>";
             });
         }
+
+        function deleteProduct(id) {
+            if(confirm("আপনি কি এই পণ্যটি ডিলিট করতে চান?")) {
+                db.ref('live_products/' + id).remove();
+            }
+        }
+
         window.onload = loadMyProducts;
     </script>
 </body>
