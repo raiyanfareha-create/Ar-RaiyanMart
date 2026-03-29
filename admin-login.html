@@ -3,181 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Ar RaiyanMart</title>
+    <title>Admin - RaiyanMart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f1f5f9; margin: 0; padding: 15px; }
-        .admin-card { background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
-        .tab-active { border-bottom: 3px solid #ea580c; color: #ea580c; font-weight: 800; }
-        .product-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: #f8fafc; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f4f8; }
+        .tab-active { border-bottom: 3px solid #e63946; color: #e63946; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="max-w-4xl mx-auto">
-        <div class="bg-white p-6 rounded-2xl shadow-sm flex justify-between items-center border-l-[10px] border-orange-600 mb-6">
-            <div>
-                <h1 class="text-2xl font-black text-slate-800 italic">RaiyanMart <span class="text-orange-600">Admin</span></h1>
-                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Product Management System</p>
+    <div class="bg-white p-4 shadow-md flex justify-between items-center sticky top-0 z-50">
+        <div>
+            <h1 class="text-xl font-bold text-slate-800 italic">RaiyanMart <span class="text-orange-600">Admin</span></h1>
+        </div>
+        <button onclick="logout()" class="text-red-500 bg-red-50 px-4 py-2 rounded-xl text-xs font-bold italic">Logout</button>
+    </div>
+
+    <div class="p-4">
+        <div class="bg-white p-5 rounded-3xl shadow-lg border-t-4 border-orange-500">
+            <h2 class="text-orange-600 font-bold mb-4 flex items-center gap-2 text-sm uppercase italic"><i class="fa-solid fa-truck"></i> ডেলিভারি চার্জ</h2>
+            <div class="grid grid-cols-2 gap-3">
+                <input type="number" id="insideDhaka" placeholder="ঢাকা (৳)" class="bg-gray-50 p-3 rounded-xl border text-sm outline-none">
+                <input type="number" id="outsideDhaka" placeholder="বাইরে (৳)" class="bg-gray-50 p-3 rounded-xl border text-sm outline-none">
             </div>
-            <button onclick="location.reload()" class="bg-red-50 text-red-500 px-5 py-2 rounded-xl text-[10px] font-bold hover:bg-red-100 transition flex items-center gap-2">
-                <i class="fa-solid fa-power-off"></i> Logout
-            </button>
+            <button onclick="saveDeliverySettings()" class="w-full mt-4 bg-slate-800 text-white py-3 rounded-xl font-bold text-sm">সেভ করুন</button>
+        </div>
+    </div>
+
+    <div class="flex bg-white shadow-sm sticky top-[72px] z-40">
+        <button onclick="showTab('pending')" id="tab-pending" class="flex-1 py-4 text-[10px] font-bold uppercase tab-active">পেন্ডিং পণ্য</button>
+        <button onclick="showTab('orders')" id="tab-orders" class="flex-1 py-4 text-[10px] font-bold uppercase text-gray-400">অর্ডার হিস্ট্রি</button>
+        <button onclick="showTab('live')" id="tab-live" class="flex-1 py-4 text-[10px] font-bold uppercase text-gray-400">লাইভ পণ্য</button>
+    </div>
+
+    <div class="p-4">
+        <div id="pendingSection" class="space-y-4">
+            <div id="pendingList" class="grid gap-4"></div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-8 text-center">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-b-4 border-blue-500">
-                <p class="text-[10px] text-gray-400 font-bold">পেন্ডিং পণ্য</p>
-                <h3 id="pendingCount" class="text-2xl font-black text-blue-600">0</h3>
-            </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-b-4 border-emerald-500">
-                <p class="text-[10px] text-gray-400 font-bold">লাইভ পণ্য</p>
-                <h3 id="liveCount" class="text-2xl font-black text-emerald-600">0</h3>
-            </div>
+        <div id="ordersSection" class="hidden space-y-4">
+            <div id="orderList" class="grid gap-4"></div>
         </div>
 
-        <div class="flex bg-white rounded-xl shadow-sm mb-6 overflow-hidden border border-gray-100">
-            <button onclick="switchSection('pending')" id="tabP" class="flex-1 py-4 text-[10px] font-bold uppercase tab-active">পেন্ডিং অনুরোধ</button>
-            <button onclick="switchSection('live')" id="tabL" class="flex-1 py-4 text-[10px] font-bold uppercase">লাইভ প্রোডাক্ট</button>
-        </div>
-
-        <div id="pendingSec" class="space-y-4">
-            <h2 class="text-xs font-bold text-gray-500 flex items-center gap-2 mb-4">
-                <i class="fa-solid fa-clock-rotate-left text-orange-500"></i> নতুন পণ্যের অনুরোধ (PENDING)
-            </h2>
-            <div id="pendingList" class="space-y-3">
-                <div class="text-center py-10 text-gray-400 italic text-xs">লোড হচ্ছে...</div>
-            </div>
-        </div>
-
-        <div id="liveSec" class="hidden space-y-4">
-            <h2 class="text-xs font-bold text-gray-500 flex items-center gap-2 mb-4">
-                <i class="fa-solid fa-circle-check text-emerald-500"></i> বর্তমানে লাইভ আছে
-            </h2>
-            <div id="liveProductList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="text-center py-10 text-gray-400 italic text-xs">লোড হচ্ছে...</div>
-            </div>
+        <div id="liveSection" class="hidden space-y-4">
+            <div id="liveList" class="grid gap-4"></div>
         </div>
     </div>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDuoF0108YerBICZzydjjZzDawtG-BQLW8U",
             authDomain: "ar-raiyanmart.firebaseapp.com",
             databaseURL: "https://ar-raiyanmart-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "ar-raiyanmart",
-            storageBucket: "ar-raiyanmart.appspot.com"
+            projectId: "ar-raiyanmart"
         };
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const db = firebase.database();
 
-        // Section Switching Function
-        function switchSection(target) {
-            document.getElementById('pendingSec').classList.toggle('hidden', target !== 'pending');
-            document.getElementById('liveSec').classList.toggle('hidden', target !== 'live');
-            document.getElementById('tabP').classList.toggle('tab-active', target === 'pending');
-            document.getElementById('tabL').classList.toggle('tab-active', target === 'live');
+        // ১. ট্যাব ম্যানেজমেন্ট
+        function showTab(tab) {
+            const sections = ['pendingSection', 'ordersSection', 'liveSection'];
+            const tabs = ['tab-pending', 'tab-orders', 'tab-live'];
+            sections.forEach(s => document.getElementById(s).classList.add('hidden'));
+            tabs.forEach(t => document.getElementById(t).classList.remove('tab-active', 'text-gray-400'));
+            
+            document.getElementById(tab + 'Section').classList.remove('hidden');
+            document.getElementById('tab-' + tab).classList.add('tab-active');
         }
 
-        // ১. পেন্ডিং প্রোডাক্ট লোড করার ফাংশন
-        database.ref('pending_products').on('value', (snapshot) => {
+        // ২. ডেলিভারি সেটিংস
+        function saveDeliverySettings() {
+            db.ref('settings/delivery').set({
+                insideDhaka: parseInt(document.getElementById('insideDhaka').value),
+                outsideDhaka: parseInt(document.getElementById('outsideDhaka').value)
+            }).then(() => alert("আপডেট হয়েছে!"));
+        }
+
+        db.ref('settings/delivery').on('value', snap => {
+            const val = snap.val();
+            if(val) {
+                document.getElementById('insideDhaka').value = val.insideDhaka;
+                document.getElementById('outsideDhaka').value = val.outsideDhaka;
+            }
+        });
+
+        // ৩. পেন্ডিং পণ্য লোড
+        db.ref('pending_products').on('value', snap => {
             const list = document.getElementById('pendingList');
-            const countDisplay = document.getElementById('pendingCount');
             list.innerHTML = "";
-            
-            if(!snapshot.exists()) {
-                list.innerHTML = `<div class="bg-white p-10 rounded-2xl text-center text-gray-400 text-xs italic">কোনো পেন্ডিং পণ্য নেই</div>`;
-                countDisplay.innerText = "0";
-                return;
-            }
-
-            let count = 0;
-            snapshot.forEach((child) => {
-                count++;
+            snap.forEach(child => {
                 const p = child.val();
-                // Image field fix: imageUrl (Seller) or img (Legacy)
-                const imgSrc = p.imageUrl || p.img || 'https://via.placeholder.com/150';
-                
                 list.innerHTML += `
-                    <div class="admin-card p-4 flex items-center gap-4 border border-gray-50">
-                        <img src="${imgSrc}" class="product-img border" onerror="this.src='https://via.placeholder.com/150'">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-sm text-slate-800">${p.name}</h4>
-                            <p class="text-orange-600 font-bold text-xs">৳${p.price}</p>
-                            <p class="text-[9px] text-gray-400 uppercase mt-1">SELLER: <span class="text-blue-500">${p.seller || 'Unknown'}</span></p>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border relative">
+                        <div class="flex gap-4">
+                            <img src="${p.imageUrl}" class="w-16 h-16 rounded-xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-bold text-xs">${p.name}</h3>
+                                <p class="text-orange-600 font-bold text-xs">৳ ${p.price}</p>
+                                <p class="text-[9px] text-gray-400 italic">Seller: ${p.seller}</p>
+                            </div>
                         </div>
-                        <div class="flex flex-col gap-2">
-                            <button onclick="approveProduct('${child.key}')" class="bg-emerald-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-emerald-100 active:scale-95 transition">APPROVE</button>
-                            <button onclick="rejectProduct('${child.key}')" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl text-[10px] font-bold hover:bg-red-500 hover:text-white transition">REJECT</button>
+                        <div class="flex gap-2 mt-3">
+                            <button onclick="approveProduct('${child.key}')" class="flex-1 bg-green-500 text-white py-2 rounded-lg text-[9px] font-bold uppercase">Approve</button>
+                            <button onclick="deleteData('pending_products/${child.key}')" class="bg-red-50 text-red-500 px-4 py-2 rounded-lg text-[9px] font-bold uppercase">Reject</button>
                         </div>
                     </div>`;
             });
-            countDisplay.innerText = count;
         });
 
-        // ২. পণ্য অ্যাপ্রুভ করার ফাংশন
-        function approveProduct(id) {
-            database.ref('pending_products/' + id).once('value', (snapshot) => {
-                const data = snapshot.val();
-                database.ref('live_products').push(data).then(() => {
-                    database.ref('pending_products/' + id).remove();
-                    alert("পণ্যটি এখন লাইভ আছে!");
-                });
-            });
-        }
-
-        // ৩. পেন্ডিং পণ্য ডিলিট (রিজেক্ট) করা
-        function rejectProduct(id) {
-            if(confirm("আপনি কি নিশ্চিত এই অনুরোধটি বাতিল করবেন?")) {
-                database.ref('pending_products/' + id).remove();
-            }
-        }
-
-        // ৪. লাইভ প্রোডাক্ট লোড এবং ম্যানেজ করার ফাংশন
-        database.ref('live_products').on('value', (snapshot) => {
-            const list = document.getElementById('liveProductList');
-            const countDisplay = document.getElementById('liveCount');
+        // ৪. অর্ডার হিস্ট্রি লোড
+        db.ref('orders').on('value', snap => {
+            const list = document.getElementById('orderList');
             list.innerHTML = "";
-            
-            if(!snapshot.exists()) {
-                list.innerHTML = `<p class='text-center py-10 text-gray-400 col-span-2 text-xs italic'>কোনো লাইভ পণ্য পাওয়া যায়নি</p>`;
-                countDisplay.innerText = "0";
-                return;
-            }
-
-            let count = 0;
-            snapshot.forEach((child) => {
-                count++;
-                const p = child.val();
-                const imgSrc = p.imageUrl || p.img || 'https://via.placeholder.com/150';
-                
+            snap.forEach(child => {
+                const o = child.val();
                 list.innerHTML += `
-                    <div class="admin-card p-3 flex items-center bg-white border border-gray-100">
-                        <img src="${imgSrc}" class="w-12 h-12 rounded-xl object-cover border mr-3" onerror="this.src='https://via.placeholder.com/50'">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-[11px] text-slate-700 truncate w-32">${p.name}</h4>
-                            <p class="text-blue-500 font-bold text-[10px]">৳${p.price}</p>
-                            <p class="text-[8px] text-gray-400 uppercase">Shop: ${p.seller || 'RaiyanMart'}</p>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-sm text-slate-800">${o.customerName}</h3>
+                            <span class="text-[9px] bg-blue-50 text-blue-600 px-2 py-1 rounded-md font-bold">${o.orderStatus || 'New'}</span>
                         </div>
-                        <button onclick="deleteLiveProduct('${child.key}')" class="text-red-300 hover:text-red-500 p-2 transition">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                        <p class="text-[10px] text-gray-500"><i class="fa-solid fa-phone"></i> ${o.customerPhone}</p>
+                        <p class="text-[10px] text-gray-500 mb-2"><i class="fa-solid fa-location-dot"></i> ${o.address}</p>
+                        <div class="border-t pt-2 mt-2">
+                            <p class="text-[10px] font-bold italic text-slate-700">Product: ${o.productName}</p>
+                            <p class="text-[10px] font-bold text-orange-600">Total: ৳ ${o.totalPrice}</p>
+                        </div>
                     </div>`;
             });
-            countDisplay.innerText = count;
         });
 
-        // ৫. লাইভ পণ্য ডিলিট করা
-        function deleteLiveProduct(id) {
-            if(confirm("পণ্যটি কি লাইভ থেকে সরিয়ে ফেলতে চান?")) {
-                database.ref('live_products/' + id).remove();
-            }
+        // ৫. লাইভ পণ্য লোড
+        db.ref('live_products').on('value', snap => {
+            const list = document.getElementById('liveList');
+            list.innerHTML = "";
+            snap.forEach(child => {
+                const p = child.val();
+                list.innerHTML += `<div class="bg-white p-3 rounded-xl flex items-center justify-between shadow-sm border"><div class="flex items-center gap-3"><img src="${p.imageUrl}" class="w-10 h-10 rounded-lg object-cover"><div class="text-[10px] font-bold">${p.name}</div></div><button onclick="deleteData('live_products/${child.key}')" class="text-red-400 p-2"><i class="fa-solid fa-trash-can"></i></button></div>`;
+            });
+        });
+
+        function approveProduct(key) {
+            db.ref('pending_products/' + key).once('value', snap => {
+                const data = snap.val();
+                db.ref('live_products').push(data).then(() => db.ref('pending_products/' + key).remove());
+            });
         }
+
+        function deleteData(path) { if(confirm("মুছে ফেলতে চান?")) db.ref(path).remove(); }
+        function logout() { location.href = "index.html"; }
     </script>
 </body>
 </html>
