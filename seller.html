@@ -18,10 +18,10 @@
 
     <div class="max-w-xl mx-auto space-y-6">
         <div id="authArea" class="bg-white p-8 rounded-3xl shadow-2xl border-t-8 border-slate-800 mt-10">
-            <h2 class="text-xl font-bold text-slate-800 mb-6 text-center italic">Seller <span class="text-orange-600">Login</span></h2>
+            <h2 class="text-xl font-bold text-slate-800 mb-6 text-center italic uppercase tracking-wider">Seller <span class="text-orange-600">Login</span></h2>
             <div class="space-y-4">
-                <input type="text" id="authShopName" placeholder="শপের নাম" class="w-full border-2 border-gray-50 p-4 rounded-2xl outline-none focus:border-orange-500">
-                <input type="password" id="authPassword" placeholder="পাসওয়ার্ড" class="w-full border-2 border-gray-50 p-4 rounded-2xl outline-none focus:border-orange-500">
+                <input type="text" id="authShopName" placeholder="শপের সঠিক নাম দিন" class="w-full border-2 p-4 rounded-2xl outline-none focus:border-orange-500">
+                <input type="password" id="authPassword" placeholder="পাসওয়ার্ড" class="w-full border-2 p-4 rounded-2xl outline-none focus:border-orange-500">
                 <button onclick="handleLogin()" class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold shadow-lg uppercase">Login</button>
             </div>
         </div>
@@ -29,27 +29,25 @@
         <div id="dashboardArea" class="hidden space-y-6">
             <div class="bg-white p-5 rounded-2xl shadow-sm flex justify-between items-center border-l-8 border-orange-600">
                 <h2 id="displayShopName" class="text-lg font-bold text-slate-800 italic uppercase">...</h2>
-                <button onclick="handleLogout()" class="text-red-500 font-bold text-xs border border-red-50 px-4 py-2 rounded-xl italic">Logout</button>
+                <button onclick="handleLogout()" class="text-red-500 font-bold text-xs border px-4 py-2 rounded-xl italic">Logout</button>
             </div>
 
             <div class="bg-white p-6 rounded-3xl shadow-xl border-t-4 border-blue-500">
-                <h2 class="text-blue-600 font-bold mb-4 flex items-center gap-2 text-sm uppercase italic"><i class="fa-solid fa-cart-shopping"></i> নতুন অর্ডারসমূহ</h2>
-                <div id="newOrdersList" class="space-y-4">
-                    <p class="text-center text-gray-400 text-[10px] italic">অর্ডার লোড হচ্ছে...</p>
-                </div>
+                <h2 class="text-blue-600 font-bold mb-4 text-sm uppercase italic"><i class="fa-solid fa-cart-shopping"></i> নতুন অর্ডারসমূহ</h2>
+                <div id="newOrdersList" class="space-y-4 text-[10px] text-gray-400 text-center font-bold italic">অর্ডার লোড হচ্ছে...</div>
             </div>
 
             <div class="bg-white p-6 rounded-3xl shadow-xl">
-                <h2 class="text-orange-600 font-bold mb-5 flex items-center gap-2 text-sm uppercase italic"><i class="fa-solid fa-plus-circle"></i> পণ্য আপলোড</h2>
+                <h2 class="text-orange-600 font-bold mb-5 text-sm uppercase italic"><i class="fa-solid fa-plus-circle"></i> পণ্য আপলোড</h2>
                 <div class="space-y-4">
-                    <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border border-gray-100 p-3 rounded-xl outline-none text-sm bg-gray-50">
-                    <input type="number" id="pPrice" placeholder="মূল্য (৳)" class="w-full border border-gray-100 p-3 rounded-xl outline-none text-sm bg-gray-50">
-                    <input type="text" id="pColors" placeholder="কালার (যেমন: লাল, নীল, কালো)" class="w-full border border-gray-100 p-3 rounded-xl outline-none text-sm bg-gray-50">
-                    <textarea id="pDesc" placeholder="বিস্তারিত বিবরণ..." class="w-full border border-gray-100 p-3 rounded-xl h-24 outline-none text-sm bg-gray-50"></textarea>
+                    <input type="text" id="pName" placeholder="পণ্যের নাম" class="w-full border p-3 rounded-xl outline-none text-sm bg-gray-50">
+                    <input type="number" id="pPrice" placeholder="মূল্য (৳)" class="w-full border p-3 rounded-xl outline-none text-sm bg-gray-50">
+                    <input type="text" id="pColors" placeholder="কালার (লাল, নীল...)" class="w-full border p-3 rounded-xl outline-none text-sm bg-gray-50">
+                    <textarea id="pDesc" placeholder="বিস্তারিত বিবরণ..." class="w-full border p-3 rounded-xl h-24 outline-none text-sm bg-gray-50"></textarea>
                     
                     <div class="p-4 rounded-xl border-2 border-dashed border-gray-200 text-center bg-gray-50">
                         <input type="file" id="pImages" multiple accept="image/*" class="text-[10px] w-full">
-                        <p class="text-[9px] text-gray-400 mt-2 font-bold italic">একসাথে একাধিক ছবি সিলেক্ট করতে পারেন</p>
+                        <p class="text-[9px] text-gray-400 mt-2 font-bold italic">একাধিক ছবি সিলেক্ট করা যাবে</p>
                     </div>
 
                     <button onclick="submitProduct()" id="uploadBtn" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold uppercase shadow-lg italic">অ্যাডমিনকে পাঠান</button>
@@ -57,12 +55,8 @@
             </div>
 
             <div class="bg-white p-6 rounded-3xl shadow-md border-t-4 border-green-500">
-                <h2 class="text-green-600 font-bold mb-4 flex items-center gap-2 uppercase text-[10px] italic">
-                    <i class="fa-solid fa-truck-fast"></i> ডেলিভারি হিস্ট্রি
-                </h2>
-                <div id="deliveryHistory" class="space-y-3">
-                    <p class="text-center text-gray-400 text-[10px] italic">কোনো ডেলিভারি তথ্য নেই</p>
-                </div>
+                <h2 class="text-green-600 font-bold mb-4 uppercase text-[10px] italic"><i class="fa-solid fa-truck-fast"></i> ডেলিভারি হিস্ট্রি</h2>
+                <div id="deliveryHistory" class="space-y-3 text-[10px] text-gray-400 text-center font-bold italic">কোনো ডেলিভারি তথ্য নেই</div>
             </div>
         </div>
     </div>
@@ -76,7 +70,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const IMGBB_API_KEY = "c01e05cfc3241e9f57336dc80cc38d0f"; //
+        const IMGBB_API_KEY = "c01e05cfc3241e9f57336dc80cc38d0f";
 
         function handleLogin() {
             const name = document.getElementById('authShopName').value.trim();
@@ -84,22 +78,20 @@
             db.ref('sellers/' + name).once('value', snap => {
                 if(snap.exists() && snap.val().password === pass) {
                     localStorage.setItem('active_seller', name);
-                    showDashboard(name);
-                } else alert("ভুল তথ্য!");
+                    location.reload();
+                } else alert("ভুল তথ্য দিয়েছেন!");
             });
         }
 
-        function showDashboard(name) {
+        const activeSeller = localStorage.getItem('active_seller');
+        if(activeSeller) {
             document.getElementById('authArea').classList.add('hidden');
             document.getElementById('dashboardArea').classList.remove('hidden');
-            document.getElementById('displayShopName').innerText = name;
-            loadSellerData(name);
+            document.getElementById('displayShopName').innerText = activeSeller;
+            loadData(activeSeller);
         }
 
-        if(localStorage.getItem('active_seller')) showDashboard(localStorage.getItem('active_seller'));
-
-        // অর্ডার লোড এবং কনফার্ম লজিক
-        function loadSellerData(seller) {
+        function loadData(seller) {
             db.ref('orders').on('value', snap => {
                 const newList = document.getElementById('newOrdersList');
                 const historyList = document.getElementById('deliveryHistory');
@@ -108,47 +100,29 @@
 
                 snap.forEach(child => {
                     const o = child.val();
-                    const key = child.key;
-
-                    if(o.sellerName === seller) {
-                        // নতুন অর্ডার যা সেলার কনফার্ম করবে
-                        if(o.status === 'Pending' || !o.status) {
-                            hasNew = true;
-                            newList.innerHTML += `
-                                <div class="p-4 border border-blue-100 rounded-2xl bg-blue-50 space-y-2 shadow-sm">
-                                    <div class="flex justify-between font-bold text-xs text-slate-800">
-                                        <span>${o.productName}</span>
-                                        <span class="text-blue-600">৳ ${o.totalPrice || o.price}</span>
-                                    </div>
-                                    <p class="text-[9px] text-gray-500 font-bold italic">ক্রেতা: ${o.userName} (${o.userPhone})</p>
-                                    <div class="flex gap-2 pt-2">
-                                        <button onclick="updateOrderStatus('${key}', 'Confirmed')" class="bg-blue-600 text-white text-[10px] px-4 py-2 rounded-lg font-bold uppercase">Confirm Order</button>
-                                        <button onclick="updateOrderStatus('${key}', 'Cancelled')" class="bg-red-500 text-white text-[10px] px-4 py-2 rounded-lg font-bold uppercase">Cancel</button>
-                                    </div>
-                                </div>`;
-                        } 
-                        // ডেলিভারি সম্পন্ন হওয়া অর্ডার
-                        else if(o.status === 'Delivered') {
+                    // সেলার নেম ম্যাচিং ফিক্স (Trim ব্যবহার করে)
+                    if(o.sellerName && o.sellerName.trim() === seller.trim()) {
+                        if(o.status === 'Delivered') {
                             hasHistory = true;
-                            historyList.innerHTML += `
-                                <div class="p-3 bg-green-50 border border-green-100 rounded-xl flex justify-between items-center text-[10px] font-bold shadow-sm">
-                                    <span class="text-slate-700">${o.productName}</span>
-                                    <span class="text-green-600 uppercase italic">Success</span>
-                                </div>`;
+                            historyList.innerHTML += `<div class="p-3 bg-green-50 border rounded-xl flex justify-between items-center text-[10px] font-bold shadow-sm mb-2 text-slate-700"><span>${o.productName}</span><span class="text-green-600 uppercase italic">Success</span></div>`;
+                        } else {
+                            hasNew = true;
+                            newList.innerHTML += `<div class="p-4 border rounded-2xl bg-blue-50 mb-2 shadow-sm flex justify-between items-center">
+                                <div><p class="font-bold text-xs text-slate-800">${o.productName}</p><p class="text-[9px] text-blue-600">৳${o.price || o.totalPrice}</p></div>
+                                <button onclick="updateStatus('${child.key}')" class="bg-blue-600 text-white text-[9px] px-4 py-2 rounded-lg font-bold uppercase shadow-sm">Confirm</button>
+                            </div>`;
                         }
                     }
                 });
-                if(!hasNew) newList.innerHTML = '<p class="text-center text-gray-400 text-[10px] italic">নতুন কোনো অর্ডার নেই</p>';
-                if(!hasHistory) historyList.innerHTML = '<p class="text-center text-gray-400 text-[10px] italic">কোনো ডেলিভারি সম্পন্ন হয়নি</p>';
+                if(!hasNew) newList.innerHTML = "নতুন কোনো অর্ডার নেই";
+                if(!hasHistory) historyList.innerHTML = "হিস্ট্রি খালি";
             });
         }
 
-        function updateOrderStatus(key, newStatus) {
-            db.ref('orders/' + key).update({ status: newStatus })
-              .then(() => alert("অর্ডারটি " + newStatus + " করা হয়েছে!"));
+        function updateStatus(key) {
+            db.ref('orders/' + key).update({ status: 'Confirmed' }).then(() => alert("অর্ডারটি কনফার্ম করা হয়েছে!"));
         }
 
-        // পণ্য আপলোড লজিক (নিরাপদ সিরিয়াল আপলোডসহ)
         async function submitProduct() {
             const files = document.getElementById('pImages').files;
             const btn = document.getElementById('uploadBtn');
@@ -156,29 +130,27 @@
             btn.innerText = "আপলোড হচ্ছে..."; btn.disabled = true;
 
             try {
-                let uploadedUrls = [];
-                for (let i = 0; i < files.length; i++) {
-                    btn.innerText = `আপলোড: ${i+1}/${files.length}`;
-                    let fd = new FormData(); fd.append("image", files[i]);
+                let urls = [];
+                for (let file of files) {
+                    let fd = new FormData(); fd.append("image", file);
                     let res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: fd });
                     let d = await res.json();
-                    if(d.success) uploadedUrls.push(d.data.url);
+                    if(d.success) urls.push(d.data.url);
                 }
 
-                if(uploadedUrls.length > 0) {
-                    await db.ref('pending_products').push({
-                        name: document.getElementById('pName').value.trim(),
-                        price: parseInt(document.getElementById('pPrice').value),
-                        colors: document.getElementById('pColors').value.trim(),
-                        description: document.getElementById('pDesc').value.trim(),
-                        imageUrl: uploadedUrls[0], // মেইন ইমেজ
-                        allImages: uploadedUrls,
-                        sellerName: localStorage.getItem('active_seller'),
-                        timestamp: Date.now()
-                    });
-                    alert("পণ্যটি সফলভাবে পাঠানো হয়েছে!");
-                    location.reload();
-                }
+                // ছবির সমস্যা সমাধানে 'image' এবং 'imageUrl' দুটোই ডেটাবেজে পাঠানো হচ্ছে
+                await db.ref('pending_products').push({
+                    name: document.getElementById('pName').value.trim(),
+                    price: parseInt(document.getElementById('pPrice').value),
+                    colors: document.getElementById('pColors').value.trim(),
+                    description: document.getElementById('pDesc').value.trim(),
+                    image: urls[0],        // ইনডেক্স ফাইলের জন্য (যেমন MacBook এ কাজ করছে)
+                    imageUrl: urls[0],     // অ্যাডমিন প্যানেলের জন্য
+                    allImages: urls,
+                    sellerName: activeSeller,
+                    timestamp: Date.now()
+                });
+                alert("সাফল্যের সাথে আপলোড হয়েছে!"); location.reload();
             } catch(e) { alert("Error!"); btn.disabled = false; btn.innerText = "অ্যাডমিনকে পাঠান"; }
         }
 
