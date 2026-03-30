@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RaiyanMart | Multi-Vendor Marketplace</title>
+    <title>Ar RaiyanMart | Multi-Vendor Marketplace</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -23,7 +23,7 @@
         .slide img { width: 100%; height: 100%; object-fit: cover; }
 
         .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px; }
-        .product-card { background: #fff; border-radius: 15px; height: 310px; border: 1px solid #eee; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); cursor: pointer; position: relative; }
+        .product-card { background: #fff; border-radius: 15px; height: 320px; border: 1px solid #eee; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); cursor: pointer; position: relative; }
 
         #imageOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; display: none; align-items: center; justify-content: center; }
         #imageOverlay img { max-width: 100%; max-height: 92vh; object-fit: contain; }
@@ -39,9 +39,7 @@
         .seller-reply { background: #fff9e6; padding: 10px; border-radius: 10px; margin-top: 8px; font-size: 13px; border-left: 3px solid #D4AF37; color: #555; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Add to Cart Button Styling */
-        .add-to-cart-btn { background: #D4AF37; color: white; padding: 6px; border-radius: 10px; font-size: 10px; font-weight: bold; width: 90%; margin: 5px auto; text-align: center; }
+        .add-to-cart-btn { background: #D4AF37; color: white; padding: 7px; border-radius: 10px; font-size: 11px; font-weight: bold; width: 92%; margin: 5px auto; text-align: center; }
     </style>
 </head>
 <body>
@@ -118,7 +116,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         
-        let allProducts = [], cart = [], currentLang = 'bn', currentSelectedImg = '', currentPID = '', currentSelectedColor = '';
+        let allProducts = [], cart = [], currentLang = 'bn', currentSelectedImg = '', currentPID = '', currentSelectedColor = 'Default';
 
         const bannerImages = ["https://raw.githubusercontent.com/raiyanfareha-create/Ar-RaiyanMart/main/hero-banner.jpg", "https://raw.githubusercontent.com/raiyanfareha-create/Ar-RaiyanMart/main/b-1.jpg"];
 
@@ -170,7 +168,7 @@
                     <div onclick="openDetails('${p.id}')">
                         <img src="${p.image || p.img || p.imageUrl}" class="w-full h-[165px] object-contain p-2">
                         <div class="p-3">
-                            <p class="text-[9px] text-gray-400 uppercase font-black mb-1 tracking-wider">${p.sellerName || p.brand || 'Ar RaiyanMart'}</p>
+                            <p class="text-[9px] text-gray-400 uppercase font-black mb-1 tracking-wider">${p.sellerName || p.shop_name || 'Ar RaiyanMart'}</p>
                             <h3 class="text-[12px] font-bold h-8 overflow-hidden text-gray-800 leading-tight">${p.name}</h3>
                             <p class="gold-text font-bold text-base mt-1">৳${p.price}</p>
                         </div>
@@ -192,11 +190,9 @@
             const t = langData[currentLang];
             currentSelectedImg = p.image || p.img || p.imageUrl;
             
-            // Multi-image/Color Selection
             let imagesToLoop = p.allImages || p.images || [currentSelectedImg];
             let colorHtml = `<div class="flex gap-4 overflow-x-auto pb-3 no-scrollbar mt-6">${imagesToLoop.map((img, i) => `<img src="${img}" onclick="selectColor(this, '${img}')" class="color-swatch ${img === currentSelectedImg ? 'active' : ''}">`).join('')}</div>`;
 
-            // Color dropdown for confirmation
             let colorDropdown = "";
             if(p.colors) {
                 let colorList = p.colors.split(',');
@@ -204,6 +200,8 @@
                                  <select id="pColorChoice" onchange="currentSelectedColor=this.value" class="w-full border p-3 rounded-xl mt-1 text-sm outline-none">
                                  ${colorList.map(c => `<option value="${c.trim()}">${c.trim()}</option>`).join('')}</select></div>`;
                 currentSelectedColor = colorList[0].trim();
+            } else {
+                currentSelectedColor = 'Default';
             }
 
             document.getElementById('detailsContent').innerHTML = `
@@ -211,7 +209,7 @@
                     <img id="mainImg" src="${currentSelectedImg}" onclick="fullScreenView('${currentSelectedImg}')" class="w-full h-auto max-h-[480px] object-contain">
                 </div>
                 <div class="p-7 pb-36 bg-white rounded-t-[35px] -mt-8 shadow-2xl relative z-10">
-                    <p class="text-[11px] text-gray-500 uppercase font-black tracking-widest">${p.sellerName || p.brand || 'Ar RaiyanMart'}</p>
+                    <p class="text-[11px] text-gray-500 uppercase font-black tracking-widest">${p.sellerName || p.shop_name || 'Ar RaiyanMart'}</p>
                     <h1 class="text-2xl font-extrabold text-gray-900 mt-1.5 leading-tight">${p.name}</h1>
                     <p class="text-3xl font-black gold-text mt-2">৳${p.price}</p>
                     ${colorHtml}
@@ -261,19 +259,8 @@
         function fullScreenView(url) { document.getElementById('overlayImg').src = url; document.getElementById('imageOverlay').style.display = 'flex'; }
         function selectColor(el, url) { document.getElementById('mainImg').src = url; currentSelectedImg = url; document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active')); el.classList.add('active'); }
         function closeDetails() { document.getElementById('productDetails').style.display = 'none'; currentPID = ''; }
-        
-        function buyNow(id) { 
-            const p = allProducts.find(x => x.id === id);
-            cart = [p]; 
-            openCheckout(); 
-        }
-
-        function openCheckout() { 
-            if(cart.length === 0) return;
-            document.getElementById('summaryTotal').innerText = parseInt(cart[0].price) + 80; 
-            document.getElementById('checkoutModal').style.display = 'flex'; 
-        }
-
+        function buyNow(id) { const p = allProducts.find(x => x.id === id); cart = [p]; openCheckout(); }
+        function openCheckout() { if(cart.length === 0) return; document.getElementById('summaryTotal').innerText = parseInt(cart[0].price) + 80; document.getElementById('checkoutModal').style.display = 'flex'; }
         function openCheckoutFromCart() { if(cart.length > 0) openCheckout(); else alert(currentLang === 'bn' ? "কার্ট খালি!" : "Cart is empty!"); }
         function updateTotal() { document.getElementById('summaryTotal').innerText = parseInt(cart[0].price) + parseInt(document.getElementById('deliverySelect').value); }
         function searchProduct(v) { renderCatalog(allProducts.filter(p => p.name.toLowerCase().includes(v.toLowerCase()))); }
@@ -283,14 +270,13 @@
             if(!name || !phone || !addr) return alert("সব তথ্য দিন!");
             
             const p = cart[0], dev = document.getElementById('deliverySelect').value, total = document.getElementById('summaryTotal').innerText;
-            
-            // Order logic with Product Link and Color
-            const productLink = window.location.href; 
+            const productLink = p.image || p.img || p.imageUrl; // Specific image link
+
             const invoice = `🔔 *New Order!*
-🏪 *Shop:* ${p.sellerName || p.brand || 'Ar RaiyanMart'}
+🏪 *Shop:* ${p.sellerName || p.shop_name || 'Ar RaiyanMart'}
 📦 *Product:* ${p.name}
-🔗 *Link:* ${productLink}
-🎨 *Color:* ${currentSelectedColor || 'Default'}
+🔗 *Product Link:* ${productLink}
+🎨 *Color:* ${currentSelectedColor}
 💰 *Price:* ${p.price} TK
 🚚 *Delivery:* ${dev} TK
 💵 *Total:* ${total} TK
@@ -299,12 +285,11 @@
 📞 *Phone:* ${phone}
 📍 *Address:* ${addr}`;
 
-            // Save to Firebase for Admin/Seller Panel
             db.ref('orders').push({
                 customerName: name, customerPhone: phone, customerAddress: addr,
-                productName: p.name, price: p.price, totalPrice: total,
-                sellerName: p.sellerName || p.brand || 'Ar RaiyanMart',
-                status: 'Pending', timestamp: Date.now(), color: currentSelectedColor || 'Default'
+                productName: p.name, productLink: productLink, price: p.price, 
+                totalPrice: total, sellerName: p.sellerName || p.shop_name || 'Ar RaiyanMart',
+                status: 'Pending', timestamp: Date.now(), color: currentSelectedColor
             });
 
             window.location.href = `https://api.whatsapp.com/send?phone=8801704100288&text=${encodeURIComponent(invoice)}`;
